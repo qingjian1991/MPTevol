@@ -4,7 +4,7 @@ Multiple primary tumors(MPT) is a kind of special and rare cancer, defined as mo
 
 The overview of the **MPTevol** model is shown below:
 
-![main](main.pdf)
+![main](MPTevol.jpg)
 
 ### Reference:
 Comprehensive deciphering clonal dynamics and metastatic routines in a rare patient of synchronous triple primary tumors and multiple metastases with MPTevol.
