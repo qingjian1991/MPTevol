@@ -1,0 +1,105 @@
+cytoband	3q26.2	8q24.21	11q13.3	7p11.2	19q12	17q12	1q21.3	12q15	8p11.23	5p15.33	20q13.2	17q25.1	4q12	20q11.21	12p12.1	6p22.3	13q34	7q21.2	15q26.3	12q14.1	Xq28	19p13.12	1p34.2	12p13.33	6p21.1	8p11.21	1q32.1	14q13.3	9p13.3	18q11.2	10p15.1	4p16.3	2q31.2	6q21	5q35.3	11p13	10q22.2	22q11.21	1q44	
+q value	0	0	0	1.0058e-307	9.5955e-219	3.8972e-216	2.5028e-173	3.7801e-174	1.0258e-154	7.9904e-88	3.7824e-50	2.0833e-65	1.1895e-36	4.833e-45	2.3979e-46	1.2345e-40	9.5883e-26	1.9375e-26	3.0315e-25	6.4308e-104	7.3441e-23	1.8369e-20	4.7075e-20	1.4466e-32	4.0143e-25	1.6615e-67	2.9227e-56	2.2139e-11	8.4428e-08	3.2787e-07	2.8843e-06	4.099e-06	6.7517e-05	0.001347	0.0014464	0.0016664	0.0060131	0.021576	1.3079e-37	
+residual q value	0	0	0	2.1796e-305	2.4734e-218	2.4755e-169	9.7258e-131	1.4603e-114	7.3176e-105	7.9904e-88	2.25e-44	4.7816e-43	1.1895e-36	1.1825e-31	1.6472e-29	2.7131e-29	9.5883e-26	2.5736e-25	3.0315e-25	1.1745e-24	7.3441e-23	4.268e-20	4.7075e-20	1.1911e-16	1.8515e-15	2.6405e-15	3.9625e-15	2.2139e-11	8.4428e-08	3.2787e-07	2.8843e-06	4.099e-06	6.7517e-05	0.0013837	0.0014464	0.003334	0.0060131	0.021576	0.069647	
+wide peak boundaries	chr3:169415894-169507091	chr8:128739772-128763161	chr11:69464719-69481388	chr7:55075808-55093954	chr19:30306758-30315734	chr17:37854508-37876018	chr1:150517357-150650163	chr12:69212011-69260755	chr8:38170522-38204651	chr5:1288616-1300024	chr20:52156928-52364812	chr17:73581977-73594884	chr4:55159545-55166866	chr20:30184812-30316022	chr12:25330452-25402402	chr6:20380270-20578375	chr13:113758738-114304134	chr7:92177705-92530348	chr15:99018419-99781711	chr12:58133257-58157280	chrX:153105496-153282901	chr19:15333311-15408613	chr1:40370748-40417342	chr12:1-1041184	chr6:43691959-43972844	chr8:41710601-41934556	chr1:204370415-204539784	chr14:36542710-37271810	chr9:35654479-35719700	chr18:20373799-20490086	chr10:5507030-5769826	chr4:1778797-1817427	chr2:178083264-178161176	chr6:107184830-107290700	chr5:176385830-176904875	chr11:35244045-35259406	chr10:76533308-77227762	chr22:18613558-22155118	chr1:242974745-249250621	
+genes in wide peak	MYNN	MYC	CCND1	EGFR	CCNE1	ERBB2	ADAMTSL4	CPM	WHSC1L1	TERT	ZNF217	MYO15B	PDGFRA	ID1	CASC1	E2F3	F7	CDK6	TTC23	CYP27B1	ARHGAP4	EPHX3	[MYCL]	RAD52	VEGFA	ANK1	PIK3C2B	MBIP	CA9	RBBP8	FAM208B	FGFR3	NFE2L2	MIR587	UIMC1	CD44	DUSP13	RTN4R	ADSS	
+	ACTRT3		ORAOV1				MCL1	MDM2					FIP1L1	COX4I2	KRAS	CDKAL1	F10	FAM133B	IGF1R	AGAP2	NAA10	BRD4		SLC6A13	C6orf223	KAT6A	PPP1R15B	SLC25A21	TLN1	snoU13|ENSG00000238537.1	CALML3	LETM1	HNRNPA3		DBN1		KAT6B	GSC2	SDCCAG8	
+	TERC						ENSA							BCL2L1	LYRM5	RN7SL128P	PCID2		SYNM	CDK4	RENBP			WNK1		SNORD112|ENSG00000238966.1	MDM4	DPPA3P2	ARHGEF39		CALML5		MIR3128		ZNF346		SAMD8	UFD1L	AKT3	
+							GOLPH3L							MIR3193			PROZ		PGPEP1L	TSPAN31	AVPR2			KDM5A			RNA5SP74	PAX9	CCDC107		ASB13				SLC34A1		VDAC2	CLTCL1	DESI2	
+							C1orf138										GRTP1		FAM169B	MARCH9	HCFC1			SLC6A12				RN7SKP257	TPM2		RN7SL445P				F12		COMTD1	DGCR2	ZNF670	
+							SNORA40|ENSG00000253047.1										CUL4A		MIR4714		TMEM187			IQSEC3				SFTA3	RN7SL22P						PRR7		ZNF503	CDC45	SCCPDH	
+							RN7SL473P										DCUN1D2				IRAK1			CCDC77				RN7SKP21	RMRP						FGFR4		DUPD1	COMT	CEP170	
+							MIR4257										TMCO3				LCA10			B4GALNT3				LINC00609							NSD1			ARVCF	HNRNPU	
+							RN7SL600P										ADPRHL1				L1CAM			NINJ2				PTCSC3							RGS14			TRMT2A	AHCTF1	
+																	LAMP1				SNORD36|ENSG00000251846.1			FAM138D											LMAN2			RANBP1	OR14K1	
+																	ATP4B							RNU4ATAC16P											RAB24			ZDHHC8	NLRP3	
+																	TFDP1																		PRELID1			KLHL22	ZNF496	
+																																			PFN3			MED15	TRIM58	
+																																			GRK6			SERPIND1	OR2M5	
+																																			MXD3			SNAP29	KIF26B	
+																																			RN7SL562P			CRKL	TFB2M	
+																																						LZTR1	CNST	
+																																						P2RX6	OR6F1	
+																																						SLC7A4	GCSAML	
+																																						PPIL2	ZNF672	
+																																						YPEL1	ZNF692	
+																																						MAPK1	OR2M4	
+																																						PRODH	C1orf100	
+																																						DGCR14	SH3BP5L	
+																																						SLC25A1	OR2T1	
+																																						HIRA	OR2T35	
+																																						DGCR6L	OR14C36	
+																																						DGCR8	OR2M7	
+																																						SDF2L1	OR2T12	
+																																						GGT2	OR2T33	
+																																						USP41	OR2AJ1	
+																																						TUBA3FP	OR2T8	
+																																						YDJC	OR2G3	
+																																						CCDC116	OR2G2	
+																																						HIC2	OR2B11	
+																																						BCRP2	C1orf101	
+																																						GGTLC3	ZBTB18	
+																																						RIMBP3C	OR2T29	
+																																						PI4KAP2	OR2T11	
+																																						TANGO2	OR2T34	
+																																						DGCR6	OR2T10	
+																																						AIFM3	PGBD2	
+																																						TUBA8	SMYD3	
+																																						TBX1	OR2AK2	
+																																						CLDN5	OR2T27	
+																																						THAP7	ZNF669	
+																																						TXNRD2	OR2G6	
+																																						SEPT5	OR14I1	
+																																						USP18	OR2L13	
+																																						ZNF74	OR2T2	
+																																						MRPL40	OR2C3	
+																																						UBE2L3	ZNF124	
+																																						GNB1L	OR2T3	
+																																						FAM230A	OR14A16	
+																																						RIMBP3	OR2L8	
+																																						RIMBP3B	OR2T4	
+																																						GGT3P	OR13G1	
+																																						RN7SKP131	OR2L5	
+																																						RN7SKP63	ZNF695	
+																																						RNA5SP493	OR11L1	
+																																						GP1BB	OR2T6	
+																																						TMEM191C	OR2L3	
+																																						FAM230C	OR2M2	
+																																						P2RX6P	RN7SKP55	
+																																						TSSK2	OR2T5	
+																																						MIR649	OR2L2	
+																																						MIR130B	OR2W5	
+																																						MIR185	EFCAB2	
+																																						MIR301B	COX20	
+																																						C22orf29	OR1C1	
+																																						PEX26	C1orf229	
+																																						FAM230B	OR2T7	
+																																						PI4KAP1	MIR3916	
+																																						POM121L4P	OR2M3	
+																																						MIR1286	LYPD8	
+																																						MIR1306	OR2W3	
+																																						RN7SKP221	OR14A2	
+																																						SMPD4P1	RN7SL148P	
+																																						TMEM191A	SNORA25|ENSG00000252011.1	
+																																						DGCR5	SNORD112|ENSG00000252495.1	
+																																						POM121L7	RNA5SP82	
+																																						PI4KA	MIR3916	
+																																						C22orf39	MIR3124	
+																																						RN7SL812P	MIR4677	
+																																						RN7SL168P		
+																																						SCARF2		
+																																						RN7SL280P		
+																																						SNORA15|ENSG00000251940.1		
+																																						SCARNA17|ENSG00000252020.1		
+																																						SCARNA18|ENSG00000252024.1		
+																																						SCARNA17|ENSG00000252143.1		
+																																						SCARNA18|ENSG00000252314.1		
+																																						snoU13|ENSG00000252402.1		
+																																						SCARNA17|ENSG00000252571.1		
+																																						SCARNA18|ENSG00000252605.1		
+																																						snoU13|ENSG00000252799.1		
+																																						SNORA77|ENSG00000264346.1		
+																																						MIR4761		
+																																						RN7SL389P		
+																																						MIR3618		
+																																						snoU13|ENSG00000271796.1		

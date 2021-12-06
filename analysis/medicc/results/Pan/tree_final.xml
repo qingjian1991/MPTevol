@@ -1,0 +1,1126 @@
+<phyloxml xmlns="http://www.phyloxml.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+  <phylogeny rooted="true">
+    <clade>
+      <name>internal_1</name>
+      <branch_length>0</branch_length>
+      <confidence type="ambiguity">0</confidence>
+      <sequence>
+        <symbol>A</symbol>
+        <accession source="">internal_1_A</accession>
+        <name>1111X1111X12111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+        <mol_seq is_aligned="false">.</mol_seq>
+      </sequence>
+      <sequence>
+        <symbol>B</symbol>
+        <accession source="">internal_1_B</accession>
+        <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+        <mol_seq is_aligned="false">.</mol_seq>
+      </sequence>
+      <clade>
+        <name>internal_2</name>
+        <branch_length>1.0</branch_length>
+        <confidence type="ambiguity">0</confidence>
+        <sequence>
+          <symbol>A</symbol>
+          <accession source="">internal_2_A</accession>
+          <name>1111X1111X12111X11X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+          <mol_seq is_aligned="false">.</mol_seq>
+        </sequence>
+        <sequence>
+          <symbol>B</symbol>
+          <accession source="">internal_2_B</accession>
+          <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+          <mol_seq is_aligned="false">.</mol_seq>
+        </sequence>
+        <clade>
+          <name>internal_4</name>
+          <branch_length>2.0</branch_length>
+          <confidence type="ambiguity">0</confidence>
+          <sequence>
+            <symbol>A</symbol>
+            <accession source="">internal_4_A</accession>
+            <name>1111X1111X12111X11X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+          <sequence>
+            <symbol>B</symbol>
+            <accession source="">internal_4_B</accession>
+            <name>1111X1111X10111X11X11X111X11111X111X001X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+          <clade>
+            <name>Lung_5</name>
+            <branch_length>8.0</branch_length>
+            <confidence type="ambiguity">0</confidence>
+            <sequence>
+              <symbol>A</symbol>
+              <accession source="">Lung_5_A</accession>
+              <name>1111X1111X12111X12X11X221X11111X111X111X112X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <sequence>
+              <symbol>B</symbol>
+              <accession source="">Lung_5_B</accession>
+              <name>1100X1100X10111X10X11X001X11111X111X001X100X11X111X1X1X111X1111X001X11X111X11X11X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+          </clade>
+          <clade>
+            <name>internal_6</name>
+            <branch_length>4.0</branch_length>
+            <confidence type="ambiguity">0</confidence>
+            <sequence>
+              <symbol>A</symbol>
+              <accession source="">internal_6_A</accession>
+              <name>1111X1111X11111X21X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X12X22X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <sequence>
+              <symbol>B</symbol>
+              <accession source="">internal_6_B</accession>
+              <name>1111X1111X10111X11X11X111X11111X111X001X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <clade>
+              <name>internal_9</name>
+              <branch_length>3.0</branch_length>
+              <confidence type="ambiguity">1</confidence>
+              <sequence>
+                <symbol>A</symbol>
+                <accession source="">internal_9_A</accession>
+                <name>1111X1111X11111X21X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X12X22X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <sequence>
+                <symbol>B</symbol>
+                <accession source="">internal_9_B</accession>
+                <name>2101X1111X10111X11X11X111X11111X111X001X111X11X111X1X1X111X1111X111X11X100X11X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <clade>
+                <name>UterusM_7</name>
+                <branch_length>12.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">UterusM_7_A</accession>
+                  <name>0101X2111X10111X21X11X121X11112X111X111X111X11X111X1X1X111X1111X111X11X111X12X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">UterusM_7_B</accession>
+                  <name>2101X1011X10111X11X11X001X11110X111X001X111X11X111X1X1X111X1111X111X11X000X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+              <clade>
+                <name>internal_15</name>
+                <branch_length>1.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">internal_15_A</accession>
+                  <name>1111X1111X11111X21X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X12X22X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">internal_15_B</accession>
+                  <name>2201X1111X10111X11X11X111X11111X111X001X111X11X111X1X1X111X1111X111X11X100X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <clade>
+                  <name>UterusM_6</name>
+                  <branch_length>6.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">UterusM_6_A</accession>
+                    <name>1111X1111X10111X21X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X22X22X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">UterusM_6_B</accession>
+                    <name>1100X1111X10111X11X11X011X11111X111X001X111X11X111X1X1X111X1111X111X11X000X01X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+                <clade>
+                  <name>internal_20</name>
+                  <branch_length>1.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">internal_20_A</accession>
+                    <name>1111X1111X11111X21X11X111X11111X111X111X112X11X211X1X1X111X1111X111X11X111X12X22X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">internal_20_B</accession>
+                    <name>2201X1111X10111X11X11X111X11111X111X001X111X11X111X1X1X111X1111X111X11X100X11X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <clade>
+                    <name>UterusM_2</name>
+                    <branch_length>4.0</branch_length>
+                    <confidence type="ambiguity">0</confidence>
+                    <sequence>
+                      <symbol>A</symbol>
+                      <accession source="">UterusM_2_A</accession>
+                      <name>1111X1111X11111X21X12X111X11111X111X111X112X11X211X1X1X111X1111X111X11X111X12X22X1</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <sequence>
+                      <symbol>B</symbol>
+                      <accession source="">UterusM_2_B</accession>
+                      <name>1100X1111X10111X11X10X111X11111X111X001X111X11X011X1X1X111X1111X111X11X100X11X11X1</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                  </clade>
+                  <clade>
+                    <name>internal_23</name>
+                    <branch_length>6.0</branch_length>
+                    <confidence type="ambiguity">0</confidence>
+                    <sequence>
+                      <symbol>A</symbol>
+                      <accession source="">internal_23_A</accession>
+                      <name>1111X1111X10111X21X11X111X11111X111X112X212X11X211X2X1X111X1111X111X11X111X12X22X2</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <sequence>
+                      <symbol>B</symbol>
+                      <accession source="">internal_23_B</accession>
+                      <name>2201X1111X10111X11X11X011X11111X111X001X111X11X111X1X1X111X1111X111X11X100X11X11X1</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <clade>
+                      <name>UterusM_4</name>
+                      <branch_length>11.0</branch_length>
+                      <confidence type="ambiguity">0</confidence>
+                      <sequence>
+                        <symbol>A</symbol>
+                        <accession source="">UterusM_4_A</accession>
+                        <name>1001X1111X10111X21X21X112X22111X122X112X212X11X111X2X1X111X1111X112X22X211X12X22X2</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <sequence>
+                        <symbol>B</symbol>
+                        <accession source="">UterusM_4_B</accession>
+                        <name>2201X1111X10111X11X11X010X11111X111X001X111X11X111X1X1X111X1111X111X00X100X11X11X1</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                    </clade>
+                    <clade>
+                      <name>Lung_4</name>
+                      <branch_length>8.0</branch_length>
+                      <confidence type="ambiguity">0</confidence>
+                      <sequence>
+                        <symbol>A</symbol>
+                        <accession source="">Lung_4_A</accession>
+                        <name>1111X2122X10111X21X11X111X11111X211X112X212X21X211X2X1X111X1111X111X11X111X12X22X2</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <sequence>
+                        <symbol>B</symbol>
+                        <accession source="">Lung_4_B</accession>
+                        <name>1100X1000X10111X11X11X011X11111X111X001X111X01X011X1X1X111X1111X111X11X100X11X11X1</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                    </clade>
+                  </clade>
+                </clade>
+              </clade>
+            </clade>
+            <clade>
+              <name>internal_10</name>
+              <branch_length>5.0</branch_length>
+              <confidence type="ambiguity">3</confidence>
+              <sequence>
+                <symbol>A</symbol>
+                <accession source="">internal_10_A</accession>
+                <name>1111X1111X11111X21X11X111X11111X111X111X112X11X111X1X1X111X2222X111X11X111X12X22X2</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <sequence>
+                <symbol>B</symbol>
+                <accession source="">internal_10_B</accession>
+                <name>1111X1100X10111X10X11X111X11111X111X001X112X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <clade>
+                <name>Lung_3</name>
+                <branch_length>14.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">Lung_3_A</accession>
+                  <name>1111X1111X11222X21X12X122X11221X111X111X112X11X111X1X1X111X2111X111X12X111X12X12X2</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">Lung_3_B</accession>
+                  <name>1100X1100X10000X10X11X100X11001X111X001X102X11X111X1X1X111X1111X111X11X111X11X02X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+              <clade>
+                <name>Lung_1</name>
+                <branch_length>4.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">Lung_1_A</accession>
+                  <name>1111X1111X12111X21X11X111X11111X111X111X212X11X111X1X1X111X2222X112X11X222X12X22X2</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">Lung_1_B</accession>
+                  <name>1111X1100X10111X10X11X111X11111X111X001X112X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+            </clade>
+          </clade>
+        </clade>
+        <clade>
+          <name>internal_5</name>
+          <branch_length>1.0</branch_length>
+          <confidence type="ambiguity">0</confidence>
+          <sequence>
+            <symbol>A</symbol>
+            <accession source="">internal_5_A</accession>
+            <name>1122X1111X12111X11X11X111X11111X111X111X112X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+          <sequence>
+            <symbol>B</symbol>
+            <accession source="">internal_5_B</accession>
+            <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+          <clade>
+            <name>internal_7</name>
+            <branch_length>17.0</branch_length>
+            <confidence type="ambiguity">4</confidence>
+            <sequence>
+              <symbol>A</symbol>
+              <accession source="">internal_7_A</accession>
+              <name>0022X1111X12111X11X11X111X33222X111X111X111X11X111X4X1X112X1111X111X11X111X22X11X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <sequence>
+              <symbol>B</symbol>
+              <accession source="">internal_7_B</accession>
+              <name>1111X1111X11111X00X11X111X11100X011X111X111X10X111X1X1X011X0111X111X00X111X11X11X0</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <clade>
+              <name>internal_11</name>
+              <branch_length>4.0</branch_length>
+              <confidence type="ambiguity">3</confidence>
+              <sequence>
+                <symbol>A</symbol>
+                <accession source="">internal_11_A</accession>
+                <name>0022X1111X12111X11X11X111X33333X111X111X211X11X111X4X1X112X1111X111X11X111X23X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <sequence>
+                <symbol>B</symbol>
+                <accession source="">internal_11_B</accession>
+                <name>2211X1111X11111X00X11X111X11100X011X111X111X10X111X1X1X011X0111X111X00X111X11X11X0</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <clade>
+                <name>internal_16</name>
+                <branch_length>6.0</branch_length>
+                <confidence type="ambiguity">2</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">internal_16_A</accession>
+                  <name>0022X1111X12111X11X11X221X33333X111X111X211X11X111X4X1X122X1111X111X11X111X23X11X2</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">internal_16_B</accession>
+                  <name>2222X1111X11111X00X11X111X22100X011X111X111X10X111X1X1X011X0111X111X00X111X12X11X0</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <clade>
+                  <name>internal_21</name>
+                  <branch_length>28.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">internal_21_A</accession>
+                    <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">internal_21_B</accession>
+                    <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <clade>
+                    <name>internal_24</name>
+                    <branch_length>1.0</branch_length>
+                    <confidence type="ambiguity">2</confidence>
+                    <sequence>
+                      <symbol>A</symbol>
+                      <accession source="">internal_24_A</accession>
+                      <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <sequence>
+                      <symbol>B</symbol>
+                      <accession source="">internal_24_B</accession>
+                      <name>2222X1111X11111X00X11X220X22100X011X221X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <clade>
+                      <name>OveryRM_5</name>
+                      <branch_length>3.0</branch_length>
+                      <confidence type="ambiguity">0</confidence>
+                      <sequence>
+                        <symbol>A</symbol>
+                        <accession source="">OveryRM_5_A</accession>
+                        <name>0022X2222X22222X22X22X332X44144X111X442X223X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <sequence>
+                        <symbol>B</symbol>
+                        <accession source="">OveryRM_5_B</accession>
+                        <name>2222X1111X11122X00X11X220X22100X011X221X210X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                    </clade>
+                    <clade>
+                      <name>internal_26</name>
+                      <branch_length>1.0</branch_length>
+                      <confidence type="ambiguity">1</confidence>
+                      <sequence>
+                        <symbol>A</symbol>
+                        <accession source="">internal_26_A</accession>
+                        <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <sequence>
+                        <symbol>B</symbol>
+                        <accession source="">internal_26_B</accession>
+                        <name>2222X1111X11111X00X11X220X22100X011X111X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <clade>
+                        <name>OveryRM_6</name>
+                        <branch_length>2.0</branch_length>
+                        <confidence type="ambiguity">0</confidence>
+                        <sequence>
+                          <symbol>A</symbol>
+                          <accession source="">OveryRM_6_A</accession>
+                          <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X133X22X222X33X11X2</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                        <sequence>
+                          <symbol>B</symbol>
+                          <accession source="">OveryRM_6_B</accession>
+                          <name>2222X1111X11111X00X11X220X22100X011X111X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                      </clade>
+                      <clade>
+                        <name>internal_28</name>
+                        <branch_length>1.0</branch_length>
+                        <confidence type="ambiguity">0</confidence>
+                        <sequence>
+                          <symbol>A</symbol>
+                          <accession source="">internal_28_A</accession>
+                          <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                        <sequence>
+                          <symbol>B</symbol>
+                          <accession source="">internal_28_B</accession>
+                          <name>2222X1111X11112X00X11X220X22100X011X111X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                        <clade>
+                          <name>OveryRM_4</name>
+                          <branch_length>2.0</branch_length>
+                          <confidence type="ambiguity">0</confidence>
+                          <sequence>
+                            <symbol>A</symbol>
+                            <accession source="">OveryRM_4_A</accession>
+                            <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2122X222X22X222X33X11X2</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                          <sequence>
+                            <symbol>B</symbol>
+                            <accession source="">OveryRM_4_B</accession>
+                            <name>2222X1111X11112X00X11X220X22100X011X221X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                        </clade>
+                        <clade>
+                          <name>internal_30</name>
+                          <branch_length>0.0</branch_length>
+                          <confidence type="ambiguity">0</confidence>
+                          <sequence>
+                            <symbol>A</symbol>
+                            <accession source="">internal_30_A</accession>
+                            <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                          <sequence>
+                            <symbol>B</symbol>
+                            <accession source="">internal_30_B</accession>
+                            <name>2222X1111X11112X00X11X220X22100X011X111X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                          <clade>
+                            <name>OveryRM_3</name>
+                            <branch_length>0.0</branch_length>
+                            <confidence type="ambiguity">0</confidence>
+                            <sequence>
+                              <symbol>A</symbol>
+                              <accession source="">OveryRM_3_A</accession>
+                              <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                            <sequence>
+                              <symbol>B</symbol>
+                              <accession source="">OveryRM_3_B</accession>
+                              <name>2222X1111X11112X00X11X220X22100X011X111X211X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                          </clade>
+                          <clade>
+                            <name>internal_32</name>
+                            <branch_length>1.0</branch_length>
+                            <confidence type="ambiguity">0</confidence>
+                            <sequence>
+                              <symbol>A</symbol>
+                              <accession source="">internal_32_A</accession>
+                              <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                            <sequence>
+                              <symbol>B</symbol>
+                              <accession source="">internal_32_B</accession>
+                              <name>2222X1111X11112X00X11X220X22100X011X111X211X20X111X1X1X011X0111X111X00X222X22X11X0</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                            <clade>
+                              <name>OveryRM_2</name>
+                              <branch_length>0.0</branch_length>
+                              <confidence type="ambiguity">0</confidence>
+                              <sequence>
+                                <symbol>A</symbol>
+                                <accession source="">OveryRM_2_A</accession>
+                                <name>0022X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                                <mol_seq is_aligned="false">.</mol_seq>
+                              </sequence>
+                              <sequence>
+                                <symbol>B</symbol>
+                                <accession source="">OveryRM_2_B</accession>
+                                <name>2222X1111X11112X00X11X220X22100X011X111X211X20X111X1X1X011X0111X111X00X222X22X11X0</name>
+                                <mol_seq is_aligned="false">.</mol_seq>
+                              </sequence>
+                            </clade>
+                            <clade>
+                              <name>OveryRM_1</name>
+                              <branch_length>2.0</branch_length>
+                              <confidence type="ambiguity">0</confidence>
+                              <sequence>
+                                <symbol>A</symbol>
+                                <accession source="">OveryRM_1_A</accession>
+                                <name>0022X2222X22222X22X22X332X44144X111X442X222X32X222X4X2X222X2222X222X22X222X33X11X2</name>
+                                <mol_seq is_aligned="false">.</mol_seq>
+                              </sequence>
+                              <sequence>
+                                <symbol>B</symbol>
+                                <accession source="">OveryRM_1_B</accession>
+                                <name>2222X1111X11222X00X11X220X22100X011X111X211X20X111X1X1X011X0111X111X00X222X22X11X0</name>
+                                <mol_seq is_aligned="false">.</mol_seq>
+                              </sequence>
+                            </clade>
+                          </clade>
+                        </clade>
+                      </clade>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <name>internal_25</name>
+                    <branch_length>1.0</branch_length>
+                    <confidence type="ambiguity">2</confidence>
+                    <sequence>
+                      <symbol>A</symbol>
+                      <accession source="">internal_25_A</accession>
+                      <name>0033X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <sequence>
+                      <symbol>B</symbol>
+                      <accession source="">internal_25_B</accession>
+                      <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <clade>
+                      <name>internal_27</name>
+                      <branch_length>1.0</branch_length>
+                      <confidence type="ambiguity">0</confidence>
+                      <sequence>
+                        <symbol>A</symbol>
+                        <accession source="">internal_27_A</accession>
+                        <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <sequence>
+                        <symbol>B</symbol>
+                        <accession source="">internal_27_B</accession>
+                        <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <clade>
+                        <name>OveryLM_3</name>
+                        <branch_length>0.0</branch_length>
+                        <confidence type="ambiguity">0</confidence>
+                        <sequence>
+                          <symbol>A</symbol>
+                          <accession source="">OveryLM_3_A</accession>
+                          <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                        <sequence>
+                          <symbol>B</symbol>
+                          <accession source="">OveryLM_3_B</accession>
+                          <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                      </clade>
+                      <clade>
+                        <name>internal_29</name>
+                        <branch_length>0.0</branch_length>
+                        <confidence type="ambiguity">0</confidence>
+                        <sequence>
+                          <symbol>A</symbol>
+                          <accession source="">internal_29_A</accession>
+                          <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                        <sequence>
+                          <symbol>B</symbol>
+                          <accession source="">internal_29_B</accession>
+                          <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                          <mol_seq is_aligned="false">.</mol_seq>
+                        </sequence>
+                        <clade>
+                          <name>OveryLM_4</name>
+                          <branch_length>0.0</branch_length>
+                          <confidence type="ambiguity">0</confidence>
+                          <sequence>
+                            <symbol>A</symbol>
+                            <accession source="">OveryLM_4_A</accession>
+                            <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                          <sequence>
+                            <symbol>B</symbol>
+                            <accession source="">OveryLM_4_B</accession>
+                            <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                        </clade>
+                        <clade>
+                          <name>internal_31</name>
+                          <branch_length>0.0</branch_length>
+                          <confidence type="ambiguity">0</confidence>
+                          <sequence>
+                            <symbol>A</symbol>
+                            <accession source="">internal_31_A</accession>
+                            <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                          <sequence>
+                            <symbol>B</symbol>
+                            <accession source="">internal_31_B</accession>
+                            <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                            <mol_seq is_aligned="false">.</mol_seq>
+                          </sequence>
+                          <clade>
+                            <name>OveryLM_5</name>
+                            <branch_length>0.0</branch_length>
+                            <confidence type="ambiguity">0</confidence>
+                            <sequence>
+                              <symbol>A</symbol>
+                              <accession source="">OveryLM_5_A</accession>
+                              <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                            <sequence>
+                              <symbol>B</symbol>
+                              <accession source="">OveryLM_5_B</accession>
+                              <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                          </clade>
+                          <clade>
+                            <name>OveryLM_2</name>
+                            <branch_length>0.0</branch_length>
+                            <confidence type="ambiguity">0</confidence>
+                            <sequence>
+                              <symbol>A</symbol>
+                              <accession source="">OveryLM_2_A</accession>
+                              <name>0033X2222X22222X22X22X332X44144X111X332X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                            <sequence>
+                              <symbol>B</symbol>
+                              <accession source="">OveryLM_2_B</accession>
+                              <name>2222X1111X11111X00X11X220X22100X011X221X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                              <mol_seq is_aligned="false">.</mol_seq>
+                            </sequence>
+                          </clade>
+                        </clade>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>OveryLM_1</name>
+                      <branch_length>2.0</branch_length>
+                      <confidence type="ambiguity">0</confidence>
+                      <sequence>
+                        <symbol>A</symbol>
+                        <accession source="">OveryLM_1_A</accession>
+                        <name>0033X2222X22222X22X22X332X44144X111X442X222X22X222X4X2X222X2222X222X22X222X33X11X2</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                      <sequence>
+                        <symbol>B</symbol>
+                        <accession source="">OveryLM_1_B</accession>
+                        <name>2222X1111X11111X00X11X120X22100X011X111X111X10X111X1X1X011X0111X111X00X222X22X11X0</name>
+                        <mol_seq is_aligned="false">.</mol_seq>
+                      </sequence>
+                    </clade>
+                  </clade>
+                </clade>
+                <clade>
+                  <name>Coad_5</name>
+                  <branch_length>5.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">Coad_5_A</accession>
+                    <name>0022X1111X12111X11X11X221X33333X111X111X211X11X111X4X1X122X1111X111X11X111X22X11X2</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">Coad_5_B</accession>
+                    <name>1122X1111X10111X00X11X111X11000X011X111X111X10X111X1X1X000X0111X111X00X111X12X11X0</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+              </clade>
+              <clade>
+                <name>internal_17</name>
+                <branch_length>4.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">internal_17_A</accession>
+                  <name>0022X1111X12111X11X11X111X33333X111X111X211X11X111X4X1X111X1111X111X11X111X23X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">internal_17_B</accession>
+                  <name>2211X1111X10111X00X11X111X11000X000X111X111X10X111X1X1X011X0111X111X00X111X11X11X0</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <clade>
+                  <name>UterusM_3</name>
+                  <branch_length>1.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">UterusM_3_A</accession>
+                    <name>0022X1111X12111X11X11X111X33333X111X111X111X11X111X4X1X111X1111X111X11X111X23X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">UterusM_3_B</accession>
+                    <name>2211X1111X10111X00X11X111X11000X000X111X111X10X111X1X1X011X0111X111X00X111X11X11X0</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+                <clade>
+                  <name>UterusM_1</name>
+                  <branch_length>3.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">UterusM_1_A</accession>
+                    <name>0022X1211X12111X11X11X111X33333X111X111X212X11X111X4X1X111X1111X111X11X111X23X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">UterusM_1_B</accession>
+                    <name>2211X1011X10111X00X11X111X11000X000X111X111X10X111X1X1X011X0111X111X00X111X11X11X0</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+              </clade>
+            </clade>
+            <clade>
+              <name>internal_12</name>
+              <branch_length>2.0</branch_length>
+              <confidence type="ambiguity">2</confidence>
+              <sequence>
+                <symbol>A</symbol>
+                <accession source="">internal_12_A</accession>
+                <name>0022X1111X12111X11X11X111X33222X111X111X111X11X111X4X1X112X1111X111X11X111X22X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <sequence>
+                <symbol>B</symbol>
+                <accession source="">internal_12_B</accession>
+                <name>1111X1111X11111X00X11X111X01100X011X111X111X10X111X1X1X000X0111X111X00X111X11X11X0</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <clade>
+                <name>internal_18</name>
+                <branch_length>4.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">internal_18_A</accession>
+                  <name>0022X1111X11111X11X11X111X22222X111X111X111X11X111X3X1X112X1111X111X11X111X22X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">internal_18_B</accession>
+                  <name>1111X1111X11111X00X11X111X01100X010X111X111X10X111X1X1X000X0111X111X00X111X11X11X0</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <clade>
+                  <name>Coad_1</name>
+                  <branch_length>8.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">Coad_1_A</accession>
+                    <name>0012X1111X11111X11X11X111X22222X121X111X111X11X221X3X1X222X1111X111X11X111X22X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">Coad_1_B</accession>
+                    <name>1111X1111X10111X00X11X111X00000X000X111X111X10X001X1X1X000X0111X111X00X111X11X11X0</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+                <clade>
+                  <name>internal_22</name>
+                  <branch_length>0.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">internal_22_A</accession>
+                    <name>0022X1111X11111X11X11X111X22222X111X111X111X11X111X3X1X112X1111X111X11X111X22X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">internal_22_B</accession>
+                    <name>1111X1111X11111X00X11X111X01100X010X111X111X10X111X1X1X000X0111X111X00X111X11X11X0</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <clade>
+                    <name>Coad_4</name>
+                    <branch_length>1.0</branch_length>
+                    <confidence type="ambiguity">0</confidence>
+                    <sequence>
+                      <symbol>A</symbol>
+                      <accession source="">Coad_4_A</accession>
+                      <name>0022X1111X11111X11X11X111X22222X111X111X111X11X111X3X1X112X1111X111X11X111X22X11X1</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <sequence>
+                      <symbol>B</symbol>
+                      <accession source="">Coad_4_B</accession>
+                      <name>1111X1111X11111X00X11X111X00000X010X111X111X10X111X1X1X000X0111X111X00X111X11X11X0</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                  </clade>
+                  <clade>
+                    <name>Coad_3</name>
+                    <branch_length>1.0</branch_length>
+                    <confidence type="ambiguity">0</confidence>
+                    <sequence>
+                      <symbol>A</symbol>
+                      <accession source="">Coad_3_A</accession>
+                      <name>0022X1111X11111X11X11X111X21122X111X111X111X11X111X3X1X112X1111X111X11X111X22X11X1</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                    <sequence>
+                      <symbol>B</symbol>
+                      <accession source="">Coad_3_B</accession>
+                      <name>1111X1111X11111X00X11X111X01100X010X111X111X10X111X1X1X000X0111X111X00X111X11X11X0</name>
+                      <mol_seq is_aligned="false">.</mol_seq>
+                    </sequence>
+                  </clade>
+                </clade>
+              </clade>
+              <clade>
+                <name>Coad_2</name>
+                <branch_length>3.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">Coad_2_A</accession>
+                  <name>0022X1111X12111X11X11X111X33122X111X111X111X11X111X4X1X112X1111X111X11X111X22X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">Coad_2_B</accession>
+                  <name>1111X1111X10111X00X11X111X00100X011X111X111X10X111X1X1X000X0111X111X00X111X11X11X0</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <name>internal_8</name>
+            <branch_length>4.0</branch_length>
+            <confidence type="ambiguity">0</confidence>
+            <sequence>
+              <symbol>A</symbol>
+              <accession source="">internal_8_A</accession>
+              <name>1133X1111X12111X11X11X111X11111X111X111X222X11X111X1X1X111X2111X111X11X111X11X11X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <sequence>
+              <symbol>B</symbol>
+              <accession source="">internal_8_B</accession>
+              <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1000X111X11X111X11X11X1</name>
+              <mol_seq is_aligned="false">.</mol_seq>
+            </sequence>
+            <clade>
+              <name>internal_13</name>
+              <branch_length>5.0</branch_length>
+              <confidence type="ambiguity">0</confidence>
+              <sequence>
+                <symbol>A</symbol>
+                <accession source="">internal_13_A</accession>
+                <name>1133X1111X12111X11X11X111X11111X111X111X444X11X111X1X1X111X4000X111X11X111X11X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <sequence>
+                <symbol>B</symbol>
+                <accession source="">internal_13_B</accession>
+                <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1000X111X11X111X11X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <clade>
+                <name>Breast_4</name>
+                <branch_length>14.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">Breast_4_A</accession>
+                  <name>1111X1111X13111X11X11X111X11111X111X000X444X11X111X1X1X000X4000X111X11X111X11X11X0</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">Breast_4_B</accession>
+                  <name>1111X0000X11111X11X11X111X11111X000X000X111X11X111X0X1X000X1000X111X00X111X11X00X0</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+              <clade>
+                <name>internal_19</name>
+                <branch_length>3.0</branch_length>
+                <confidence type="ambiguity">1</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">internal_19_A</accession>
+                  <name>1144X1111X12111X11X11X211X11111X111X111X444X11X111X1X1X111X4000X111X11X111X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">internal_19_B</accession>
+                  <name>1111X1111X10111X11X11X111X11111X111X111X111X11X111X1X1X111X1000X111X11X111X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <clade>
+                  <name>Breast_5</name>
+                  <branch_length>7.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">Breast_5_A</accession>
+                    <name>1144X1111X11111X11X11X311X11111X111X111X444X11X121X1X1X111X4000X111X11X111X11X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">Breast_5_B</accession>
+                    <name>1111X1111X10111X11X11X211X11111X111X101X110X11X111X1X1X111X1000X111X11X100X11X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+                <clade>
+                  <name>Breast_3</name>
+                  <branch_length>6.0</branch_length>
+                  <confidence type="ambiguity">0</confidence>
+                  <sequence>
+                    <symbol>A</symbol>
+                    <accession source="">Breast_3_A</accession>
+                    <name>1144X1111X12111X11X11X221X22111X111X221X433X11X111X2X1X111X4000X111X11X111X11X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                  <sequence>
+                    <symbol>B</symbol>
+                    <accession source="">Breast_3_B</accession>
+                    <name>1111X1101X10111X11X11X111X11111X111X111X111X11X111X1X1X111X1000X111X11X111X11X11X1</name>
+                    <mol_seq is_aligned="false">.</mol_seq>
+                  </sequence>
+                </clade>
+              </clade>
+            </clade>
+            <clade>
+              <name>internal_14</name>
+              <branch_length>0.0</branch_length>
+              <confidence type="ambiguity">0</confidence>
+              <sequence>
+                <symbol>A</symbol>
+                <accession source="">internal_14_A</accession>
+                <name>1133X1111X12111X11X11X111X11111X111X111X222X11X111X1X1X111X2111X111X11X111X11X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <sequence>
+                <symbol>B</symbol>
+                <accession source="">internal_14_B</accession>
+                <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1000X111X11X111X11X11X1</name>
+                <mol_seq is_aligned="false">.</mol_seq>
+              </sequence>
+              <clade>
+                <name>Breast_2</name>
+                <branch_length>4.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">Breast_2_A</accession>
+                  <name>1133X1111X12111X11X11X111X11111X111X111X222X11X211X1X1X111X2111X111X11X111X21X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">Breast_2_B</accession>
+                  <name>1111X1111X11111X11X11X111X11111X111X111X111X11X011X1X1X111X1000X111X11X111X01X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+              <clade>
+                <name>Breast_1</name>
+                <branch_length>1.0</branch_length>
+                <confidence type="ambiguity">0</confidence>
+                <sequence>
+                  <symbol>A</symbol>
+                  <accession source="">Breast_1_A</accession>
+                  <name>1133X1111X11111X11X11X111X11111X111X111X222X11X111X1X1X111X2111X111X11X111X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+                <sequence>
+                  <symbol>B</symbol>
+                  <accession source="">Breast_1_B</accession>
+                  <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1000X111X11X111X11X11X1</name>
+                  <mol_seq is_aligned="false">.</mol_seq>
+                </sequence>
+              </clade>
+            </clade>
+          </clade>
+        </clade>
+      </clade>
+      <clade>
+        <name>internal_3</name>
+        <branch_length>1.0</branch_length>
+        <confidence type="ambiguity">0</confidence>
+        <sequence>
+          <symbol>A</symbol>
+          <accession source="">internal_3_A</accession>
+          <name>1111X1111X12111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+          <mol_seq is_aligned="false">.</mol_seq>
+        </sequence>
+        <sequence>
+          <symbol>B</symbol>
+          <accession source="">internal_3_B</accession>
+          <name>1111X1111X10111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+          <mol_seq is_aligned="false">.</mol_seq>
+        </sequence>
+        <clade>
+          <name>UterusM_5</name>
+          <branch_length>5.0</branch_length>
+          <confidence type="ambiguity">0</confidence>
+          <sequence>
+            <symbol>A</symbol>
+            <accession source="">UterusM_5_A</accession>
+            <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X211X11X111X21X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+          <sequence>
+            <symbol>B</symbol>
+            <accession source="">UterusM_5_B</accession>
+            <name>1111X1111X10111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X011X11X111X01X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+        </clade>
+        <clade>
+          <name>Lung_2</name>
+          <branch_length>2.0</branch_length>
+          <confidence type="ambiguity">0</confidence>
+          <sequence>
+            <symbol>A</symbol>
+            <accession source="">Lung_2_A</accession>
+            <name>1111X1111X12111X11X21X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+          <sequence>
+            <symbol>B</symbol>
+            <accession source="">Lung_2_B</accession>
+            <name>1111X1111X10111X11X01X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+            <mol_seq is_aligned="false">.</mol_seq>
+          </sequence>
+        </clade>
+      </clade>
+      <clade>
+        <name>diploid</name>
+        <branch_length>1.0</branch_length>
+        <confidence type="ambiguity">0</confidence>
+        <sequence>
+          <symbol>A</symbol>
+          <accession source="">diploid_A</accession>
+          <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+          <mol_seq is_aligned="false">.</mol_seq>
+        </sequence>
+        <sequence>
+          <symbol>B</symbol>
+          <accession source="">diploid_B</accession>
+          <name>1111X1111X11111X11X11X111X11111X111X111X111X11X111X1X1X111X1111X111X11X111X11X11X1</name>
+          <mol_seq is_aligned="false">.</mol_seq>
+        </sequence>
+      </clade>
+    </clade>
+  </phylogeny>
+</phyloxml>

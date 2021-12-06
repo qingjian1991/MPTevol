@@ -1,0 +1,515 @@
+---
+title: "Plot the genomic comparsion between samples"
+author: "Qingjian Chen"
+date: "2021/11/20"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    df_print: paged
+    highlight: haddock
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+---
+## Main
+In this code, we want to show the main difference between samples.
+
+### Prepare data
+```{r}
+library(MesKit)
+library(tidyverse)
+library(ComplexHeatmap)
+library(patchwork)
+library(ggpubr)
+library(ggrepel)
+
+
+sampABlist= readRDS("data/sampABlist.rds")
+
+data.type = "split" 
+
+#between regions.
+colorScale <- c("#3C5488FF", "#00A087FF", "#F39B7fFF",
+                "#8491B4FF","#E64B35FF","#4DBBD5FF",
+                "#E41A1C", "#377EB8", "#7F0000",
+                "#35978f", "#FC8D62", "#2166ac",
+                "#E78AC3", "#A6D854", "#FFD92F",
+                "#E5C494", "#8DD3C7", "#6E016B" ,
+                "#BEBADA", "#e08214", "#80B1D3",
+                "#d6604d", "#ffff99", "#FCCDE5",
+                "#FF6A5A", "#BC80BD", "#CCEBC5" ,
+                "#fb9a99", "#B6646A", "#9F994E", 
+                "#7570B3" , "#c51b7d" ,"#66A61E" ,
+                "#E6AB02" , "#003c30", "#666666")
+
+
+cols_samples = setNames(
+  colorScale[31:36],
+  nm = c("Breast","Coad","Lung","OveryLM","OveryRM","UterusM")
+)
+
+```
+
+### 1 Plot putative driver mutations
+
+Driver genes of CRC collected from [IntOGen] (https://www.intogen.org/search) (v.2020.2)
+
+
+```{r fig.height=6, fig.width=10}
+# Maf object with CCF information
+data.type = "split"
+maf <- readMaf(mafFile = sprintf( "MesKit/meskit.%s.mutation.txt", data.type),
+               ccfFile = sprintf("MesKit/meskit.%s.CCF.txt", data.type),
+               clinicalFile  = sprintf("MesKit/meskit.%s.clinical.txt", data.type),
+               refBuild = "hg19",
+               ccf.conf.level = 0.95
+               ) 
+
+driverGene = read.delim("data/IntOGen-Drivers-Cancer_Genes.tsv", header = T) %>%
+  filter(CANCER_TYPE %in% c("BRCA","COREAD","LUAD", "LUSC") ) %>%
+  pull(SYMBOL) %>% unique()
+
+
+driverGene = driverGene[!driverGene %in% c("BRCA1")]
+
+mut.class <- classifyMut(maf, class =  "SP", patient.id = 'Breast')
+head(mut.class)
+
+
+plotMutProfile(maf, class =  "SPCS", geneList = driverGene, use.tumorSampleLabel = TRUE, removeEmptyCols = FALSE)
+
+
+pdf("MesKit/MutProfile.pdf", width = 10, height = 6)
+
+plotMutProfile(maf, class =  "SPCS", geneList = driverGene, use.tumorSampleLabel = TRUE, removeEmptyCols = FALSE)
+
+dev.off()
+
+```
+
+
+### 2 Plot the total mutation numbers
+
+
+```{r fig.height=4, fig.width=10}
+
+#Get the summary of each mutations.
+
+#get data
+maf_input = subMaf(maf, mafObj = FALSE, use.tumorSampleLabel = TRUE) 
+#get mutation classifications.
+maf_class = classifyMut(maf, patient.id = NULL, class = "SPCS", classByTumor = FALSE)
+
+
+maf_merge = list()
+
+for(i in names(maf_input) ){
+  message(i)
+  maf_merge[[i]] = maf_input[[i]] %>%
+    mutate(Mut_ID = str_c(Hugo_Symbol, Chromosome, Start_Position, Reference_Allele, Tumor_Seq_Allele2, sep = ":" ) ) %>%
+    left_join(
+      maf_class[[i]]
+    ) %>%
+    dplyr::select(
+      Hugo_Symbol, Chromosome, Start_Position, End_Position, Reference_Allele, Tumor_Seq_Allele2, Tumor_Sample_Barcode, Mutation_Type, Patient_ID, Tumor_ID, Variant_Classification, VAF  
+    )
+    
+}
+
+
+maf_merge <- purrr::reduce(maf_merge, rbind)
+
+cols_types = setNames(c("#00A087FF", "#3C5488FF", "#8491B4FF", "#F39B7FFF", "#E64B35FF", "#4DBBD5FF")
+, nm = c("Public_Clonal","Public_Subclonal","Shared_Clonal","Shared_Subclonal","Private_Clonal","Private_Subclonal") )
+
+p1 = maf_merge %>%
+    mutate(Mutation_Type = factor(Mutation_Type, levels = names(cols_types) ) ) %>%
+    ggplot() + theme_classic() +
+    geom_bar(aes(x = Tumor_Sample_Barcode , fill = Mutation_Type) ) +
+    facet_grid( ~ Patient_ID, scales = "free_x", space = "free_x"  ) +
+    scale_fill_manual(
+      values = cols_types
+    ) +
+    labs(y = "Mutation Counts") +
+    theme(
+      axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, size = 14, hjust = 0.5)
+    )
+
+p1
+
+
+pdf("MesKit/MutNumber.pdf", width = 10, height = 4)
+p1
+dev.off()
+
+
+
+#Proportion of driver mutations across different groups.
+
+mutation_group = data.frame(
+  Mutation_Type = c("Public_Clonal","Public_Subclonal","Shared_Clonal","Shared_Subclonal","Private_Clonal","Private_Subclonal"),
+  Type = c("Shared_Clonal",NA,"Shared_Clonal",NA,"Private_Clonal","Private_Subclonal")
+)
+
+maf_merge1 = maf_merge %>%
+  mutate(
+    is.driver = ifelse( (Hugo_Symbol %in% driverGene) & ( !Variant_Classification %in% c("Silent", "3'Flank", "IGR", "Intron", "RNA") ) , TRUE, FALSE)
+  ) %>%
+  left_join(mutation_group) %>%
+  filter(!is.na(Type))
+
+
+
+
+```
+
+
+### 3 Measurement of the neutral evolution test
+
+```{r fig.height=3.5, fig.width=5, message=FALSE, warning=FALSE}
+library(neutralitytestr)
+
+#tt = neutralitytest(VAFselection)
+#plot_all(tt)
+
+neutral = maf_merge %>% 
+  #filter(!Mutation_Type %in% c("Public_Clonal") ) %>%
+  group_by(Tumor_Sample_Barcode) %>%
+  summarise(
+    num = sum(VAF >= 0.1),
+    R2 = as.numeric(neutralitytestr::neutralitytest(VAF, fmin = 0.1, fmax = 0.22  )$rsq[1]), 
+    R2_pval = as.numeric( neutralitytestr::neutralitytest(VAF, fmin = 0.1, fmax = 0.22)$rsq[2])
+  ) %>%
+  mutate(
+    Patient_ID = mapply(function(x) x[1],  str_split(Tumor_Sample_Barcode, "_") )
+  )
+
+p1 = neutral %>%
+  ggplot(aes(x = Patient_ID, y = R2, col = Patient_ID, shape = Patient_ID) ) + 
+  ggpubr::theme_classic2() +
+  geom_violin() +
+  geom_jitter(width = 0.2, size = 2) +
+  labs(x = NULL, y = latex2exp::TeX("$R^{2}$")    ) +
+  scale_color_manual( values = cols_samples ) +
+  geom_hline( yintercept = 0.98, linetype = 2, size = 1) +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(hjust = 1, angle = 45)
+  )
+
+p1
+
+pdf("MesKit/NeutralTest.pdf", width = 5, height = 3.5)
+p1
+dev.off()
+
+
+```
+
+
+### 4 Measurement of intra-tumor heterogeneity
+
+```{r}
+
+#within tumors.
+scores = mathScore(maf, min.vaf = 0.05) %>%
+  purrr::reduce(rbind)
+
+p1 = scores %>%
+  ggplot(aes(x = Patient_ID, y = MATH_Score, col = Patient_ID, shape = Patient_ID) ) + theme_classic2() +
+  geom_violin() +
+  geom_jitter(width = 0.2, size = 2) +
+  labs(x = NULL, y = "MATH scores"  ) +
+  scale_color_manual( values = cols_samples ) +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(hjust = 1, angle = 45)
+  )
+
+pdf("MesKit/ITH.MATHscores.pdf", width = 5, height = 3.5)
+p1
+dev.off()
+
+
+scores.ccfs = ccfAUC(maf, use.tumorSampleLabel = TRUE, min.ccf = 0.1)
+
+scores.ccfs = lapply(scores.ccfs, function(x) x$AUC.value ) %>%
+  purrr::reduce(rbind)
+
+p1 =  scores.ccfs %>%
+  ggplot(aes(x = Patient_ID, y = AUC, col = Patient_ID, shape = Patient_ID) ) + theme_classic2() +
+  geom_violin() +
+  geom_jitter(width = 0.2, size = 2) +
+  labs(x = NULL, y = "AUC (ccf)"  ) +
+  scale_color_manual( values = cols_samples ) +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(hjust = 1, angle = 45)
+  )
+
+p1
+
+pdf("MesKit/ITH.AUCccf.pdf", width = 5, height = 3.5)
+p1
+dev.off()
+
+
+```
+
+### 5 Between Regions different, Fst and Nei's distance
+
+
+```{r}
+library(ggpubr)
+library(rstatix)
+
+scores.Fst = calFst(maf, plot = TRUE, use.tumorSampleLabel = TRUE, 
+       withinTumor  = FALSE, number.cex = 10)
+
+Fst.data = list()
+
+for(i in names(scores.Fst) ){
+  Fst = scores.Fst[[i]]$Fst.pair
+  Fst = Fst[lower.tri(Fst)]
+  
+  Fst.data[[i]] = data.frame(
+    Fst = Fst,
+    tumor = i
+  )
+}
+
+Fst.data = purrr::reduce(Fst.data, rbind)
+
+#statistical test
+
+stat.test = Fst.data %>%
+  wilcox_test(Fst ~  tumor) %>%
+  add_significance("p") %>%
+  add_xy_position(fun ="mean") %>%
+  dplyr::filter(group1 == "Coad" & group2 != "Lung") 
+
+p1 = Fst.data %>%
+  ggplot(aes(x = tumor, y = Fst) ) + theme_classic2() +
+  geom_boxplot(aes(col = tumor, shape = tumor), width = 0.6 ) +
+  geom_jitter(aes(col = tumor, shape = tumor),
+              width = 0.1, size = 2) +
+  labs(x = NULL, y = "Fst"  ) +
+  scale_color_manual( values = cols_samples ) +
+  stat_pvalue_manual(stat.test, label = "p.signif") +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(hjust = 1, angle = 45)
+  )
+p1
+
+
+pdf("MesKit/ITH.Fst-1.pdf", width = 7, height = 5.2)
+p1
+dev.off()
+
+##Nei's distance.
+
+scores.Nei = calNeiDist(maf, plot = TRUE, use.tumorSampleLabel = TRUE, 
+                    withinTumor  = FALSE, number.cex = 10)
+
+Nei.data = list()
+
+for(i in names(scores.Nei) ){
+  Nei = scores.Nei[[i]]$Nei.dist
+  Nei = Nei[lower.tri(Nei)]
+  
+  Nei.data[[i]] = data.frame(
+    Nei = Nei,
+    tumor = i
+  )
+}
+
+Nei.data = purrr::reduce(Nei.data, rbind)
+
+p1 = Nei.data %>%
+  ggplot(aes(x = tumor, y = Nei, col = tumor, shape = tumor) ) + theme_classic2() +
+  geom_violin() +
+  geom_jitter(width = 0.2, size = 2) +
+  labs(x = NULL, y = "Nei's distance"  ) +
+  scale_color_manual( values = cols_samples ) +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(hjust = 1, angle = 45)
+  )
+
+p1
+
+pdf("MesKit/ITH.Nei.distance.pdf", width = 5, height = 3.5)
+p1
+dev.off()
+
+
+```
+
+### 6  Metastatic routes inference
+
+
+
+```{r}
+
+# retains samples from COAD
+
+# Maf object with CCF information
+data.type = "split1"
+maf <- readMaf(mafFile = sprintf( "MesKit/meskit.%s.mutation.txt", data.type),
+               ccfFile = sprintf("MesKit/meskit.%s.CCF.txt", data.type),
+               clinicalFile  = sprintf("MesKit/meskit.%s.clinical.txt", data.type),
+               refBuild = "hg19",
+               ccf.conf.level = 0.95
+) 
+
+
+JSI.res <- calJSI(maf, patient.id = 'Met1', pairByTumor = TRUE, min.ccf = 0.02, 
+                  use.adjVAF = TRUE, use.indel = FALSE, use.tumorSampleLabel = TRUE)
+names(JSI.res)
+
+
+ccf.list <- compareCCF(maf, patient.id = 'Met1', pairByTumor = TRUE, min.ccf = 0.02,
+                       use.adjVAF = TRUE, use.indel = FALSE)
+
+```
+
+References: Quantitative evidence for early metastatic seeding in colorectal cancer
+
+Calculate the H(Lm and Lp) index for the early or layer divergence.
+
+```{r fig.height=4, fig.width=8.8}
+# calHindex
+#' @param PrimaryId Primary tumor IDs to indicate the primary-metastases relationships.
+#' @param CCF_cutoff The minimal cutoffs for the present status.
+
+
+calHindex = function(ccf.list , JSI.res, maf_merge1, PrimaryId = "Coad", CCF_cutoff = 0.25 ){
+  
+  plist = list()
+  
+  sample.pairs = names(ccf.list)[grepl(PrimaryId , names(ccf.list))]
+  
+  stats = list()
+  
+  
+  for(i in sample.pairs ){
+    
+    nums = c()
+    
+    message(i)
+    
+    pairs = as.character( str_split(i, "-", simplify = T))
+    
+    JSI = JSI.res$JSI.pair[pairs[1],pairs[2]]
+    
+    #merge driver info
+    Met1_C_OL = ccf.list[[i]] %>%
+      left_join( maf_merge1 %>% 
+                   mutate(Mut_ID = str_c(Chromosome, Start_Position, Reference_Allele , Tumor_Seq_Allele2, sep = ":") ) %>%
+                   dplyr::select(Mut_ID, is.driver) %>%
+                   unique.data.frame()
+      ) 
+    
+    Met1_group = Met1_C_OL %>%
+      dplyr::select( all_of(c(PrimaryId, pairs[!pairs %in% PrimaryId ]))) %>%
+      setNames(nm = c("Primary","Metastases")) %>%
+      #Set Lp and Lm  
+      mutate(
+          mut_group = ifelse(Primary>=CCF_cutoff & Metastases<CCF_cutoff, "Lp",
+                             ifelse(Metastases >= CCF_cutoff & Primary<CCF_cutoff, "Lm",
+                                    ifelse(Primary>=CCF_cutoff & Metastases >= CCF_cutoff, "La", "Ls")
+                                    ) )) %>%
+      mutate(
+        S1 = ifelse(mut_group == "Lp" &  Primary >=0.1, 1, 0 ),
+        S2 = ifelse(mut_group == "Lp" &  Primary >=0.2, 1, 0 ),
+        S3 = ifelse(mut_group == "Lp" &  Primary >=0.4, 1, 0 ),
+        S4 = ifelse(mut_group == "Lp" &  Primary >=0.6, 1, 0 ),
+        S5 = ifelse(mut_group == "Lm" &  Metastases >=0.1, 1, 0 ),
+        S6 = ifelse(mut_group == "Lm" &  Metastases >=0.2, 1, 0 ),
+        S7 = ifelse(mut_group == "Lm" &  Metastases >=0.4, 1, 0 ),
+        S8 = ifelse(mut_group == "Lm" &  Metastases >=0.6, 1, 0 ),
+        S9 = ifelse( Metastases >0.6 & Primary <0.6 &  Primary> CCF_cutoff , 1, 0 )
+      )
+    
+     nums[1] = sum(Met1_group$mut_group == "Lp")
+     nums[2] = sum(Met1_group$mut_group == "Lm")
+     nums[3] = sum(Met1_group$mut_group == "La")
+     nums[4] = sum(Met1_group$mut_group == "Ls")
+     
+     nums = setNames(nums, c("Lp","Lm","La","Ls") )
+     
+     nums = c(nums,
+              Met1_group %>%
+       dplyr::select(all_of( paste0("S",1:9) ) ) %>%
+       colSums())
+       
+     stats[[i]] = nums
+     
+     
+     plist[[i]] =  Met1_C_OL %>%
+       ggplot(aes_string(x = pairs[1] , y = pairs[2]) ) + theme_classic2() +
+       stat_density2d(aes(fill = ..density..^2), geom = "tile", contour = FALSE, n = 100) +
+       scale_fill_continuous(low = "white", high = "red") +
+       geom_hline(yintercept = CCF_cutoff, linetype = 2, size = 0.5) +
+       geom_vline(xintercept = CCF_cutoff, linetype = 2, size = 0.5) +
+       geom_point(alpha = 0.5) +
+       #geom_point(col = "blue", data = Met1_C_OL %>% filter(is.driver), size = 3, shape = 5 ) +
+       #geom_label_repel(aes(label = Hugo_Symbol), data = Met1_C_OL %>% filter(is.driver),
+       #                  nudge_x = 0.1, nudge_y = 0.1
+       #) +
+       labs(title = sprintf("JSI = %.3f\nH = %.3f", JSI, nums[2]/nums[1])  ) +
+       theme(
+         legend.position = "none",
+         plot.title = element_text(hjust = 0.5)
+       )
+     
+     
+  }
+  
+  return( list(plist = plist,
+          stats = stats
+          )
+  )
+  
+}
+
+
+
+Hindex =  calHindex(ccf.list = ccf.list$Met1, JSI.res,  maf_merge1, 
+                    PrimaryId = "Coad",
+                    CCF_cutoff = 0.2 )
+
+wrap_plots(Hindex$plist) + plot_layout(nrow = 1)
+
+pdf("MesKit/JSI.Met1.Paired-2.pdf", width = 8*1.1, height = 3.5*1.1)
+
+wrap_plots(Hindex$plist) + plot_layout(nrow = 1)
+
+dev.off()
+
+
+stats = Hindex$stats %>%
+  purrr::reduce(rbind) %>%
+  as.data.frame() %>%
+  mutate(Tumor = names(Hindex$stats)) 
+
+# inference the parameters of u and Nd
+# see https://github.com/cancersysbio/SCIMET for parameter estimation.
+
+write.table(stats,
+            file = "MesKit/CRC.summary_statistics.txt",
+            row.names = F, quote = F, sep = "\t"
+            )
+
+```
+
+
