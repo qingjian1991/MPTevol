@@ -3,10 +3,63 @@
 # Auxiliary functions #
 #######################
 
-plot.tree = function( output, mutdata, vaf.col.names, sample.groups = NULL, 
-                      founding.cluster = 1, ignore.clusters = NULL, cluster.col.name = "cluster", 
+
+#Write a common methods to filtering mafs.
+maf.filter = function(maf, popvaf = 0.001, t_vaf = 0.01, DP = 10, NV = 2, mappability = 0.75,  Blacklisted = TRUE ){
+  
+  message( sprintf("Parmas are: popvaf %s, t_vaf %s, DP %s, NV %s, mappability %s, Blacklisted %s", popvaf, t_vaf, DP, NV, mappability, Blacklisted ) )
+  
+  maf.filter = maf %>%
+    mutate(ALL.sites.2015_08_edit = as.numeric(ALL.sites.2015_08_edit) ,
+           esp6500siv2_all = as.numeric(esp6500siv2_all),
+           ExAC_ALL = as.numeric(ExAC_ALL),
+      ALL.sites.2015_08_edit = ifelse(is.na(ALL.sites.2015_08_edit), 0, ALL.sites.2015_08_edit),
+           esp6500siv2_all = ifelse(is.na(esp6500siv2_all), 0, esp6500siv2_all),
+           ExAC_ALL = ifelse(is.na(ExAC_ALL), 0, ExAC_ALL)
+           
+    ) %>%
+    filter(ALL.sites.2015_08_edit <= popvaf & esp6500siv2_all <= popvaf & ExAC_ALL <= popvaf ) 
+  
+  message( sprintf("The input mutations is %s, the mutations after population filtering is %s", nrow(maf), nrow(maf.filter) ))
+
+  maf.filter = maf.filter %>%
+    filter(VAF >=t_vaf) %>%
+    filter(Ref_allele_depth + Alt_allele_depth >=DP) %>%
+    filter(Alt_allele_depth >= NV )
+  
+  message( sprintf("The input mutations is %s, the mutations after vaf filtering is %s", nrow(maf), nrow(maf.filter) ))
+  
+  
+  if( "mappability" %in% colnames(maf) ){
+    maf.filter = maf.filter %>% filter(mappability >= mappability & Blacklisted == 0)
+  }
+  
+  message( sprintf("The input mutations is %s, the mutations after mappablityfiltering is %s", nrow(maf), nrow(maf.filter) ))
+  
+  maf.filter
+}
+
+
+#plot phylogenetic trees
+plt.phy = function(maf= maf, patient.id = patient.id, method = "NJ", min.vaf = 0.02){
+  
+  Tree <- getPhyloTree(maf = maf, patient.id = patient.id, method = method, min.vaf = min.vaf)
+  heatmapbinary <- mutHeatmap(maf, use.ccf = FALSE,
+                              patient.id = patient.id, min.vaf = min.vaf)
+  phylotree = plotPhyloTree(Tree)
+  cowplot::plot_grid(phylotree, heatmapbinary,
+                     nrow = 1, rel_widths = c(1, 1.3))
+}
+
+
+#Plot trees from clonevol
+plot.tree = function( output, mutdata, vaf.col.names = NULL, ccf.col.names =NULL ,sample.groups = NULL, 
+                      founding.cluster = 1, ignore.clusters = NULL, cluster.col.name = "cluster",
+                      consensus.tree = TRUE,
+                      plt.models = TRUE, #plot.clonal.models 
                       weighted = FALSE, depth.col.names = NULL, plt.pairwise = F,
-                      subclonal.test.model = "non-parametric", sum.p = 0.05, alpha = 0.05,
+                      subclonal.test.model = "non-parametric", cancer.initiation.model = "monoclonal",
+                      sum.p = 0.05, alpha = 0.05,
                       highlight.note.col.name = "gene", highlight = "is.driver", highlight.CCF = FALSE ){
   
   if(plt.pairwise == TRUE){
@@ -18,13 +71,14 @@ plot.tree = function( output, mutdata, vaf.col.names, sample.groups = NULL,
                   yMaxSmall = 100, xMaxSmall = 120,
                   colors = clone.colors)
   }
+  message("infer.clonal.models")
   
   y.B = infer.clonal.models(variants = mutdata,
                             cluster.col.name = cluster.col.name,
-                            #ccf.col.names	= vaf.col.names,
+                            ccf.col.names	= ccf.col.names,
                             vaf.col.names	= vaf.col.names, 
                             sample.groups = sample.groups,
-                            cancer.initiation.model= "monoclonal",
+                            cancer.initiation.model= cancer.initiation.model,
                             subclonal.test = "bootstrap",
                             subclonal.test.model = subclonal.test.model,
                             num.boots = 1000,
@@ -40,83 +94,89 @@ plot.tree = function( output, mutdata, vaf.col.names, sample.groups = NULL,
                             sum.p = sum.p,
                             # alpha level in confidence interval estimate for CCF(clone)
                             alpha = alpha)
-
-  #Converting node-based trees to branch-based trees
-  y.B <- convert.consensus.tree.clone.to.branch(y.B ,  cluster.col = cluster.col.name, branch.scale = "sqrt")
   
+  if(consensus.tree ){
+    message("convert.consensus.tree.clone.to.branch")
+    #Converting node-based trees to branch-based trees
+    y.B <- convert.consensus.tree.clone.to.branch(y.B ,  cluster.col = cluster.col.name, branch.scale = "sqrt")
+    
+  }
   
-  plot.clonal.models(y.B,
-                     # box plot parameters
-                     box.plot = TRUE,
-                     fancy.boxplot = TRUE,
-                     fancy.variant.boxplot.highlight = "is.driver",
-                     fancy.variant.boxplot.highlight.size = 2.5,
-                     fancy.variant.boxplot.highlight.shape = 21,
-                     fancy.variant.boxplot.highlight.color = "blue",
-                     fancy.variant.boxplot.highlight.fill.color = "green",
-                     fancy.variant.boxplot.highlight.note.col.name = highlight.note.col.name,
-                     fancy.variant.boxplot.highlight.note.color = "blue",
-                     fancy.variant.boxplot.highlight.note.size = 2,
-                     fancy.variant.boxplot.jitter.alpha = 1,
-                     fancy.variant.boxplot.jitter.center.color = "grey50",
-                     fancy.variant.boxplot.base_size = 12,
-                     fancy.variant.boxplot.plot.margin = 1,
-                     fancy.variant.boxplot.vaf.suffix = ".VAF",
-                     fancy.variant.boxplot.founding.cluster = founding.cluster,
-                     fancy.variant.boxplot.ccf = highlight.CCF,
-                     
-                     # bell plot parameters
-                     clone.shape = "bell",
-                     bell.event = TRUE,
-                     bell.event.label.color = "blue",
-                     bell.event.label.angle = 60,
-                     clone.time.step.scale = 1,
-                     bell.curve.step = 2,
-                     # node-based consensus tree parameters
-                     merged.tree.plot = TRUE,
-                     tree.node.label.split.character = NULL,
-                     tree.node.shape = "circle",
-                     tree.node.size = 30,
-                     tree.node.text.size = 0.5,
-                     merged.tree.node.size.scale = 1.25,
-                     merged.tree.node.text.size.scale = 2.5,
-                     merged.tree.cell.frac.ci = FALSE,
-                     # branch-based consensus tree parameters
-                     merged.tree.clone.as.branch = TRUE,
-                     mtcab.event.sep.char = ",",
-                     mtcab.branch.text.size = 1,
-                     mtcab.branch.width = 0.3,
-                     mtcab.node.size = 3,
-                     mtcab.node.label.size = 1,
-                     mtcab.node.text.size = 1.5,
-                     # cellular population parameters
-                     cell.plot = TRUE,
-                     num.cells = 100,
-                     cell.border.size = 0.25,
-                     cell.border.color = "black",
-                     clone.grouping = "horizontal",
-                     
-                     #meta-parameters
-                     scale.monoclonal.cell.frac = TRUE,
-                     show.score = FALSE,
-                     cell.frac.ci = TRUE,
-                     disable.cell.frac = FALSE,
-                     # output figure parameters
-                     out.dir = sprintf("%s", output),
-                     out.format = "pdf",
-                     overwrite.output = TRUE,
-                     width = 15,
-                     #height = 4,
-                     # vector of width scales for each panel from left to right
-                     panel.widths = c(3,4,2,4,4))
-  
-  
-  pdf(file = sprintf("%s/%s.trees.pdf", output, output), width = 6, height = 6)
-  plot.all.trees.clone.as.branch(y.B, branch.width = 0.5,
-                                 node.size = 2, node.label.size = 0.5,
-                                 tree.rotation	=180
-                                 )
-  dev.off()
+  if(plt.models){
+    message("plot.clonal.models")
+    plot.clonal.models(y.B,
+                       # box plot parameters
+                       box.plot = TRUE,
+                       fancy.boxplot = TRUE,
+                       fancy.variant.boxplot.highlight = "is.driver",
+                       fancy.variant.boxplot.highlight.size = 2.5,
+                       fancy.variant.boxplot.highlight.shape = 21,
+                       fancy.variant.boxplot.highlight.color = "blue",
+                       fancy.variant.boxplot.highlight.fill.color = "green",
+                       fancy.variant.boxplot.highlight.note.col.name = highlight.note.col.name,
+                       fancy.variant.boxplot.highlight.note.color = "blue",
+                       fancy.variant.boxplot.highlight.note.size = 2,
+                       fancy.variant.boxplot.jitter.alpha = 1,
+                       fancy.variant.boxplot.jitter.center.color = "grey50",
+                       fancy.variant.boxplot.base_size = 12,
+                       fancy.variant.boxplot.plot.margin = 1,
+                       fancy.variant.boxplot.vaf.suffix = ".VAF",
+                       fancy.variant.boxplot.founding.cluster = founding.cluster,
+                       fancy.variant.boxplot.ccf = highlight.CCF,
+                       
+                       # bell plot parameters
+                       clone.shape = "bell",
+                       bell.event = TRUE,
+                       bell.event.label.color = "blue",
+                       bell.event.label.angle = 60,
+                       clone.time.step.scale = 1,
+                       bell.curve.step = 2,
+                       # node-based consensus tree parameters
+                       merged.tree.plot = TRUE,
+                       tree.node.label.split.character = NULL,
+                       tree.node.shape = "circle",
+                       tree.node.size = 30,
+                       tree.node.text.size = 0.5,
+                       merged.tree.node.size.scale = 1.25,
+                       merged.tree.node.text.size.scale = 2.5,
+                       merged.tree.cell.frac.ci = FALSE,
+                       # branch-based consensus tree parameters
+                       merged.tree.clone.as.branch = TRUE,
+                       mtcab.event.sep.char = ",",
+                       mtcab.branch.text.size = 1,
+                       mtcab.branch.width = 0.3,
+                       mtcab.node.size = 3,
+                       mtcab.node.label.size = 1,
+                       mtcab.node.text.size = 1.5,
+                       # cellular population parameters
+                       cell.plot = TRUE,
+                       num.cells = 100,
+                       cell.border.size = 0.25,
+                       cell.border.color = "black",
+                       clone.grouping = "horizontal",
+                       
+                       #meta-parameters
+                       scale.monoclonal.cell.frac = TRUE,
+                       show.score = FALSE,
+                       cell.frac.ci = TRUE,
+                       disable.cell.frac = FALSE,
+                       # output figure parameters
+                       out.dir = sprintf("%s", output),
+                       out.format = "pdf",
+                       overwrite.output = TRUE,
+                       width = 15,
+                       #height = 4,
+                       # vector of width scales for each panel from left to right
+                       panel.widths = c(3,4,2,4,4))
+    
+    
+    pdf(file = sprintf("%s/%s.trees.pdf", output, output), width = 6, height = 6)
+    plot.all.trees.clone.as.branch(y.B, branch.width = 0.5,
+                                   node.size = 2, node.label.size = 0.5,
+                                   tree.rotation	=180
+    )
+    dev.off()
+  }
   
   return(y.B)
 }
@@ -124,7 +184,7 @@ plot.tree = function( output, mutdata, vaf.col.names, sample.groups = NULL,
 
 
 #########################################################################################
-##test condes
+##test codes
 if(FALSE){
 
 vaf.col.names = vaf.col.names.sub[c(4,7)]
@@ -294,6 +354,7 @@ plot_calls = function(CNAqc_objects){
             ncol = 2)
 }
 
+
 # Run MOBSTER on a list of samples, using mutation data
 fit_mobsters = function(mutations, samples){
   # Set the seed
@@ -330,8 +391,9 @@ fit_mobsters = function(mutations, samples){
   return(mobster_fits)
 }
 
+
 # Get ids for tail mutations
-get_nontail_mutations = function(mutations, mobster_fits, filter = "any"){
+get_nontail_mutations = function(mutations, mobster_fits, filter = "all"){
   # Clusters, retain non-tail mutations
   non_tail_mutations = lapply(names(mobster_fits),
                               function(x)
@@ -345,19 +407,28 @@ get_nontail_mutations = function(mutations, mobster_fits, filter = "any"){
     select(starts_with('chr'))
   
   # Use the mutation id
+  
+  #filtering is any or all.
+  #any: when mutations are labeled by "Tail" in any of samples, then remove this mutations.
+  #all: When mutations are labled by "Tail" in all samples, then remove this mutations.
+  
   ids = colnames(non_tail_mutations)
   if(filter == "any"){
-    message("Filtering is ", filter)
-    ids_left = ids[apply(non_tail_mutations, 2, function(x) all(x != 'Tail', na.rm = T))]
+    message("Filtering is ", filter, ", soft filtering")
+    ids_left = ids[apply(non_tail_mutations, 2, function(x) { x[is.na(x)] = "C" ;  all(x != 'Tail', na.rm = T)} )  ]
   }else{
-    message("Filtering is ", filter)
-    ids_left = ids[apply(non_tail_mutations, 2, function(x) !(all(x == 'Tail', na.rm = T)))]
+    message("Filtering is ", filter, ", hard filtering")
+    ids_left = ids[apply(non_tail_mutations, 2, function(x) { x[is.na(x)] = "C"; !(all(x == 'Tail', na.rm = T))} ) ]
   }
+  
+  message( sprintf( "The input mutations is %s, the mutations after tails filtering is %s", ncol(non_tail_mutations), length(ids_left) ))
   
   mutations %>%
     mutate(id = paste(chr, from, to, ref, alt, sep = ':')) %>%
-    filter(id %in% ids)
+    filter(id %in% ids_left)
 }
+
+
 
 # Return a set of colors for VIBER clusters, using the wesanderson palettes
 get_cluster_colors = function(viber_fit, W = 'M')

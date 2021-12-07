@@ -1,23 +1,27 @@
+---
+title: "Inferring Clonal Structures by Clonevol based on CCF of mutations"
+author: "Qingjian Chen"
+date: "2021/11/20"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    df_print: paged
+    highlight: haddock
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+---
+## Main
+Inferring the clonal structures by the Clonevol (https://github.com/hdng/clonevol).
 
-#Analysis CCF_estimated and using Clonevol to analysis the data.
+## Prepare data
+```{r}
 
 library(clonevol)
 library(ggrepel)
 library(tidyverse)
-
-#Using CCF
-#mutdata is in CCF_plot.
-
-#> head(mutdata, 2)
-#mutid Breast_1 Breast_2 Breast_3 Breast_4 Breast_5 Coad_1 Coad_2 Coad_3 Coad_4 Coad_5 Lung_1 Lung_2
-#1 chr10:87898775:C        0        0        0     0.00        0      0      1      1   0.73   1.00      0   0.14
-#2 chr12:56492633:A        0        0        0     0.19        0      0      1      1   1.00   0.84      0   0.00
-#Lung_3 Lung_4 Lung_5 OveryLM_1 OveryLM_2 OveryLM_3 OveryLM_4 OveryLM_5 OveryRM_1 OveryRM_2 OveryRM_3 OveryRM_4
-#1      0      0   0.31         1         1         1         1         1         1      0.38         1         1
-#2      0      0   0.00         1         1         1         1         1         1      1.00         1         1
-#OveryRM_5 OveryRM_6 UterusM_1 UterusM_2 UterusM_3 UterusM_4 UterusM_5 UterusM_6 UterusM_7 sciClone kmeans
-#1      0.58      0.44      0.87      0.25      1.00         0         0         0         0        1      2
-#2      1.00      1.00      0.99      0.00      0.45         0         0         0         0        1      2
 
 mutdata.vaf1 = readRDS("data/mutdata.vaf1.rds")
 new.label = readRDS(file = "data/new.label.rds")
@@ -37,8 +41,13 @@ set.colors = c("#C6C6C6", "#6FDCBF","#5AA36E","#E99692","#B4D985","#EA7D23","#E5
 clone.colors = set.colors[ 1:length(unique(mutdata$cluster))]
 cluster.col.name  = "cluster"
 
+head(mutdata)
+```
 
-##########################################################Driver mutations
+Labeling the driver mutations.
+
+```{r}
+
 #Stomach drivers
 
 GC01 = readRDS("data/GC01.rds")
@@ -83,13 +92,21 @@ colnames(ref.data) = paste0(colnames(ref.data), ".ref")
 mutdata = cbind(mutdata, var.data, ref.data)
 
 
-############################################################################################################################
+```
+
+## The clonevol infers the clonal history
+
+### Visualzied the mutation clusters
+
+(1) Plot the mutations in each cluster and each samples.
+
+```{r fig.height=5, fig.width=36, warning=FALSE}
 
 message("<2> Analysis using clonevol")
 
-output = "Met2"
+output = "Met2" #Output folder names
 
-saveRDS(mutinfo, file = sprintf("%s/%s.mutinfo.rds", output))
+#saveRDS(mutinfo, file = sprintf("%s/%s.mutinfo.rds", output))
 
 sampleNames = c( paste0("Coad_", 1:5), paste0("OveryLM_", 1:5), 
                  paste0("OveryRM_", 1:6),paste0("UterusM_", c(1, 3)) )
@@ -98,9 +115,6 @@ sampleNames = c( paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
 vaf.col.names = sampleNames
 
 show.ccf = F
-
-mutdata
-
 
 pp <- plot.variant.clusters(mutdata,  
                             show.cluster.size = F,
@@ -176,7 +190,7 @@ if(any(mutdata$is.driver) ){
     ) +
     ylim(0,  length(clone.colors) +1 ) +
     xlim(1, 0.8) +
-    scale_color_manual( values= clone.colors.sel, guide=FALSE) +
+    scale_color_manual( values= clone.colors.sel, guide="none") +
     theme(
       axis.line  = element_blank(),
       axis.ticks = element_blank(),
@@ -194,10 +208,14 @@ pdf( sprintf( "%s/%s.box.pdf", output, output), width = 2*length(pp), height = 4
 ggpubr::ggarrange(plotlist = pp, ncol = length(pp), align  = "h" )
 dev.off()
 
-#Plotting mean/median of clusters across samples (cluster flow)
-pdf( sprintf( "%s/%s.flow.pdf", output, output) , width=8, height=5 )
+ggpubr::ggarrange(plotlist = pp, ncol = length(pp), align  = "h" )
 
-plot.cluster.flow(mutdata,
+```
+
+(2) Plotting mean/median of clusters across samples (cluster flow)
+
+```{r fig.height=7.5, fig.width=11, warning=FALSE}
+p1 = plot.cluster.flow(mutdata,
                   cluster.col.name = cluster.col.name,
                   vaf.col.names = vaf.col.names,
                   sample.names =vaf.col.names,
@@ -206,39 +224,28 @@ plot.cluster.flow(mutdata,
 ) +
   theme(axis.text.x = element_text(angle = 90) )
 
+pdf( sprintf( "%s/%s.flow.pdf", output, output) , width=8, height=5 )
+p1
 dev.off()
 
-#PLot Pairs
+p1
 
-#plot.pairwise(mutdata, col.names = vaf.col.names,
-#              group.col.name = cluster.col.name,
-#              onePage = FALSE,
-#              multiPages = TRUE,
-#              out.prefix = sprintf("%s.pair", output),
-#              yMaxSmall = 100, xMaxSmall = 110,
-#              colors = clone.colors)
+```
 
 
-##(4.2) Clonal Structure inference and visualization
+###  Clonal Structure inference and visualization
+
+This script first infers the clonal orders in each sample by the pigeonhole principle. Then get the consensus trees across samples. Upon the built clonal trees, the scripts plot the clonal evolutionary history in each sample, the whole clonal structures for each sample, and the inferred clonal trees in the tumor.
+
+```{R warning=FALSE}
 
 source("data/auxiliary_functions.R")
 
+# Inferring the main structures of mutation clusters
 sample.groups = mapply(function(x) x[1], strsplit(vaf.col.names, "_")  )
 names(sample.groups) = vaf.col.names
 
-
-# Note:
-# we modify the frequency of C1 in Coad_1(same with Coad_2) and C4 in OveryLM_3(same with Coad_5), thus all cluster and samples are included in the finial results.
-
-#mutdata[mutdata$cluster == "4", "OveryLM_3"] = mutdata[mutdata$cluster == "4", "Coad_5"]
-#mutdata[mutdata$cluster == "1", "Coad_1"] = mutdata[mutdata$cluster == "1", "Coad_2"]
-
-
-
-#sel = c(2:5, 6:10, 11:13, 15, 16, 17, 18) 
 sel = c(1:18) 
-
-
 y = plot.tree( output  = output , mutdata = mutdata, 
                ccf.col.names = vaf.col.names[sel],
                sample.groups = sample.groups[sel],
@@ -253,6 +260,8 @@ y = plot.tree( output  = output , mutdata = mutdata,
 )
 
 
+#PLot the clonal trees.
+
 pdf(file = sprintf("%s/%s.trees.pdf", output, output), width = 6, height = 6)
 
 plot.all.trees.clone.as.branch(y, branch.width = 0.5,
@@ -262,6 +271,13 @@ plot.all.trees.clone.as.branch(y, branch.width = 0.5,
 )
 
 dev.off()
+
+plot.all.trees.clone.as.branch(y, branch.width = 0.5,
+                               node.size = 2, node.label.size = 0.5,
+                               tree.rotation	=180,
+                               angle = 20
+)
+
 
 
 plot.clonal.models(y,
@@ -315,16 +331,16 @@ plot.clonal.models(y,
 
 save(mutdata, clone.colors, cluster.col.name , output, sampleNames, y, sample.groups, file = sprintf("%s/clonevol.data.rda", output) )
 
+```
 
 
+### Merge multi-samples into a meta sample.
 
+Merge multiple samples into a single sample. This can be used to merge multiregional sequencing (MRS) into one sample that could represent whole tumors.
 
-## Merge multi samples into a meta sample
+Note: CCF should be in the range between 0-100
 
-#Merge multiple samples into a single sample. This can be used to merge multi-region samples to one sample representing the tumor where the regions are taken from
-
-#Note: CCF should be in the range between 0-100
-
+```{R warning=FALSE}
 #merge coad
 sel = 1:5
 y.merge = merge.samples(y, samples = vaf.col.names[sel], 
@@ -403,4 +419,7 @@ plot.clonal.models(y.merge,
 
 #merge MRS data into one.
 save(y.merge , file = sprintf("%s/%s.y.merge.rda", output, output))
+
+```
+
 

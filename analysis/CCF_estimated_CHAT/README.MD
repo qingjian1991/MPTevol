@@ -26,3 +26,5 @@ plot_trees.Rmd is intent to build samples trees from mutations, See online: http
 
 ### 4. The clonal orders and the clonal evolution history.
 **scripts**: CCF_clonevol.R
+CCF_clonevol.Rmd provides the visualizations, see online: https://rpubs.com/cqj_00/CCF_clonevol
+
