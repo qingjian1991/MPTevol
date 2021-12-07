@@ -10,7 +10,12 @@ output:
 
 ## Main
 
-We try to plot the CNAs trees from MEDICC by ggtree.
+We built the sample trees from the allele-specific copy number alterations (CNAs) by the MEDICC. The bootstrap values are estimated by the re-sampling CNAs distances. The built trees are visualized by ggtree.
+
+
+## Reference
+(1) ggtree https://github.com/YuLab-SMU/ggtree/
+(2) MEDICC http://markowetzlab.org/software/MEDICC.php
 
 
 ```{r}
@@ -99,9 +104,9 @@ Functions to get the bootstrap values
 
 medicc.resample.distance.matrices = function(D, niter=100) {
   result = list()
-  pb=txtProgressBar(min=0,max=niter,style=3)
+  #pb=txtProgressBar(min=0,max=niter,style=3)
   for (s in 1:niter) {
-    setTxtProgressBar(pb,s)
+    #setTxtProgressBar(pb,s)
     Dnew = as.matrix(D)
     for (i in 1:nrow(Dnew)) {
       for (j in 1:i) {
@@ -168,7 +173,7 @@ bootstrap.trees = function(dist, bootstrap.rep.num = 1000, title = "Cancer"){
 
 Get trees and using NJ to get the bootstraps.
 
-```{r}
+```{r fig.height=8, fig.width=8}
 phyloTree = bootstrap.trees(dist = "results/Pan/tree_final.dist",
                              title = "Three"
 )

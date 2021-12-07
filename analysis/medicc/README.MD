@@ -13,6 +13,8 @@ We use the ggtree to plot the tree structures from the results of MEDICC. It als
 
 As we provide the raw output of MEDICC, users can repeat the output.
 
+The visualized **medicc2ggtree.Rmd** is available online: https://rpubs.com/cqj_00/medicc2ggtree
+
 ## Reference:
 (1) Schwarz, R.F., et al., Phylogenetic quantification of intra-tumour heterogeneity. PLoS Comput Biol, 2014. 10(4): p. e1003535.
 
