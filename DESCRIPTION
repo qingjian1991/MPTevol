@@ -2,7 +2,7 @@ Package: MPTevol
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Qinjian", "Chen", , "xxx@email.com", role = c("aut", "cre"),
+    person("Qinjian", "Chen", , "chenqingjian2010@163.com", role = c("aut", "cre"),
            comment = c(ORCID = "xxx")),
     person("Shixiang", "Wang", , "w_shixiang@163.com", role = "aut",
            comment = c(ORCID = "0000-0001-9855-7357"))
@@ -19,3 +19,5 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxytest::testthat_roclet"))
 RoxygenNote: 7.1.2
+Depends: 
+    tidyverse

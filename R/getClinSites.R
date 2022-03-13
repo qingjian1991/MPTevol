@@ -1,0 +1,76 @@
+#' getClinSites
+#'
+#' We capture the clinical targetable sites of oncokb based on the mutation status.
+#'
+#'
+#' @param maf: maf data
+#' @param Patient_ID: Patient_ID. See specific patient.
+#'
+#' @details
+#'
+#' We match the drivers genes between maf files and clinical sites in oncokb. We only match the gene names, whereas ignoring the cancer types and gene alterations. The main targertable alterations include gene fusions (like BCR-ABL1 fusion), Oncogenic mutations, Exon deletions/insertion, Amplifications, Deletions and Singles-nucleotide mutation (BRAC V600E). Please mannual check the mutation status.
+#' @details
+#' Reference: oncokb.org
+#'
+#'
+#' @export
+#'
+
+getClinSites = function(maf,
+                        Patient_ID = NULL
+                        ){
+
+  #targets = read.table(system.file(package="MPTevol", "extdata", "oncokb_biomarker_drug_associations.tsv"), header = T, sep = "\t" )
+
+  message(
+    " We match the drivers genes between maf files and clinical sites in oncokb. We only match the gene names, whereas ignoring the cancer types and gene alterations. The main targertable alterations include gene fusions (like BCR-ABL1 fusion), Oncogenic mutations, Exon deletions/insertion, Amplifications, Deletions and Singles-nucleotide mutation (BRAC V600E). Please mannual check the mutation status.
+    Reference: oncokb.org
+          "
+    )
+
+  targets = read.table("inst/extdata/oncokb_biomarker_drug_associations.tsv", header = T, sep = "\t" )
+
+
+  findSites = function(tumor){
+
+    select.columns = c("Hugo_Symbol", "Chromosome", "Start_Position", "End_Position", "Variant_Classification", "Variant_Type", "Reference_Allele", "VAF", "Tumor_Sample_Barcode", "Tumor_ID",
+                       "Patient_ID", "Tumor_Sample_Label", "Tumor_Average_VAF"
+                       )
+
+    if("Protein_Change" %in% colnames(tumor@data)){
+      select.columns = c(select.columns, "Protein_Change")
+    }
+
+    if("Clonal_Status" %in% colnames(tumor@data)){
+      select.columns = c(select.columns, c("Clonal_Status", "Tumor_Average_CCF"))
+    }
+
+
+    tumor@data %>%
+      select(all_of(select.columns)) %>%
+      inner_join(
+        targets, by = c("Hugo_Symbol" = "Gene")
+      )
+
+  }
+
+  if(!is.null(Patient_ID)){
+    maf = maf[[Patient_ID]]
+  }
+
+  if(typeof(maf) == "list"){
+    Sites = findSites(maf)
+
+    DT::datatable(Sites)
+
+  }else{
+    Sites = lapply(maf, findSites)
+
+  }
+
+  Sites
+
+
+}
+
+

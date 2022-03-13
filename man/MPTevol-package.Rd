@@ -9,7 +9,7 @@
 What the package does (one paragraph).
 }
 \author{
-\strong{Maintainer}: Qinjian Chen \email{xxx@email.com} (\href{https://orcid.org/xxx}{ORCID})
+\strong{Maintainer}: Qinjian Chen \email{chenqingjian2010@163.com} (\href{https://orcid.org/xxx}{ORCID})
 
 Authors:
 \itemize{
