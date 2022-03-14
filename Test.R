@@ -91,10 +91,7 @@ maf_class = classifyMut(maf, patient.id = NULL, class = "SPCS", classByTumor = F
 
 ###################################################################
 
-
 readSegment
-
-
 
 library(CNAqc)
 
@@ -110,6 +107,18 @@ cnaqc.x = readCNAProfile(
   seg = cnvA,
   purity = 0.9
 )
+
+
+######################################################################
+
+
+phyloTree <- getPhyloTree(maf, patient.id = "Breast", method = "NJ", min.vaf = 0.02,
+                          bootstrap.rep.num = 1000)
+
+
+
+
+
 
 
 
