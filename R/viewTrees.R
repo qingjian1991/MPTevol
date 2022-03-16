@@ -33,10 +33,8 @@
 #' plotCNAtree(dist = dist, grp = grp)
 #'
 #'
-#'
 #' @return a ggtree object
 #' @export
-#'
 
 viewTrees = function(phyloTree,
                      tree.format = "S4",
