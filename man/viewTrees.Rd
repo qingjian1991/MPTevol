@@ -9,6 +9,7 @@ viewTrees(
   tree.format = "S4",
   normal.node = "NORMAL",
   group = NULL,
+  group.colors = NULL,
   title = "Cancer",
   showBootstrap = TRUE,
   hexpand_ratio = 0.3
@@ -21,7 +22,9 @@ viewTrees(
 
 \item{normal.node}{the sample name of normal sample in the tree.}
 
-\item{group}{a list that used to indicate the sample groups}
+\item{group}{a list that used to indicate the sample groups.}
+
+\item{group.colors}{an array indicates the colors of sample groups.}
 
 \item{showBootstrap}{whether showing the bootstrap values. Default is TRUE.}
 

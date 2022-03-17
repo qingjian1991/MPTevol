@@ -7,7 +7,8 @@
 #'
 #' @param tree.format the format of tree, S4 or list. Default is S4.
 #' @param normal.node the sample name of normal sample in the tree.
-#' @param group  a list that used to indicate the sample groups
+#' @param group  a list that used to indicate the sample groups.
+#' @param group.colors an array indicates the colors of sample groups.
 #' @param showBootstrap whether showing the bootstrap values. Default is TRUE.
 #' @param title: title of the plot.
 #' @param hexpand_ratio: hexpand ratio. see \code{\link[ggtree]{hexpand}}
@@ -40,25 +41,11 @@ viewTrees = function(phyloTree,
                      tree.format = "S4",
                      normal.node = "NORMAL",
                      group = NULL,
+                     group.colors = NULL,
                      title = "Cancer",
                      showBootstrap = TRUE,
                      hexpand_ratio = 0.3
 ){
-
-  # set certain colors
-  colorScale <- c("#3C5488FF", "#00A087FF", "#F39B7fFF",
-                  "#8491B4FF","#E64B35FF","#4DBBD5FF",
-                  "#E41A1C", "#377EB8", "#7F0000",
-                  "#35978f", "#FC8D62", "#2166ac",
-                  "#E78AC3", "#A6D854", "#FFD92F",
-                  "#E5C494", "#8DD3C7", "#6E016B" ,
-                  "#BEBADA", "#e08214", "#80B1D3",
-                  "#d6604d", "#ffff99", "#FCCDE5",
-                  "#FF6A5A", "#BC80BD", "#CCEBC5" ,
-                  "#fb9a99", "#B6646A", "#9F994E",
-                  "#7570B3" , "#c51b7d" ,"#66A61E" ,
-                  "#E6AB02" , "#003c30", "#666666")
-
 
   if(tree.format == "S4"){
     mtree = phyloTree@tree
@@ -124,9 +111,29 @@ viewTrees = function(phyloTree,
       stop("the samplenames in grp were not identical to sample names in the tree")
     }
 
-    p_trees = groupOTU(p_trees, group, 'Sites') + aes(color=Sites)+
+    p_trees = groupOTU(p_trees, group, 'Sites')
+
+    #get levels
+    Sites = levels(p_trees$data$Sites)
+
+    if(!is.null(group.colors)){
+      #get levels that were not in the group.colors
+      Site1 = setdiff(levels(p_trees$data$Sites), names(group.colors))
+
+      Site.colors = setNames(
+        c(set.colors(n = length(Site1), rev = T), group.colors),
+        nm = c(Site1, names(group.colors))
+      )
+
+      Site.colors = Site.colors[levels(p_trees$data$Sites)]
+
+    }else{
+      Site.colors = set.colors(n = length(Sites))
+    }
+
+    p_trees = p_trees + aes(color=Sites)+
       scale_colour_manual(
-        values  = colorScale[1:length(group)]
+        values  = Site.colors
       )
   }
 

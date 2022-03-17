@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotCNAProfile.R
 \name{plotCNAProfile}
 \alias{plotCNAProfile}
-\title{plotCNAProfile
-we plot the allele-specific CNAs of multiple-samples.}
+\title{plotCNAProfile}
 \usage{
 plotCNAProfile(cnaqc.list, min_length_show = 1e+05)
 }
@@ -13,6 +12,5 @@ plotCNAProfile(cnaqc.list, min_length_show = 1e+05)
 \item{min_length_show:}{the minimal length of CNVs to show.}
 }
 \description{
-plotCNAProfile
 we plot the allele-specific CNAs of multiple-samples.
 }
