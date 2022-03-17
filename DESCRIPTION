@@ -1,6 +1,6 @@
 Package: MPTevol
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(
     person("Qinjian", "Chen", , "chenqingjian2010@163.com", role = c("aut", "cre"),
            comment = c(ORCID = "xxx")),

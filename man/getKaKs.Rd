@@ -4,12 +4,12 @@
 \alias{getKaKs}
 \title{getKaKs}
 \usage{
-getKaKs(df, VAF_cutoff = 0.05)
+getKaKs(df, vaf_cutoff = 0.05)
 }
 \arguments{
 \item{df:}{data. six columns are required to calculate the Ka/Ks, including "Tumor_Sample_Barcode","Chromosome","Start_Position","Reference_Allele","Tumor_Seq_Allele2" and "VAF"}
 
-\item{VAF_cutoff:}{VAF cutoff. Removing mutations with low variant allele frequency (VAF).}
+\item{vaf_cutoff:}{VAF cutoff. Removing mutations with low variant allele frequency (VAF).}
 }
 \description{
 See Ka/Ks between different groups.

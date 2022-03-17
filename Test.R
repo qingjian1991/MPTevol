@@ -22,14 +22,12 @@ library(treeio)
 library(MPTevol)
 
 
-#For CNAs trees.
-
-
+#read samples distances.
+#This dist file is the output of MEDICC
 dist = system.file(package="MPTevol", "extdata", "tree_final.dist")
 
-dist = "tmp/analysis/medicc/results/Pan/tree_final.dist"
-
-grp <- list(NORMAL = "NORMAL",
+#set group information
+group <- list(NORMAL = "NORMAL",
             Breast =  paste0("Breast_", 1:5),
             Coad = paste0("Coad_", 1:5),
             Lung  = paste0("Lung_", 1:5),
@@ -38,10 +36,24 @@ grp <- list(NORMAL = "NORMAL",
             UterusM = paste0("UterusM_", c(1:7))
 )
 
+#set group colors
+group.colors = setNames( set.colors(n = length(group)), nm = names(group) )
 
-plotCNAtree(dist = dist,
-            grp = grp
+#built trees
+tree = plotCNAtree(dist = dist,
+            group = group,
+            group.colors = group.colors
             )
+
+tree$plot
+
+
+viewTrees(phyloTree = tree$phyloTree,
+          tree.format = "list",
+          group = group,
+          group.colors = group.colors
+          )
+
 
 
 
@@ -60,15 +72,15 @@ library(MesKit)
 
 data.type = "split1"
 
-maf <- readMaf(mafFile = sprintf( "tmp/analysis/CCF_estimated_CHAT/MesKit/meskit.%s.mutation.txt", data.type),
-               ccfFile = sprintf("tmp/analysis/CCF_estimated_CHAT/MesKit/meskit.%s.CCF.txt", data.type),
-               clinicalFile  = sprintf("tmp/analysis/CCF_estimated_CHAT/MesKit/meskit.%s.clinical.txt", data.type),
+maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
+               ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
+               clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
                refBuild = "hg19",
-               ccf.conf.level = 0.90
+               ccf.conf.level = 0.95
 )
 
 
-driverGene = read.delim("tmp/analysis/CCF_estimated_CHAT/data/IntOGen-Drivers-Cancer_Genes.tsv", header = T) %>%
+driverGene = read.delim(system.file(package="MPTevol", "extdata", "IntOGen-Drivers-Cancer_Genes.tsv"), header = T) %>%
   filter(CANCER_TYPE %in% c("BRCA","COREAD","LUAD", "LUSC") ) %>%
   pull(SYMBOL) %>% unique()
 
@@ -87,6 +99,23 @@ maf_class = classifyMut(maf, patient.id = NULL, class = "SPCS", classByTumor = F
 ################################################################
 
 #see clinical targetable sites
+
+sites = getClinSites(maf, Patient_ID = "Breast")
+
+DT::datatable(sites)
+
+sites = getClinSites(maf)
+
+
+###################################################################
+
+#calKaKas
+
+kaks = calKaKs(maf, patient.id = "Breast", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
+
+kaks = calKaKs(maf, patient.id = "Breast", class = "CS", parallel = TRUE, vaf_cutoff = 0.05)
+
+kaks = calKaKs(maf, class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
 
 
 ###################################################################
@@ -112,8 +141,31 @@ cnaqc.x = readCNAProfile(
 ######################################################################
 
 
-phyloTree <- getPhyloTree(maf, patient.id = "Breast", method = "NJ", min.vaf = 0.02,
+phyloTree <- getPhyloTree(maf, patient.id = "Met1", method = "NJ", min.vaf = 0.02,
                           bootstrap.rep.num = 1000)
+
+viewTrees(phyloTree)
+
+group <- list(
+              Coad = paste0("Coad_", 1:5),
+              OveryLM = paste0("OveryLM_", 1:5),
+              OveryRM = paste0("OveryRM_", 1:6),
+              UterusM = paste0("UterusM_", c(1,3))
+)
+
+viewTrees(phyloTree = phyloTree,
+          group = group
+          )
+
+
+
+
+phyloTree <- getPhyloTree(maf, patient.id = "Met1", method = "NJ", min.vaf = 0.02,
+                          bootstrap.rep.num = 1000)
+
+
+plotMutTree(maf, patient.id = "Met1")
+plotMutTree(maf, patient.id = "Met1", group = group, title = "CRC Met")
 
 
 
@@ -163,144 +215,71 @@ plot_grid(plotlist = cal$Met1$plist, nrow = 1)
 
 #############################################################################################
 
-#build clonal evolution tree
-
-mutdata.vaf1 = readRDS("tmp/analysis/CCF_estimated_CHAT/data/mutdata.vaf1.rds")
-new.label = readRDS(file = "tmp/analysis/CCF_estimated_CHAT/data/new.label.rds")
-
-mutdata = mutdata.vaf1 %>%
-  left_join(new.label)
-
-mutdata[, 2:34] = mutdata[, 2:34]*100
-
-mutdata$cluster = mutdata$Clone2
-
-#Visualizing the variant clusters
-set.colors = c("#C6C6C6", "#6FDCBF","#5AA36E","#E99692","#B4D985","#EA7D23","#E53CFB","#4B85B7","#8439FA","#BD8736","#B3B371","#A7C7DE","#EE97FC","#57C222","#BFABD0","#44589B", "#794C18", RColorBrewer::brewer.pal(n = 10, name = "Paired") )
-
-clone.colors = set.colors[ 1:length(unique(mutdata$cluster))]
-cluster.col.name  = "cluster"
-
-head(mutdata)
 
 
-
-GC01 = readRDS("tmp/analysis/CCF_estimated_CHAT/data/GC01.rds")
-
-GC01 = GC01 %>% mutate(Chromosome =  str_c("chr", Chromosome) ) %>%
-  mutate(mutid = str_c(Chromosome, Start_Position, Reference_Allele, sep = ":"))
+#######################################################################################################
 
 
-drivers = read.delim("tmp/analysis/CCF_estimated_CHAT/data/IntOGen-Drivers-Cancer_Genes.tsv", header = T) %>%
-  filter(CANCER_TYPE %in% c("BRCA","COREAD","LUAD", "LUSC") ) %>%
-  pull(SYMBOL) %>% unique()
-
-mutinfo = GC01 %>%
-  select(Chromosome, Start_Position, End_Position, Hugo_Symbol, Variant_Classification, Protein_Change, Reference_Allele, Tumor_Seq_Allele2 ) %>%
-  unique.data.frame() %>%
-  mutate(#Chromosome = str_c("chr", Chromosome),
-    Protein_Change = ifelse(Variant_Classification == "Splice_Site", "splice", Protein_Change),
-    Protein_Change = ifelse(Variant_Classification == "3'UTR", "3UTR", Protein_Change),
-    Protein_Change = ifelse(Variant_Classification == "5'UTR", "5UTR", Protein_Change),
-    gene_site = str_c(Hugo_Symbol, "_" ,Protein_Change),
-    is.driver = ifelse( (Hugo_Symbol %in% drivers) & ( !Variant_Classification %in% c("Silent", "3'Flank", "IGR", "Intron", "RNA") ) , TRUE, FALSE)  ) %>%
-
-  mutate( mutid  = str_c(Chromosome , Start_Position , Reference_Allele , sep = ":") )
+#save(variants, file = "variants.rda")
+#save(variants.ref, file = "variants.ref.rda")
 
 
-mutdata = right_join(mutinfo, mutdata ) %>%
-  arrange(cluster) %>%
-  as.data.frame()
+# load data
+data("variants", package = "MPTevol")
+data("variants.ref", package = "MPTevol")
 
-#add ref and var columns for merge data.
-
-sampleNames = c( paste0("Breast_", 1:5), paste0("Lung_", 1:5),
-                 paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
-                 paste0("OveryRM_", 1:6), paste0("UterusM_", c(1:7)) )
-
-var.data = round(mutdata[, sampleNames])
-ref.data = 100 - var.data
-
-colnames(var.data) = paste0(colnames(var.data), ".var")
-colnames(ref.data) = paste0(colnames(ref.data), ".ref")
-
-mutdata = cbind(mutdata, var.data, ref.data)
-
-message("<2> Analysis using clonevol")
-
-
-output = "Met2"
-
-
-
-pp <- plot.variant.clusters(mutdata,
-                            show.cluster.size = F,
-                            show.cluster.label= F,
-                            cluster.col.name = cluster.col.name,
-                            vaf.col.names = vaf.col.names,
-                            violin = FALSE,
-                            box = TRUE,
-                            jitter = TRUE,
-                            jitter.shape = 1,
-                            variant.class.col.name =cluster.col.name,
-                            jitter.color = clone.colors,
-                            jitter.size = 1.2,
-                            jitter.alpha = 1,
-                            jitter.width = 0.2,
-                            jitter.center.method = "median",
-                            jitter.center.size = 1,
-                            jitter.center.color = "darkgray",
-                            jitter.center.display.value = "none",
-                            display.plot = F,
-                            horizontal = T,
-                            order.by.total.vaf = F,
-                            highlight = 'is.driver',
-                            highlight.shape = 21,
-                            highlight.color = 'blue',
-                            highlight.fill.color = 'green',
-                            highlight.size = 2.5,
-                            highlight.note.col.name = NULL,
-                            highlight.note.size = 2,
-                            highlight.note.color = "blue",
-                            highlight.note.angle = 0,
-                            founding.cluster = 1,
-                            ccf = show.ccf
-)
-
-
-pdf( sprintf( "%s/%s.box.pdf", output, output), width = 2*length(pp), height = 4)
-ggpubr::ggarrange(plotlist = pp, ncol = length(pp), align  = "h" )
-dev.off()
-
-
-output = "Met2"
-
-saveRDS(mutinfo, file = sprintf("%s/%s.mutinfo.rds", output))
-
-sampleNames = c( paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
+vaf.col.names = c( paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
                  paste0("OveryRM_", 1:6),paste0("UterusM_", c(1, 3)) )
-
 
 sample.groups = mapply(function(x) x[1], strsplit(vaf.col.names, "_")  )
 names(sample.groups) = vaf.col.names
 
-vaf.col.names = sampleNames
+cluster.col.name = "cluster"
 
-show.ccf = F
+clones.number = 10
+clone.colors = set.colors(10)
 
-sel = c(1,6,11)
+#Check data.
+pp = plotVafCluster(
+  variants = variants,
+  cluster.col.name = "cluster",
+  vaf.col.names = vaf.col.names[ c(1,5,6, 10, 11, 16)],
+  highlight = "is.driver",
+  highlight.note.col.name = "gene_site",
+  box = TRUE,
+  violin = FALSE
+)
 
-y = inferClonalTrees( project.names  = output ,
-                      variants = mutdata,
-               ccf.col.names = vaf.col.names[sel],
-               sample.groups = sample.groups[sel],
-               cancer.initiation.model = "monoclonal",
-               founding.cluster = 1 , ignore.clusters = 4 , cluster.col.name = "cluster",
-               subclonal.test.model = "non-parametric",
-               sum.p = 0.01, alpha = 0.05, weighted = FALSE,
-               plot.pairwise.CCF  = FALSE,
-               highlight.note.col.name = NULL,
-               highlight = "is.driver", highlight.CCF = TRUE
+pp
+
+#check cluster changes.
+plot.cluster.flow(variants,
+                  cluster.col.name = cluster.col.name,
+                  vaf.col.names = vaf.col.names,
+                  sample.names = vaf.col.names,
+                  colors = set.colors(clones.number),
+                  y.title = "Variant Allele Frequency %"
+) +
+  theme(axis.text.x = element_text(angle = 90) )
+
+
+###### inferring subclonal structures.
+
+#sel = c(1,5,6, 10, 11, 16)
+sel = 1:18
+
+y = inferClonalTrees( project.names  = "Met" ,
+                      variants = variants.ref,
+                      ccf.col.names = vaf.col.names[sel],
+                      sample.groups = sample.groups[sel],
+                      cancer.initiation.model = "monoclonal",
+                      founding.cluster = 1 , ignore.clusters = 4 ,
+                      cluster.col.name = "cluster",
+                      subclonal.test.model = "non-parametric",
+                      sum.p = 0.01, alpha = 0.05, weighted = FALSE,
+                      plot.pairwise.CCF  = FALSE,
+                      highlight.note.col.name = NULL,
+                      highlight = "is.driver", highlight.CCF = TRUE
 )
 
 pdf(file = sprintf("%s/%s.trees.pdf", output, output), width = 6, height = 6)
@@ -314,9 +293,46 @@ plot.all.trees.clone.as.branch(y, branch.width = 0.5,
 dev.off()
 
 
-samples = names(y$models)
+# We combined MRS samples into one samples.
 
-times = clonevol2timescape(results = y, samples = names(y$models)  )
+#Merge multiple samples into a single sample. This can be used to merge multi-region samples to one sample representing the tumor where the regions are taken from. This functions required the ref and var columns. So, we used the variants.ref
+
+#Note: CCF should be in the range between 0-100
+
+#merge coad
+sel = 1:5
+y.merge = merge.samples(y, samples = vaf.col.names[sel],
+                        new.sample = "Coad", new.sample.group = "Coad",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+#merge overyLM
+sel = 6:10
+y.merge = merge.samples(y.merge, samples = vaf.col.names[sel],
+                        new.sample = "OveryLM", new.sample.group = "OveryLM",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+#merge overyRM
+sel = c(11:13, 14, 15, 16)
+y.merge = merge.samples(y.merge, samples = vaf.col.names[sel],
+                        new.sample = "OveryRM", new.sample.group = "OveryRM",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+
+#merge UterusM
+sel = c(17, 18)
+y.merge = merge.samples(y.merge, samples = vaf.col.names[sel],
+                        new.sample = "UterusM", new.sample.group = "UterusM",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+
+#####################################################################################
+#View clonal evolving.
+
+
+
+samples = names(y.merge$models)
+
+times = tree2timescape(results = y.merge, samples = names(y.merge$models)  )
 
 
 # run timescape
@@ -328,40 +344,9 @@ timescape(clonal_prev = times$clonal_prev[[i]],
           xaxis_title = NULL
 )
 
-
-
-
-
-
-
-
-
-
-
-pp = plotVafCluster(
-  variants = variants,
-  cluster.col.name = "cluster",
-  vaf.col.names = vaf.col.names[1:6],
-  highlight = "is.driver",
-  highlight.note.col.name = "gene_site",
-  box = F,
-  violin = TRUE
+#save svg file plot
+rsvg::rsvg_pdf( svg = sprintf("%s/%s.model%s.svg", project.names, project.names, i),
+                file = sprintf("%s/%s.model%s.pdf", project.names, project.names, i)
 )
-
-pp = plotVafCluster(
-  variants = variants,
-  cluster.col.name = "cluster",
-  vaf.col.names = vaf.col.names[1:6],
-  #highlight = "is.driver",
-  #highlight.note.col.name = "gene_site",
-  box = F,
-  violin = TRUE
-)
-
-
-
-
-
-
 
 

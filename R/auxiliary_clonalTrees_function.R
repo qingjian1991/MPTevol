@@ -198,19 +198,6 @@ inferClonalTrees = function(project.names,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 #' plotVafCluster
 #'
 #' Plot variant clustering in each sample by using combination of box, violin and jitter plots.
@@ -341,15 +328,6 @@ plotVafCluster <- function(variants,
 
 
 
-
-
-
-
-
-
-
-
-
 #' tree2timescape
 #'
 #' This function generates the input of timescape to visual the fisher plot of clonal evolution by using the results of \code{\link{inferClonalTree}}.
@@ -470,7 +448,9 @@ tree2timescape = function(results, samples = NULL){
       ) %>%
       left_join(clonal_prev_ancestor) %>%
       mutate( sumvalue = ifelse(is.na(sumvalue), 0, sumvalue),
-              value1 = value - sumvalue
+              value1 = value - sumvalue,
+              #set value1 = 0 if value1 <=0
+              value1 = ifelse(value1<0, 0, value1)
       ) %>%
       select(clone, variable, value1) %>%
       dplyr::rename(

@@ -1,6 +1,6 @@
 #' plotCNAProfile
-#' we plot the allele-specific CNAs of multiple-samples.
 #'
+#' we plot the allele-specific CNAs of multiple-samples.
 #'
 #' @param cnaqc.list: cnaqc.list
 #' @param min_length_show: the minimal length of CNVs to show.
