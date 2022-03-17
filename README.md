@@ -28,14 +28,6 @@ files, so they display on GitHub and CRAN.
 ## Overviews
 
 The overview of the **MPTevol** is shown below:
-<<<<<<< HEAD
 
-<div  align="left">   
-
-<img src="https://github.com/qingjian1991/MPTevol/blob/devel/inst/MPTevol_Structure.jpg" height="500" width="600" alt = "MPTevol Workflow"/>
-
-</div>
-=======
 ![structures](/inst/MPTevol_structure.jpg)
 
->>>>>>> c3823d62c504bc08bd585532e704b74b9c81b6d1
