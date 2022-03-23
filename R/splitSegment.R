@@ -27,148 +27,145 @@
 #'
 #' @export
 
-splitSegment =  function(segfiles,
+splitSegment <- function(segfiles,
                          sampleid,
                          project.names = "tumor",
                          out.dir = "data",
-                     N.baf = 30, cnv_min_length = 1e5, max_CNt = 15,
-                     minLength = 1e5, maxCNV = 4,
-                     medicc.py = "medicc.py",
-                     python = "python"
-                     ){
+                         N.baf = 30, cnv_min_length = 1e5, max_CNt = 15,
+                         minLength = 1e5, maxCNV = 4,
+                         medicc.py = "medicc.py",
+                         python = "python") {
+  seglist <- list()
+  # read segs
+  for (i in 1:length(sampleid)) {
+    seg <- read.delim(file = segfiles[i], header = T, stringsAsFactors = F) %>%
+      # dplyr::filter(chromosome == "chr1") %>%
+      dplyr::mutate(sample = sampleid[i])
 
-  seglist = list()
-  #read segs
-  for(i in 1:length(sampleid)){
-
-    seg = read.delim(file = segfiles[i], header = T, stringsAsFactors = F) %>%
-      #dplyr::filter(chromosome == "chr1") %>%
-      dplyr::mutate(sample =sampleid[i] )
-
-    seglist[[i]] = seg
+    seglist[[i]] <- seg
   }
 
-  #removing low-confidence regions
-  #seglist = base::Reduce(rbind, seglist) %>%
+  # removing low-confidence regions
+  # seglist = base::Reduce(rbind, seglist) %>%
   #  dplyr::filter(N.BAF >= N.baf &  (end.pos - start.pos) >=  cnv_min_length & CNt <= max_CNt)
 
-  #change low-confidence regions into 2,1,1
-  seglist = base::Reduce(rbind, seglist) %>%
-    dplyr::mutate( keep = ifelse( N.BAF >= N.baf &
-                                    (end.pos - start.pos) >=  cnv_min_length &
-                                    CNt <= max_CNt, TRUE, FALSE)) %>%
-    dplyr::mutate(CNt = ifelse(keep, CNt, 2),
-                  A = ifelse(keep, A, 1),
-                  B = ifelse(keep, B, 1)
+  # change low-confidence regions into 2,1,1
+  seglist <- base::Reduce(rbind, seglist) %>%
+    dplyr::mutate(keep = ifelse(N.BAF >= N.baf &
+      (end.pos - start.pos) >= cnv_min_length &
+      CNt <= max_CNt, TRUE, FALSE)) %>%
+    dplyr::mutate(
+      CNt = ifelse(keep, CNt, 2),
+      A = ifelse(keep, A, 1),
+      B = ifelse(keep, B, 1)
     )
 
 
 
-  gseg = GRanges(seqnames = seglist$chromosome,
-                 ranges = IRanges(seglist$start.pos, seglist$end.pos),
-                 strand = "+"
-
+  gseg <- GRanges(
+    seqnames = seglist$chromosome,
+    ranges = IRanges(seglist$start.pos, seglist$end.pos),
+    strand = "+"
   )
 
-  #metadata columns can be added to a GRanges object
-  mcols(gseg) = seglist
+  # metadata columns can be added to a GRanges object
+  mcols(gseg) <- seglist
 
 
-  #split regions into small regions.
-  segdis =  GenomicRanges::disjoin(gseg)
-  #add region infor to data
-  mcols(segdis) = data.frame(segdis)
+  # split regions into small regions.
+  segdis <- GenomicRanges::disjoin(gseg)
+  # add region infor to data
+  mcols(segdis) <- data.frame(segdis)
 
-  #set the minimal site of each segs.
-  #minLength = 1e5
+  # set the minimal site of each segs.
+  # minLength = 1e5
 
-  #get overlaps regions
-  overlaps =  findOverlaps(segdis, gseg )
+  # get overlaps regions
+  overlaps <- findOverlaps(segdis, gseg)
 
-  #combined information
-  merge = cbind( mcols(segdis[queryHits(overlaps) , ]) , mcols(gseg[subjectHits(overlaps) ,] ) )  %>%
+  # combined information
+  merge <- cbind(mcols(segdis[queryHits(overlaps), ]), mcols(gseg[subjectHits(overlaps), ])) %>%
     base::as.data.frame() %>%
-    #filter seg length
-    dplyr::filter( width >= minLength) %>%
-    dplyr::select(seqnames, start, end, width,  CNt, A, B, sample)
+    # filter seg length
+    dplyr::filter(width >= minLength) %>%
+    dplyr::select(seqnames, start, end, width, CNt, A, B, sample)
 
-  #removing neutral region. CNt = 2 and A = 1 and B =1.
+  # removing neutral region. CNt = 2 and A = 1 and B =1.
 
-  merge_summary = merge %>%
+  merge_summary <- merge %>%
     group_by(seqnames, start, end, width, CNt, A, B) %>%
-    summarise( num = n()) %>%
-    filter(num == length(sampleid) )
+    summarise(num = n()) %>%
+    filter(num == length(sampleid))
 
-  merge = left_join(merge, merge_summary) %>%
-    filter(is.na(num) ) %>%
+  merge <- left_join(merge, merge_summary) %>%
+    filter(is.na(num)) %>%
     mutate(num = NULL)
 
-  #major info: A
-  merge_A = merge %>%
+  # major info: A
+  merge_A <- merge %>%
     dplyr::select(seqnames, start, end, width, A, sample) %>%
-    tidyr::spread(key = sample, value = A, fill = 1 )
-  #change cnv number when it >=10
-  tmp = merge_A[, 5:ncol(merge_A) ]
-  tmp[tmp>= maxCNV ] = maxCNV
-  merge_A = cbind(merge_A[,1:4], tmp)
+    tidyr::spread(key = sample, value = A, fill = 1)
+  # change cnv number when it >=10
+  tmp <- merge_A[, 5:ncol(merge_A)]
+  tmp[tmp >= maxCNV] <- maxCNV
+  merge_A <- cbind(merge_A[, 1:4], tmp)
 
-  #minor info: B
-  merge_B = merge %>%
+  # minor info: B
+  merge_B <- merge %>%
     dplyr::select(seqnames, start, end, width, B, sample) %>%
-    tidyr::spread(key = sample, value = B, fill = 1 )
+    tidyr::spread(key = sample, value = B, fill = 1)
 
-  tmp = merge_B[, 5:ncol(merge_B) ]
-  tmp[tmp>= maxCNV ] = maxCNV
-  merge_B = cbind(merge_B[,1:4], tmp)
+  tmp <- merge_B[, 5:ncol(merge_B)]
+  tmp[tmp >= maxCNV] <- maxCNV
+  merge_B <- cbind(merge_B[, 1:4], tmp)
 
-  if(!file.exists(out.dir)){
-    system( paste0("mkdir ", out.dir))
+  if (!file.exists(out.dir)) {
+    system(paste0("mkdir ", out.dir))
   }
 
-  file = sprintf("%s/%s.descr.txt", out.dir, project.names)
+  file <- sprintf("%s/%s.descr.txt", out.dir, project.names)
 
 
-  #output
-  write.table(merge_A, file = sprintf("%s/%s.major.txt", out.dir, project.names), quote = F, row.names = F, sep = "\t" )
-  write.table(merge_B, file = sprintf("%s/%s.minor.txt", out.dir, project.names), quote = F, row.names = F, sep = "\t" )
+  # output
+  write.table(merge_A, file = sprintf("%s/%s.major.txt", out.dir, project.names), quote = F, row.names = F, sep = "\t")
+  write.table(merge_B, file = sprintf("%s/%s.minor.txt", out.dir, project.names), quote = F, row.names = F, sep = "\t")
 
-  write.fasta(merge_A = merge_A, major = "major", out.dir = out.dir, project.names =  project.names )
-  write.fasta(merge_A = merge_B, major = "minor", out.dir = out.dir, project.names =  project.names )
-
-
-  #plot the heatmaps to provide better quality controls
+  write.fasta(merge_A = merge_A, major = "major", out.dir = out.dir, project.names = project.names)
+  write.fasta(merge_A = merge_B, major = "minor", out.dir = out.dir, project.names = project.names)
 
 
-  major = merge_A %>%
+  # plot the heatmaps to provide better quality controls
+
+
+  major <- merge_A %>%
     mutate(seq = str_c(seqnames, start, end, sep = "_")) %>%
     column_to_rownames(var = "seq") %>%
     mutate(seqnames = NULL, start = NULL, end = NULL, width = NULL)
 
-  minor = merge_B %>%
+  minor <- merge_B %>%
     mutate(seq = str_c(seqnames, start, end, sep = "_")) %>%
     column_to_rownames(var = "seq") %>%
     mutate(seqnames = NULL, start = NULL, end = NULL, width = NULL)
 
-  plist = list()
+  plist <- list()
 
-  plist$major = Heatmap(major,
-          row_names_gp = gpar(fontsize = 6)
+  plist$major <- Heatmap(major,
+    row_names_gp = gpar(fontsize = 6)
   )
 
-  plist$minor = Heatmap(minor,
-          row_names_gp = gpar(fontsize = 6)
+  plist$minor <- Heatmap(minor,
+    row_names_gp = gpar(fontsize = 6)
   )
 
   message(
     sprintf("nohup %s %s %s/%s.descr.txt %s/%s.run -v >%s.run.info.txt &", python, medicc.py, out.dir, project.names, out.dir, project.names, project.names)
   )
 
-  return(list(major = merge_A,
-              minor=merge_B,
-              plist = plist
-              ))
-
-
+  return(list(
+    major = merge_A,
+    minor = merge_B,
+    plist = plist
+  ))
 }
 
 
@@ -182,32 +179,32 @@ splitSegment =  function(segfiles,
 #'
 #'
 
-write.fasta = function(merge_A, major = "major", out.dir = "data", project.names = "tumor"){
+write.fasta <- function(merge_A, major = "major", out.dir = "data", project.names = "tumor") {
   system(sprintf("mkdir %s", out.dir))
-  chrs = unique(merge_A$seqnames)[!( unique(merge_A$seqnames) %in% c("chrX", "chrY")) ]
-  num = ncol(merge_A)
+  chrs <- unique(merge_A$seqnames)[!(unique(merge_A$seqnames) %in% c("chrX", "chrY"))]
+  num <- ncol(merge_A)
 
-  for(i in chrs){
-    merge_B = subset(merge_A, seqnames == i)
-    text = rep("0", 2*(num - 3))
-    text[1] = ">diploid"
-    text[2] = paste0( rep(1, nrow(merge_B)), collapse = "")
+  for (i in chrs) {
+    merge_B <- subset(merge_A, seqnames == i)
+    text <- rep("0", 2 * (num - 3))
+    text[1] <- ">diploid"
+    text[2] <- paste0(rep(1, nrow(merge_B)), collapse = "")
 
-    for(j in 5:num){
-      text[ 2*(j-3) -1 ] = sprintf(">%s", colnames(merge_B)[j] )
-      text[ 2*(j-3)] = merge_B[,j] %>% stringr::str_c(collapse = "")
+    for (j in 5:num) {
+      text[2 * (j - 3) - 1] <- sprintf(">%s", colnames(merge_B)[j])
+      text[2 * (j - 3)] <- merge_B[, j] %>% stringr::str_c(collapse = "")
     }
-    write.table(text, file = sprintf("%s/%s_%s_%s.fasta", out.dir, project.names ,major, i), quote = F, col.names = F, row.names = F )
+    write.table(text, file = sprintf("%s/%s_%s_%s.fasta", out.dir, project.names, major, i), quote = F, col.names = F, row.names = F)
   }
 
-  #write desc
-  chrinfo = rep("0", length(chrs))
-  for(i in 1:length(chrs)){
-    chrinfo[i] = sprintf("%s %s %s", chrs[i],
-                         sprintf("%s_%s_%s.fasta", project.names ,"major", chrs[i]),
-                         sprintf("%s_%s_%s.fasta", project.names ,"minor", chrs[i]) )
+  # write desc
+  chrinfo <- rep("0", length(chrs))
+  for (i in 1:length(chrs)) {
+    chrinfo[i] <- sprintf(
+      "%s %s %s", chrs[i],
+      sprintf("%s_%s_%s.fasta", project.names, "major", chrs[i]),
+      sprintf("%s_%s_%s.fasta", project.names, "minor", chrs[i])
+    )
   }
-  write.table(chrinfo, file = sprintf("%s/%s.descr.txt", out.dir, project.names), quote = F, col.names = F, row.names = F )
-
+  write.table(chrinfo, file = sprintf("%s/%s.descr.txt", out.dir, project.names), quote = F, col.names = F, row.names = F)
 }
-

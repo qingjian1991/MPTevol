@@ -15,78 +15,73 @@
 #' @examples
 #' library(MesKit)
 #'
-#' #build a maf data: see MesKit
+#' # build a maf data: see MesKit
 #'
-#' data.type = "split1"
+#' data.type <- "split1"
 #'
-#' maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
-#'                ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
-#'                clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
-#'                refBuild = "hg19",
-#'                ccf.conf.level = 0.95
+#' maf <- readMaf(
+#'   mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
+#'   ccfFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
+#'   clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
+#'   refBuild = "hg19",
+#'   ccf.conf.level = 0.95
 #' )
 #'
-#' #see clinical targetable sites
-#' sites = getClinSites(maf)
+#' # see clinical targetable sites
+#' sites <- getClinSites(maf)
 #'
-#' #see one patinets
-#' sites = getClinSites(maf, Patient_ID = "Breast")
+#' # see one patinets
+#' sites <- getClinSites(maf, Patient_ID = "Breast")
 #'
-#' #View data
+#' # View data
 #' DT::datatable(sites)
-#'
-#'
 #' @export
 #'
 
-getClinSites = function(maf,
-                        Patient_ID = NULL
-                        ){
+getClinSites <- function(maf,
+                         Patient_ID = NULL) {
 
-  #targets = read.table(system.file(package="MPTevol", "extdata", "oncokb_biomarker_drug_associations.tsv"), header = T, sep = "\t" )
+  # targets = read.table(system.file(package="MPTevol", "extdata", "oncokb_biomarker_drug_associations.tsv"), header = T, sep = "\t" )
 
   message(
     " We match the drivers genes between maf files and clinical sites in oncokb. We only match the gene names, whereas ignoring the cancer types and gene alterations. The main targertable alterations include gene fusions (like BCR-ABL1 fusion), Oncogenic mutations, Exon deletions/insertion, Amplifications, Deletions and Singles-nucleotide mutation (BRAC V600E). Please mannual check the mutation status.
     Reference: oncokb.org
           "
+  )
+
+  targets <- read.table(system.file(package = "MPTevol", "extdata", "oncokb_biomarker_drug_associations.tsv"), header = T, sep = "\t")
+
+
+  findSites <- function(tumor) {
+    select.columns <- c(
+      "Hugo_Symbol", "Chromosome", "Start_Position", "End_Position", "Variant_Classification", "Variant_Type", "Reference_Allele", "VAF", "Tumor_Sample_Barcode", "Tumor_ID",
+      "Patient_ID", "Tumor_Sample_Label", "Tumor_Average_VAF"
     )
 
-  targets = read.table( system.file(package="MPTevol", "extdata", "oncokb_biomarker_drug_associations.tsv"), header = T, sep = "\t" )
-
-
-  findSites = function(tumor){
-
-    select.columns = c("Hugo_Symbol", "Chromosome", "Start_Position", "End_Position", "Variant_Classification", "Variant_Type", "Reference_Allele", "VAF", "Tumor_Sample_Barcode", "Tumor_ID",
-                       "Patient_ID", "Tumor_Sample_Label", "Tumor_Average_VAF"
-                       )
-
-    if("Protein_Change" %in% colnames(tumor@data)){
-      select.columns = c(select.columns, "Protein_Change")
+    if ("Protein_Change" %in% colnames(tumor@data)) {
+      select.columns <- c(select.columns, "Protein_Change")
     }
 
-    if("Clonal_Status" %in% colnames(tumor@data)){
-      select.columns = c(select.columns, c("Clonal_Status", "Tumor_Average_CCF"))
+    if ("Clonal_Status" %in% colnames(tumor@data)) {
+      select.columns <- c(select.columns, c("Clonal_Status", "Tumor_Average_CCF"))
     }
 
 
     tumor@data %>%
       select(all_of(select.columns)) %>%
       inner_join(
-        targets, by = c("Hugo_Symbol" = "Gene")
+        targets,
+        by = c("Hugo_Symbol" = "Gene")
       )
-
   }
 
-  if(!is.null(Patient_ID)){
-    maf = maf[[Patient_ID]]
-    Sites = findSites(maf)
+  if (!is.null(Patient_ID)) {
+    maf <- maf[[Patient_ID]]
+    Sites <- findSites(maf)
     DT::datatable(Sites)
-  }else{
-    Sites = lapply(maf, findSites)
+  } else {
+    Sites <- lapply(maf, findSites)
   }
 
   Sites
-
 }
-
-

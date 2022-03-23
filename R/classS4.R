@@ -11,7 +11,7 @@
 
 
 
-Segment = setClass(
+Segment <- setClass(
   Class = "Seg",
   slots = c(
     data = "data.table",
@@ -20,19 +20,3 @@ Segment = setClass(
     allele = "character"
   )
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

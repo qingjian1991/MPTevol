@@ -9,56 +9,55 @@
 #'
 #' @examples
 #'
-#' #read data
-#' data.type = "split1"
+#' # read data
+#' data.type <- "split1"
 #'
-#' maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
-#'                ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
-#'                clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
-#'                refBuild = "hg19",
-#'                ccf.conf.level = 0.95
+#' maf <- readMaf(
+#'   mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
+#'   ccfFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
+#'   clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
+#'   refBuild = "hg19",
+#'   ccf.conf.level = 0.95
 #' )
 #'
-#' #calKaKas
+#' # calKaKas
 #'
-#' kaks = calKaKs(maf, patient.id = "Breast", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
+#' kaks <- calKaKs(maf, patient.id = "Breast", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
 #'
-#' kaks = calKaKs(maf, patient.id = "Breast", class = "CS", parallel = TRUE, vaf_cutoff = 0.05)
+#' kaks <- calKaKs(maf, patient.id = "Breast", class = "CS", parallel = TRUE, vaf_cutoff = 0.05)
 #'
-#' kaks = calKaKs(maf, class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
-#'
+#' kaks <- calKaKs(maf, class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
 #' @export
 
-calKaKs = function(maf,
-                   patient.id = NULL,
-                   class = "SP",
-                   classByTumor = FALSE,
-                   vaf_cutoff = 0.05,
-                   parallel = TRUE
-                   ){
+calKaKs <- function(maf,
+                    patient.id = NULL,
+                    class = "SP",
+                    classByTumor = FALSE,
+                    vaf_cutoff = 0.05,
+                    parallel = TRUE) {
 
   # To do: be careful about the samples and tumors.
 
-  class.levels = NULL
-  if(class == "SP"){
-    class.levels = c("Public","Shared","Private")
-  }else if(class == "CS"){
-    class.levels = c("Clonal","Subclonl")
-  }else if(class == "SPCS"){
-    class.levels = c("Public_Clonal","Shared_Clonal","Shared_Subclonal","Private_Subclonal")
+  class.levels <- NULL
+  if (class == "SP") {
+    class.levels <- c("Public", "Shared", "Private")
+  } else if (class == "CS") {
+    class.levels <- c("Clonal", "Subclonl")
+  } else if (class == "SPCS") {
+    class.levels <- c("Public_Clonal", "Shared_Clonal", "Shared_Subclonal", "Private_Subclonal")
   }
 
 
 
   ######################################################################
 
-  estKaKs = function(patient.id, maf_input, maf_class){
+  estKaKs <- function(patient.id, maf_input, maf_class) {
 
-    #Merge the maf input and mutation class
+    # Merge the maf input and mutation class
     message(patient.id)
 
-    maf_merge = maf_input[[patient.id]] %>%
-      mutate(Mut_ID = str_c(Hugo_Symbol, Chromosome, Start_Position, Reference_Allele, Tumor_Seq_Allele2, sep = ":" ) ) %>%
+    maf_merge <- maf_input[[patient.id]] %>%
+      mutate(Mut_ID = str_c(Hugo_Symbol, Chromosome, Start_Position, Reference_Allele, Tumor_Seq_Allele2, sep = ":")) %>%
       left_join(
         maf_class[[patient.id]]
       ) %>%
@@ -66,46 +65,47 @@ calKaKs = function(maf,
         Hugo_Symbol, Chromosome, Start_Position, End_Position, Reference_Allele, Tumor_Seq_Allele2, Tumor_Sample_Barcode, Mutation_Type, Patient_ID, Tumor_ID, Variant_Classification, VAF
       )
 
-    maf_list =  maf_merge %>%
-      split( paste( maf_merge$Tumor_ID, maf_merge$Mutation_Type, sep = ":" ) )
+    maf_list <- maf_merge %>%
+      split(paste(maf_merge$Tumor_ID, maf_merge$Mutation_Type, sep = ":"))
 
 
     # We use the easypar to do parallel calculations.
 
-    if(parallel){
-      maf_KaKs = easypar::run(FUN = getKaKs,
-                              PARAMS = lapply(1:length(maf_list), function(x)
-                                list(df = maf_list[[x]], vaf_cutoff = vaf_cutoff) ) ,
-                              parallel = TRUE,
-                              outfile = NULL,
-                              export = NULL,
-                              packages = "tidyverse",
-                              filter_errors = FALSE
+    if (parallel) {
+      maf_KaKs <- easypar::run(
+        FUN = getKaKs,
+        PARAMS = lapply(1:length(maf_list), function(x) {
+          list(df = maf_list[[x]], vaf_cutoff = vaf_cutoff)
+        }),
+        parallel = TRUE,
+        outfile = NULL,
+        export = NULL,
+        packages = "tidyverse",
+        filter_errors = FALSE
       )
-
-    }else{
-      maf_KaKs = lapply(maf_list, getKaKs)
+    } else {
+      maf_KaKs <- lapply(maf_list, getKaKs)
     }
 
-    names(maf_KaKs) = names(maf_list)
+    names(maf_KaKs) <- names(maf_list)
 
     # Remving groups that fail to calculate the KaKs
-    maf_KaKs = maf_KaKs[lapply(maf_KaKs, function(x) is.numeric(nrow(x))) %>% unlist()]
+    maf_KaKs <- maf_KaKs[lapply(maf_KaKs, function(x) is.numeric(nrow(x))) %>% unlist()]
 
 
-    KaKs_data = list()
+    KaKs_data <- list()
 
-    for(i in names(maf_KaKs) ){
-      KaKs_data[[i]] = maf_KaKs[[i]] %>%
+    for (i in names(maf_KaKs)) {
+      KaKs_data[[i]] <- maf_KaKs[[i]] %>%
         mutate(type = i)
     }
 
-    KaKs_data = purrr::reduce(KaKs_data, rbind)
+    KaKs_data <- purrr::reduce(KaKs_data, rbind)
 
-    KaKs_data = KaKs_data %>%
+    KaKs_data <- KaKs_data %>%
       mutate(
-        Tumor_ID = mapply(function(x) x[1], str_split(type, ":") ),
-        Type = mapply(function(x) x[2], str_split(type, ":") )
+        Tumor_ID = mapply(function(x) x[1], str_split(type, ":")),
+        Type = mapply(function(x) x[2], str_split(type, ":"))
       ) %>%
       mutate(
         Type = factor(Type, levels = class.levels)
@@ -113,57 +113,52 @@ calKaKs = function(maf,
       filter(!is.na(Type))
 
 
-    p1 = KaKs_data %>%
+    p1 <- KaKs_data %>%
       filter(name %in% c("wall")) %>%
-      mutate(name = factor(name, levels = c("wall") )) %>%
-      #mutate(Type = factor(Type, levels = c("Shared_Clonal","Private_Clonal","Private_Subclonal") ))  %>%
-      ggplot(aes(x = Tumor_ID , y = mle, fill = Type) ) + ggpubr::theme_pubr() +
-      geom_bar(stat = "identity", position =  position_dodge(width = 0.90)) +
-      #geom_linerange(aes(ymin = cilow, ymax = cihigh), position =  position_dodge(width = 0.90) ) +
-      geom_hline( yintercept = 1, linetype = 2, size = 1) +
-      labs(x = NULL, y =  latex2exp::TeX("Dn/Ds ($\\omega_{all}$)") )  +
-      scale_fill_manual(values = set.colors(length(unique(KaKs_data$Type))) ) +
+      mutate(name = factor(name, levels = c("wall"))) %>%
+      # mutate(Type = factor(Type, levels = c("Shared_Clonal","Private_Clonal","Private_Subclonal") ))  %>%
+      ggplot(aes(x = Tumor_ID, y = mle, fill = Type)) +
+      ggpubr::theme_pubr() +
+      geom_bar(stat = "identity", position = position_dodge(width = 0.90)) +
+      # geom_linerange(aes(ymin = cilow, ymax = cihigh), position =  position_dodge(width = 0.90) ) +
+      geom_hline(yintercept = 1, linetype = 2, size = 1) +
+      labs(x = NULL, y = latex2exp::TeX("Dn/Ds ($\\omega_{all}$)")) +
+      scale_fill_manual(values = set.colors(length(unique(KaKs_data$Type)))) +
       theme(
         axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 0, hjust = 0.5, size = 14)
       )
 
-   list(
-     KaKs_data = KaKs_data,
-     plot = p1
-   )
-
-
+    list(
+      KaKs_data = KaKs_data,
+      plot = p1
+    )
   }
 
 
   ##########################################################################
 
-  #running
+  # running
 
-  #Get the mutation groups.
-  maf_input = subMaf(maf,  patient.id = patient.id, mafObj = FALSE, use.tumorSampleLabel = TRUE)
+  # Get the mutation groups.
+  maf_input <- subMaf(maf, patient.id = patient.id, mafObj = FALSE, use.tumorSampleLabel = TRUE)
 
-  #get mutation classifications.
-  maf_class = classifyMut(maf, patient.id = patient.id, class = class , classByTumor = classByTumor)
+  # get mutation classifications.
+  maf_class <- classifyMut(maf, patient.id = patient.id, class = class, classByTumor = classByTumor)
 
-  #Note the different format between maf_input and maf_class when the patient.id is a single value.
-  if(!is.null(patient.id)){
-    maf_class1 = list()
-    maf_class1[[patient.id]] = maf_class
-    maf_class = maf_class1
-
+  # Note the different format between maf_input and maf_class when the patient.id is a single value.
+  if (!is.null(patient.id)) {
+    maf_class1 <- list()
+    maf_class1[[patient.id]] <- maf_class
+    maf_class <- maf_class1
   }
 
-  kaks = lapply( names(maf_input) ,estKaKs, maf_input, maf_class)
-  names(kaks) = names(maf_input)
+  kaks <- lapply(names(maf_input), estKaKs, maf_input, maf_class)
+  names(kaks) <- names(maf_input)
 
   return(
     kaks
-
   )
-
-
 }
 
 
@@ -183,28 +178,25 @@ calKaKs = function(maf,
 #'
 #' @export
 
-getKaKs = function(df, vaf_cutoff = 0.05){
-
+getKaKs <- function(df, vaf_cutoff = 0.05) {
   data(list = sprintf("submod_%s", "13r_3w"), package = "dndscv")
 
-  mutations = df %>%
+  mutations <- df %>%
     filter(VAF >= vaf_cutoff) %>%
-    select(c("Tumor_Sample_Barcode","Chromosome","Start_Position","Reference_Allele","Tumor_Seq_Allele2"))
+    select(c("Tumor_Sample_Barcode", "Chromosome", "Start_Position", "Reference_Allele", "Tumor_Seq_Allele2"))
 
-  if(nrow(mutations) <=40 ){
+  if (nrow(mutations) <= 40) {
     stop("without enough mutations")
   }
 
-  kaks = dndscv::dndscv( mutations = mutations,
-                         max_muts_per_gene_per_sample = Inf,
-                         max_coding_muts_per_sample = Inf,
-                         #gene_list = intersect( Genes_Covered, genes),
-                         sm = submod_13r_3w,
-                         outp = 1
+  kaks <- dndscv::dndscv(
+    mutations = mutations,
+    max_muts_per_gene_per_sample = Inf,
+    max_coding_muts_per_sample = Inf,
+    # gene_list = intersect( Genes_Covered, genes),
+    sm = submod_13r_3w,
+    outp = 1
   )
 
   kaks$globaldnds
-
 }
-
-

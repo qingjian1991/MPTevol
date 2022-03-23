@@ -14,47 +14,57 @@
 
 
 plotCNAProfile <- function(cnaqc.list, min_length_show = 1e5) {
+  L <- x
+  Ln <- names(L)
+  if (is.null(Ln)) {
+    Ln <- paste0("Sample ", 1:length(L))
+  }
+  KARYO_colors <- CNAqc:::get_karyotypes_colors(NULL)
 
-  L = x
-  Ln = names(L)
-  if (is.null(Ln))
-    Ln = paste0("Sample ", 1:length(L))
-  KARYO_colors = CNAqc:::get_karyotypes_colors(NULL)
+  # KARYO_colors[1] = "white"
+  # KARYO_colors$"3:1" = ""
 
-  #KARYO_colors[1] = "white"
-  #KARYO_colors$"3:1" = ""
-
-  KARYO_colors = setNames(
-    c("white","steelblue","darkblue","turquoise4", "#F3BA45","#F7BCB4", "#EF7969"),
-    nm = c("1:1", "1:0", "0:0","2:0", "2:1", "2:2", "3:1")
+  KARYO_colors <- setNames(
+    c("white", "steelblue", "darkblue", "turquoise4", "#F3BA45", "#F7BCB4", "#EF7969"),
+    nm = c("1:1", "1:0", "0:0", "2:0", "2:1", "2:2", "3:1")
   )
 
-  calls = lapply(Ln, function(s) {
-    W = L[[s]]$cna %>% mutate(label = paste(Major, minor,
-                                            sep = ":"), CN = minor + Major, sample = s) %>%
+  calls <- lapply(Ln, function(s) {
+    W <- L[[s]]$cna %>%
+      mutate(label = paste(Major, minor,
+        sep = ":"
+      ), CN = minor + Major, sample = s) %>%
       select(chr, from, to, label, CN, sample)
     CNAqc:::relative_to_absolute_coordinates(L[[s]], W)
   })
-  calls_flat = suppressWarnings(Reduce(function(x, y) full_join(x,
-                                                                y, by = c("chr", "from", "to", "label", "CN", "sample")),
-                                       calls) %>% mutate(label = ifelse(label %in% names(KARYO_colors),
-                                                                        label, "other_AMP")))
-  KARYO_colors = c(KARYO_colors, other_AMP = "#9A2414")
-  chromosomes = calls_flat$chr %>% unique
-  reference_genome = CNAqc:::get_reference(L[[1]]$reference_genome) %>%
+  calls_flat <- suppressWarnings(Reduce(
+    function(x, y) {
+      full_join(x,
+        y,
+        by = c("chr", "from", "to", "label", "CN", "sample")
+      )
+    },
+    calls
+  ) %>% mutate(label = ifelse(label %in% names(KARYO_colors),
+    label, "other_AMP"
+  )))
+  KARYO_colors <- c(KARYO_colors, other_AMP = "#9A2414")
+  chromosomes <- calls_flat$chr %>% unique()
+  reference_genome <- CNAqc:::get_reference(L[[1]]$reference_genome) %>%
     filter(chr %in% chromosomes)
-  low = min(reference_genome$from)
-  upp = max(reference_genome$to)
+  low <- min(reference_genome$from)
+  upp <- max(reference_genome$to)
 
-  bl_genome = suppressMessages(blank_genome1(
+  bl_genome <- suppressMessages(blank_genome1(
     ref = L[[1]]$reference_genome,
     chromosomes = chromosomes,
-    label_chr = NA) + labs(x = "", y = ""))
+    label_chr = NA
+  ) + labs(x = "", y = ""))
 
-  seg_id = pio:::nmfy(Ln, seq_along(Ln))
-  calls_flat$sample_id = seg_id[calls_flat$sample]
+  seg_id <- pio:::nmfy(Ln, seq_along(Ln))
+  calls_flat$sample_id <- seg_id[calls_flat$sample]
 
-  calls_flat = calls_flat %>%
+  calls_flat <- calls_flat %>%
     filter(label != "1:1") %>%
     filter(to - from >= min_length_show)
 
@@ -65,16 +75,9 @@ plotCNAProfile <- function(cnaqc.list, min_length_show = 1e5) {
     guides(color = guide_legend("Karyotype", row = 1)) +
     ylim(-4, max(seg_id) + 1) +
     labs(title = "Comparative CNA", subtitle = paste0("Tracks: ", paste(Ln, collapse = ", "))) +
-    theme(legend.key.height = unit(0.1, "cm"), axis.text.y = element_blank(),
-          panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-          panel.border = element_rect(size = 0.3))
-
-
+    theme(
+      legend.key.height = unit(0.1, "cm"), axis.text.y = element_blank(),
+      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+      panel.border = element_rect(size = 0.3)
+    )
 }
-
-
-
-
-
-
-

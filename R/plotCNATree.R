@@ -1,7 +1,7 @@
-#library(ggtree)
-#library(treeio)
-#library(phangorn)
-#library(MEDICCquant)
+# library(ggtree)
+# library(treeio)
+# library(phangorn)
+# library(MEDICCquant)
 
 
 #' plotCNAtree
@@ -18,31 +18,32 @@
 #'
 #' @examples
 #'
-#' #read samples distances.
-#' #This dist file is the output of MEDICC
-#' dist = system.file(package="MPTevol", "extdata", "tree_final.dist")
+#' # read samples distances.
+#' # This dist file is the output of MEDICC
+#' dist <- system.file(package = "MPTevol", "extdata", "tree_final.dist")
 #'
-#' #set group information
-#' group <- list(NORMAL = "NORMAL",
-#'               Breast =  paste0("Breast_", 1:5),
-#'               Coad = paste0("Coad_", 1:5),
-#'               Lung  = paste0("Lung_", 1:5),
-#'               OveryLM = paste0("OveryLM_", 1:5),
-#'               OveryRM = paste0("OveryRM_", 1:6),
-#'               UterusM = paste0("UterusM_", c(1:7))
+#' # set group information
+#' group <- list(
+#'   NORMAL = "NORMAL",
+#'   Breast = paste0("Breast_", 1:5),
+#'   Coad = paste0("Coad_", 1:5),
+#'   Lung = paste0("Lung_", 1:5),
+#'   OveryLM = paste0("OveryLM_", 1:5),
+#'   OveryRM = paste0("OveryRM_", 1:6),
+#'   UterusM = paste0("UterusM_", c(1:7))
 #' )
 #'
-#' #set group colors
-#' group.colors = setNames( set.colors(n = length(group)), nm = names(group) )
+#' # set group colors
+#' group.colors <- setNames(set.colors(n = length(group)), nm = names(group))
 #'
-#' #built trees
-#' tree = plotCNAtree(dist = dist,
-#'                    group = group,
-#'                    group.colors = group.colors
+#' # built trees
+#' tree <- plotCNAtree(
+#'   dist = dist,
+#'   group = group,
+#'   group.colors = group.colors
 #' )
 #'
 #' tree$plot
-#'
 #' @import ggtree
 #' @import treeio
 #' @import phangorn
@@ -54,184 +55,175 @@
 
 
 
-plotCNAtree = function(dist,
-                       bootstrap.rep.num = 500,
-                       group = NULL,
-                       group.colors = NULL,
-                       title = "Cancer",
-                       normal.node = "NORMAL",
-                       hexpand_ratio = 0.3
-                       ){
-
+plotCNAtree <- function(dist,
+                        bootstrap.rep.num = 500,
+                        group = NULL,
+                        group.colors = NULL,
+                        title = "Cancer",
+                        normal.node = "NORMAL",
+                        hexpand_ratio = 0.3) {
   message("Calculate the bootstraps")
 
 
-  #get trees and using NJ to get the bootstraps.
-  phyloTree = bootstrap.trees(
+  # get trees and using NJ to get the bootstraps.
+  phyloTree <- bootstrap.trees(
     dist = dist,
     title = title,
     bootstrap.rep.num = bootstrap.rep.num
   )
 
-  mtree = phyloTree$tree
-  bootstrap.value = phyloTree$bootstrap.value
+  mtree <- phyloTree$tree
+  bootstrap.value <- phyloTree$bootstrap.value
 
 
-  #all.length = mtree$edge.length
-  root.length = rev(mtree$edge.length)[1]
+  # all.length = mtree$edge.length
+  root.length <- rev(mtree$edge.length)[1]
 
-  #set outgroup and removing the Normal
-  mtree = root(mtree, outgroup = normal.node)
-  mtree= drop.tip(mtree, normal.node)
+  # set outgroup and removing the Normal
+  mtree <- root(mtree, outgroup = normal.node)
+  mtree <- drop.tip(mtree, normal.node)
 
-  #combined bootstrap
-  bp2 <- data.frame(node=1:(Nnode(mtree)) + Ntip(mtree),
-                    bootstrap = bootstrap.value  )
-  mtree <- dplyr::full_join(mtree, bp2, by="node")
+  # combined bootstrap
+  bp2 <- data.frame(
+    node = 1:(Nnode(mtree)) + Ntip(mtree),
+    bootstrap = bootstrap.value
+  )
+  mtree <- dplyr::full_join(mtree, bp2, by = "node")
 
 
-  p_trees <- ggtree(mtree, size=1) +
-    geom_tiplab(size=4) +
-    geom_treescale(fontsize=6, linesize=1, offset=1) +
-    #set root length
-    geom_rootedge(rootedge = root.length, size=1, colour = "grey40") +
+  p_trees <- ggtree(mtree, size = 1) +
+    geom_tiplab(size = 4) +
+    geom_treescale(fontsize = 6, linesize = 1, offset = 1) +
+    # set root length
+    geom_rootedge(rootedge = root.length, size = 1, colour = "grey40") +
     hexpand(hexpand_ratio, direction = 1)
 
- p_trees = p_trees +
-   geom_nodepoint(aes(fill=cut(bootstrap, c(0, 70, 90, 100))),
-                  shape=21, size=2.5) +
-   scale_fill_manual(values=c("black", "grey", "white"),guide="legend",
-                     name="Bootstrap Percentage(BP)",
-                     breaks=c("(90,100]", "(70,90]", "(0,70]"),
-                     labels=expression(BP>=90,70 <= BP * " < 90", BP < 70)) +
-   theme_tree(legend.position=c(0.8, 0.25))
+  p_trees <- p_trees +
+    geom_nodepoint(aes(fill = cut(bootstrap, c(0, 70, 90, 100))),
+      shape = 21, size = 2.5
+    ) +
+    scale_fill_manual(
+      values = c("black", "grey", "white"), guide = "legend",
+      name = "Bootstrap Percentage(BP)",
+      breaks = c("(90,100]", "(70,90]", "(0,70]"),
+      labels = expression(BP >= 90, 70 <= BP * " < 90", BP < 70)
+    ) +
+    theme_tree(legend.position = c(0.8, 0.25))
 
- if(!is.null(group)){
+  if (!is.null(group)) {
 
-   #check samples ids between trees and group
-   if( !identical(sort(purrr::reduce(group, c)), sort( mtree@phylo$tip.label) ) ){
+    # check samples ids between trees and group
+    if (!identical(sort(purrr::reduce(group, c)), sort(mtree@phylo$tip.label))) {
       stop("the samplenames in group were not identical to sample names in the tree")
-   }
+    }
 
-   p_trees = groupOTU(p_trees, group, 'Sites')
+    p_trees <- groupOTU(p_trees, group, "Sites")
 
-   #get levels
-   Sites = levels(p_trees$data$Sites)
+    # get levels
+    Sites <- levels(p_trees$data$Sites)
 
-   if(!is.null(group.colors)){
+    if (!is.null(group.colors)) {
+      if (!identical(sort(names(group.colors)), sort(levels(p_trees$data$Sites)))) {
 
-     if(!identical( sort(names(group.colors)), sort(levels(p_trees$data$Sites)) )){
+        # get levels that were not in the group.colors
+        Site1 <- setdiff(levels(p_trees$data$Sites), names(group.colors))
 
-       #get levels that were not in the group.colors
-       Site1 = setdiff(levels(p_trees$data$Sites), names(group.colors))
+        Site.colors <- setNames(
+          c(set.colors(n = length(Site1), rev = T), group.colors),
+          nm = c(Site1, names(group.colors))
+        )
 
-       Site.colors = setNames(
-         c(set.colors(n = length(Site1), rev = T), group.colors),
-         nm = c(Site1, names(group.colors))
-       )
+        Site.colors <- Site.colors[levels(p_trees$data$Sites)]
+      } else {
+        Site.colors <- group.colors[levels(p_trees$data$Sites)]
+      }
+    } else {
+      Site.colors <- set.colors(n = length(Sites))
+    }
 
-       Site.colors = Site.colors[levels(p_trees$data$Sites)]
-     }else{
-       Site.colors = group.colors[levels(p_trees$data$Sites)]
-     }
-
-
-   }else{
-     Site.colors = set.colors(n = length(Sites))
-   }
-
-   p_trees = p_trees + aes(color=Sites)+
-     scale_colour_manual(
-       values  = Site.colors
-     )
- }
+    p_trees <- p_trees + aes(color = Sites) +
+      scale_colour_manual(
+        values = Site.colors
+      )
+  }
 
 
- p_trees = p_trees + labs(title = title) +
-   theme(plot.title = element_text(hjust = 0.5))
+  p_trees <- p_trees + labs(title = title) +
+    theme(plot.title = element_text(hjust = 0.5))
 
- return(
-   list (phyloTree = phyloTree,
-         plot = p_trees)
- )
-
+  return(
+    list(
+      phyloTree = phyloTree,
+      plot = p_trees
+    )
+  )
 }
 
 
 
 ########################################################################################
 
-#Supporting Functions
+# Supporting Functions
 
 
-#functions to get the bootstrap values.
+# functions to get the bootstrap values.
 
-medicc.resample.distance.matrices = function(D, niter=100) {
-  result = list()
-  #pb=txtProgressBar(min=0,max=niter,style=3)
+medicc.resample.distance.matrices <- function(D, niter = 100) {
+  result <- list()
+  # pb=txtProgressBar(min=0,max=niter,style=3)
   for (s in 1:niter) {
-    #setTxtProgressBar(pb,s)
-    Dnew = as.matrix(D)
+    # setTxtProgressBar(pb,s)
+    Dnew <- as.matrix(D)
     for (i in 1:nrow(Dnew)) {
       for (j in 1:i) {
-        Dnew[i,j] = rnorm(1, mean=Dnew[i,j], sd=sqrt(Dnew[i,j]))
-        Dnew[j,i] = Dnew[i,j]
+        Dnew[i, j] <- rnorm(1, mean = Dnew[i, j], sd = sqrt(Dnew[i, j]))
+        Dnew[j, i] <- Dnew[i, j]
       }
     }
-    Dnew[Dnew<0]=0
-    Dnew=round(Dnew)
-    Dnew = as.dist(Dnew)
-    result[[s]] = Dnew
+    Dnew[Dnew < 0] <- 0
+    Dnew <- round(Dnew)
+    Dnew <- as.dist(Dnew)
+    result[[s]] <- Dnew
   }
   return(result)
 }
 
 
-bootstrap.trees = function(dist, bootstrap.rep.num = 1000, title = "Cancer"){
+bootstrap.trees <- function(dist, bootstrap.rep.num = 1000, title = "Cancer") {
 
-  #using NJ to create a new tree with bootstrap values.
-  getTrees = function(D){
+  # using NJ to create a new tree with bootstrap values.
+  getTrees <- function(D) {
     matTree <- nj(D)
     root_num <- which(matTree$tip.label == "diploid")
     matTree <- root(matTree, root_num)
     matTree
   }
 
-  D = medicc.read.distance.matrix(dist)
-  colnames(D) =rownames(D)
+  D <- medicc.read.distance.matrix(dist)
+  colnames(D) <- rownames(D)
 
 
-  matTree = getTrees(D)
-  #plot(matTree)
-  #bootstrap
-  #resampled trees.
-  resampled = medicc.resample.distance.matrices(D, bootstrap.rep.num)
+  matTree <- getTrees(D)
+  # plot(matTree)
+  # bootstrap
+  # resampled trees.
+  resampled <- medicc.resample.distance.matrices(D, bootstrap.rep.num)
 
-  bootstrap.value = prop.clades(matTree,  lapply(resampled, getTrees) , rooted = is.rooted(matTree))/bootstrap.rep.num*100
+  bootstrap.value <- prop.clades(matTree, lapply(resampled, getTrees), rooted = is.rooted(matTree)) / bootstrap.rep.num * 100
 
-  #bootstrap.value <- ape::boot.phylo(matTree, mut_dat, function(e){nj(dist.gene(e))},B = bootstrap.rep.num,quiet = TRUE,rooted = TRUE)/(bootstrap.rep.num)*100
+  # bootstrap.value <- ape::boot.phylo(matTree, mut_dat, function(e){nj(dist.gene(e))},B = bootstrap.rep.num,quiet = TRUE,rooted = TRUE)/(bootstrap.rep.num)*100
 
-  #plot( matTree, main = title)
-  #nodelabels(bootstrap.value)
+  # plot( matTree, main = title)
+  # nodelabels(bootstrap.value)
 
-  #for MesKit to plot trees.
-  matTree$tip.label[which( matTree$tip.label == "diploid") ] = "NORMAL"
+  # for MesKit to plot trees.
+  matTree$tip.label[which(matTree$tip.label == "diploid")] <- "NORMAL"
 
-  phyloTree = list(
+  phyloTree <- list(
     tree = matTree,
-    bootstrap.value = bootstrap.value[1:(length(bootstrap.value)-1)],
+    bootstrap.value = bootstrap.value[1:(length(bootstrap.value) - 1)],
     patientID = title
   )
 
   phyloTree
-
 }
-
-
-
-
-
-
-
-
-
