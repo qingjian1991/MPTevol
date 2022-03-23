@@ -4,12 +4,14 @@
 \alias{set.colors}
 \title{set.colors}
 \usage{
-set.colors(n = 36, rev = FALSE)
+set.colors(n = 36, rev = FALSE, random = FALSE)
 }
 \arguments{
 \item{n}{number of colors to select. A total of 36 colors are saved.}
 
 \item{rev}{reverse output the colors.}
+
+\item{random}{random select number of colors.}
 }
 \description{
 Some colors could be used.

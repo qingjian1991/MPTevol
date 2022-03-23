@@ -63,11 +63,16 @@ plotMutTree = function(maf,
 
   message("Viewing trees")
 
-  viewTrees(phyloTree = phyloTree,
+  p_trees = viewTrees(phyloTree = phyloTree,
             group = group,
             group.colors = group.colors,
             title = title,
             hexpand_ratio = hexpand_ratio
+  )
+
+  return(
+    list (phyloTree = phyloTree,
+          plot = p_trees)
   )
 
 }

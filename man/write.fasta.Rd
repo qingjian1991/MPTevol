@@ -4,7 +4,15 @@
 \alias{write.fasta}
 \title{write.fasta}
 \usage{
-write.fasta(merge_A, major = "major", out.dir = "data", tumor = "tumor")
+write.fasta(
+  merge_A,
+  major = "major",
+  out.dir = "data",
+  project.names = "tumor"
+)
+}
+\arguments{
+\item{project.names}{the project names used in the output.}
 }
 \description{
 Prepare the formate of MEDICC input.

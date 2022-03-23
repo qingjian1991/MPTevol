@@ -117,15 +117,21 @@ viewTrees = function(phyloTree,
     Sites = levels(p_trees$data$Sites)
 
     if(!is.null(group.colors)){
-      #get levels that were not in the group.colors
-      Site1 = setdiff(levels(p_trees$data$Sites), names(group.colors))
 
-      Site.colors = setNames(
-        c(set.colors(n = length(Site1), rev = T), group.colors),
-        nm = c(Site1, names(group.colors))
-      )
+      if(!identical( sort(names(group.colors)), sort(levels(p_trees$data$Sites)) )){
 
-      Site.colors = Site.colors[levels(p_trees$data$Sites)]
+        #get levels that were not in the group.colors
+        Site1 = setdiff(levels(p_trees$data$Sites), names(group.colors))
+
+        Site.colors = setNames(
+          c(set.colors(n = length(Site1), rev = T), group.colors),
+          nm = c(Site1, names(group.colors))
+        )
+
+        Site.colors = Site.colors[levels(p_trees$data$Sites)]
+      }else{
+        Site.colors = group.colors[levels(p_trees$data$Sites)]
+      }
 
     }else{
       Site.colors = set.colors(n = length(Sites))

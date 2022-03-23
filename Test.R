@@ -6,13 +6,17 @@ use_gpl_license(version = 3, include_future = TRUE)
 library(usethis)
 
 
+add_
 
 #add packages.
 use_package("tidyverse", type = "depends")
 
+use_package("clonevol", type = "Imports" )
 
 document()
 load_all()
+
+use_vignette("MPTevol")
 
 
 library(ggtree)
@@ -165,7 +169,18 @@ phyloTree <- getPhyloTree(maf, patient.id = "Met1", method = "NJ", min.vaf = 0.0
 
 
 plotMutTree(maf, patient.id = "Met1")
-plotMutTree(maf, patient.id = "Met1", group = group, title = "CRC Met")
+mutTrees = plotMutTree(maf, patient.id = "Met1", group = group, title = "CRC Met")
+mutTrees1 = plotMutTree(maf, patient.id = "Met1", group = group, title = "CRC Met", method = "MP")
+
+
+mutTrees$plot
+
+compareTree(mutTrees$phyloTree,
+            mutTrees1$phyloTree,
+            plot = TRUE
+            )
+
+
 
 
 
@@ -348,5 +363,181 @@ timescape(clonal_prev = times$clonal_prev[[i]],
 rsvg::rsvg_pdf( svg = sprintf("%s/%s.model%s.svg", project.names, project.names, i),
                 file = sprintf("%s/%s.model%s.pdf", project.names, project.names, i)
 )
+
+#######################################################################################################
+
+#Running MEDICC
+
+folder = "/data1/qingjian/Rproject/Three/medicc/Seg.new1"
+segfiles = list.files( folder, pattern = ".txt", full.names = T)
+sampleid = list.files( folder, pattern = ".txt") %>% stringr::str_remove("_segments.txt")
+
+
+#Running for Breast
+
+library(IRanges)
+
+seg = splitSegment(
+  segfiles = segfiles[1:5],
+  sampleid = sampleid[1:5],
+  project.names = "Breast",
+  out.dir = "medicc/Breast",
+  N.baf = 30,
+  cnv_min_length = 1e+05,
+  max_CNt = 15,
+  minLength = 1e+05,
+  maxCNV = 4
+)
+
+
+#Running for Met
+
+library(IRanges)
+
+seg = splitSegment(
+  segfiles = segfiles[c(6:10,16:27, 29)],
+  sampleid = sampleid[c(6:10,16:27, 29)],
+  project.names = "Met",
+  out.dir = "medicc/Met",
+  N.baf = 30,
+  cnv_min_length = 1e+05,
+  max_CNt = 15,
+  minLength = 1e+05,
+  maxCNV = 4,
+  medicc.py = NULL,
+  python = "python"
+)
+
+## Running Medicc.
+
+#medicc=/data1/soft/medicc/medicc.py
+#python=/data1/qingjian/anaconda3/envs/pyclone/bin/python
+#nohup $python $medicc Breast/Breast.descr.txt results/Breast.out -v > results/Breast.runinfo.txt &
+
+
+plotMediccSeg = function(file){
+  major = read.table(file, header = T)
+
+  major = major %>%
+    mutate(seq = str_c(seqnames, start, end, sep = "_")) %>%
+    column_to_rownames(var = "seq") %>%
+    mutate(seqnames = NULL, start = NULL, end = NULL, width = NULL)
+
+  Heatmap(major,
+          row_names_gp = gpar(fontsize = 6)
+  )
+
+}
+
+
+
+
+plotMediccSeg("medicc/Breast/Breast.major.txt")
+plotMediccSeg("medicc/Breast/Breast.minor.txt")
+
+plotMediccSeg("medicc/Met/Met.major.txt")
+plotMediccSeg("medicc/Met/Met.minor.txt")
+
+
+#Plot CNA-based trees from the MEDICC.
+
+
+#read samples distances.
+#This dist file is the output of MEDICC
+dist = "medicc/Breast.run/pairwise_summed.dist"
+
+#set group information
+group <- list(
+              Breast =  paste0("Breast_", 1:5)
+)
+
+#set group colors
+#group.colors = setNames( set.colors(n = length(group), rev = T), nm = names(group) )
+group.colors = setNames( "#9F994E", nm = names(group) )
+
+#built trees
+tree = plotCNAtree(dist = dist,
+                   group = group,
+                   group.colors = group.colors
+)
+
+tree$plot
+
+pdf("medicc/Breast.CNAs.Trees.pdf", width = 5.5, height = 4.5)
+tree$plot
+dev.off()
+
+
+#Plot CNA-based trees from the MEDICC.
+
+
+#read samples distances.
+#This dist file is the output of MEDICC
+dist = "medicc/Met.run/tree_final.dist"
+
+#set group information
+#set group information
+group <- list(
+              Coad = paste0("Coad_", 1:5),
+              OveryLM = paste0("OveryLM_", 1:5),
+              OveryRM = paste0("OveryRM_", 1:6),
+              UterusM = paste0("UterusM_", c(1,3))
+)
+
+#set group colors
+group.colors = setNames( c("#7570B3","#E6AB02","#003C30","#666666") , nm = names(group) )
+
+#built trees
+tree = plotCNAtree(dist = dist,
+                   group = group,
+                   group.colors = group.colors
+)
+
+
+pdf("medicc/Met.CNAs.Trees.pdf", width = 9.7, height = 7.5)
+tree$plot
+dev.off()
+
+
+x = tree$phyloTree$tree %>% as.tibble()
+
+
+tidytree::child(x, 4)
+
+viewTrees
+
+######################################################################
+
+dist = "../medicc/results-new/pan1/pairwise_summed.dist"
+
+#built trees
+tree = plotCNAtree(dist = dist,
+                   group = NULL,
+                   group.colors = NULL
+)
+
+# we want to cut the trees.
+
+# we plot the node ids in the trees.
+
+ggtree(tree$phyloTree$tree, size=1) +
+  geom_tiplab(size=4) +
+  geom_nodelab(aes(label = round(node)) )
+
+tree.info = tree$phyloTree$tree %>%
+  as_tibble()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

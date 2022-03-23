@@ -1,0 +1,618 @@
+---
+title: "MPTevol: Clonal Evolutionary history and Metastatic routines analysis for Multiple Primary Tumors"
+output:
+  html_document:
+    df_print: paged
+    highlight: pygments
+    self_contained: yes
+    theme: united
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '5'
+date: "`r Sys.Date()`"
+
+vignette: >
+  %\VignetteIndexEntry{MPTevol}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type="text/css">
+    .list-group-item.active,.list-group-item.active:focus,.list-group-item.active:hover {
+    background-color: #007510;
+    }
+    body {
+      font-family: Calibri, helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    h1 {
+      font-size: 127%;
+      color: #750400;
+    }
+    h2 {
+      font-size: 121%;
+      color: #750400;
+    }    
+    h3 {
+      font-weight: bold;
+      font-size: 18px;
+      color: #750400;
+      line-height: 2.4;
+    }
+    h4 {
+      font-weight: bold;
+      font-size: 17px;
+      color: #750400;
+      line-height: 2.1;
+    }
+    h5{
+      font-size: 16px;
+      font-weight: bold;
+      color: #750400;
+      line-height: 1.9;
+    }
+    a, a:hover {
+      font-size: 16px;
+      color: #5bc227;
+    }
+
+</style>
+
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  collapse = TRUE,
+  comment = "#>",
+  cache = TRUE
+)
+```
+
+### 1. Introduction
+
+
+
+#### 1.1 Citation
+
+***Deciphering clonal dynamics and metastatic routines in a rare patient of synchronous triple primary tumors and multiple metastases with MPTevol***
+
+
+#### 2. Data Formate
+
+The MPTevol takes the SNVs and CNVs information as the input. The main formate is compatible with **MesKit ()**.
+
+
+To analyze with MPTevol, you need to provide:  
+  
+* A MAF file of multi-region samples from patients. (`*.maf / *.maf.gz`). **Required**
+* A clinical file contains the clinical data of tumor samples from each patient. **Required**
+* Cancer cell fraction (CCF) data of somatic mutations. **Optional but recommended**
+* A segmentation file. **Optional**
+* The GISTIC outputs.  **Optional**
+
+**Note:** `Tumor_Sample_Barcode` should be consistent in all input files, respectively.
+  
+#### 2.1 MAF files  
+  
+Mutation Annotation Format (MAF) files are tab-delimited text files with aggregated mutations information from VCF Files. The input MAF file could be gz compressed, and allowed values of `Variant_Classification`column can be found at [Mutation Annotation Format Page](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/).   
+
+The following fields are required to be contained in the MAF files with MesKit.
+   
+   
+**Mandatory fields:**  
+  
+`Hugo_Symbol`, `Chromosome`, `Start_Position`, `End_Position`, `Variant_Classification`, `Variant_Type`, `Reference_Allele`, `Tumor_Seq_Allele2`, `Ref_allele_depth`, `Alt_allele_depth`, `VAF`, `Tumor_Sample_Barcode`
+   
+   
+**Note:**  
+
+* The `Tumor_Sample_Barcode` of each sample should be unique.
+* The `VAF` (variant allele frequencie) can be on the scale 0-1 or 0-100.
+   
+**Example MAF file**  
+  
+```{r echo=FALSE, paged.print=FALSE, rownames.print=FALSE}
+
+MAFtable <- read.table(system.file("extdata", "CRC_HZ.maf", package = "MesKit"), header=TRUE)
+extractLines <- rbind(MAFtable[1, ], MAFtable[6600, ])
+extractLines <- rbind(extractLines, MAFtable[15000, ])
+data.frame(extractLines, row.names = NULL)
+```  
+  
+  
+#### 2.2 Clinical data files  
+  
+Clinical data file contains clinical information about each patient and their tumor samples, and mandatory fields are `Tumor_Sample_Barcode`, `Tumor_ID`, `Patient_ID`, and `Tumor_Sample_Label`.
+
+**Example clinical data file**
+
+```{r echo=FALSE, paged.print=FALSE, rownames.print=FALSE}
+ClinInfo <- read.table(system.file("extdata", "CRC_HZ.clin.txt", package = "MesKit"), header = TRUE)
+ClinInfo[1:5, ]
+```  
+  
+  
+#### 2.3 CCF files  
+  
+By default, there are six mandatory fields in input CCF file: `Patient_ID`,	`Tumor_Sample_Barcode`, `Chromosome`, `Start_Position`, `CCF` and  `CCF_Std`/`CCF_CI_High` (required when identifying clonal/subclonal mutations). The `Chromosome` field of your MAF file and CCF file should be in the same format (both in number or both start with "chr"). Notably, `Reference_Allele` and `Tumor_Seq_Allele2` are also required if you want include contains INDELs in the CCF file.
+
+
+**Example CCF file**
+
+```{r echo=FALSE, paged.print=FALSE, rownames.print=FALSE}
+ccfInfo <- read.table(system.file("extdata", "CRC_HZ.ccf.tsv", package = "MesKit"), header = TRUE)
+ccfInfo[1:5, ]
+```
+   
+
+#### 2.4 Segmentation files
+
+The segmentation file is a tab-delimited file with the following columns:
+
+* `Patient_ID` - patient ID
+* `Tumor_Sample_Barcode` - tumor sample barcode of samples
+* `Chromosome` - chromosome name or ID
+* `Start_Position` - genomic start position of segments (1-indexed)
+* `End_Position` - genomic end position of segments (1-indexed)
+* `SegmentMean/CopyNumber` - segment mean value or absolute integer copy number
+* `Minor_CN` - copy number of minor allele **Required**
+* `Major_CN` - copy number of major allele **Required**
+* `Tumor_Sample_Label` - the specific label of each tumor sample. **Optional**
+
+
+**Note:** Positions are in base pair units.
+    
+**Example Segmentation file**
+
+```{r echo=FALSE, paged.print=FALSE, rownames.print=FALSE}
+segInfo <- read.table(system.file("extdata", "CRC_HZ.seg.txt", package = "MesKit"), header = TRUE)
+segInfo[1:5, ]
+```  
+
+
+### 3. Installation  
+
+Install the latest version of this package by typing the commands below in R console:  
+  
+```{r eval=FALSE}
+if (!requireNamespace("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+devtools::install_github("qingjian1991/MPTevol")
+
+```
+
+
+  
+### 4. Start with the Maf object  
+   
+   
+`readMaf` function creates Maf/MafList objects by reading MAF files, clinical files and cancer cell fraction (CCF) data (optional but recommended). Parameter `refBuild` is used to set reference genome version for Homo sapiens reference (`"hg18"`, `"hg19"` or `"hg38"`). You should set `use.indel.ccf = TRUE` when your `ccfFile` contains INDELs apart from SNVs.
+   
+   
+```{r message=FALSE,warning=FALSE}
+#load packages
+library(MPTevol)
+library(tidyverse)
+library(MesKit)
+```  
+
+
+For this data,  a rara patients with three primary tumors, including a Breast cancer (BRCA), a colorectal cancer(READ) and a lung cancer(LNET) were collected with Multi-region sequencing (MRS) for each primary tumors. Three Metastatic tumors, most of which are from READ, are also sequenced, including OvaryLM, OvaryRM and UterusM.
+
+  
+```{r}
+#build a maf data: see MesKit
+
+data.type = "split1"
+
+maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
+               ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
+               clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
+               refBuild = "hg19",
+               ccf.conf.level = 0.95
+)
+
+```  
+
+### 5. Genomic Compariosn of Multiple Primary and Metastatic Tumors
+
+
+#### 5.1 Driver Mutation Landscapes
+
+In order to explore the genomic alterations during cancer progression with multi-region sequencing approach, we provided `classifyMut` function to categorize mutations. The classification is based on shared pattern or clonal status (CCF data is required) of mutations, which can be specified by `class` option. Additionally, `classByTumor` can be used to reveal the mutational profile within tumors.  
+
+
+```{r message=FALSE, fig.align='left', fig.width=11, fig.height=6.5}
+
+driverGene = read.delim(system.file(package="MPTevol", "extdata", "IntOGen-Drivers-Cancer_Genes.tsv"), header = T) %>%
+  filter(CANCER_TYPE %in% c("BRCA","COREAD","LUAD", "LUSC") ) %>%
+  pull(SYMBOL) %>% unique()
+
+mut.class <- classifyMut(maf, class =  "SP", patient.id = 'Breast')
+
+head(mut.class)
+```
+
+  
+The MesKit `plotMutProfile` function can visualize the mutational profile of tumor samples. 
+   
+```{r message=FALSE, fig.align='left', fig.width=11, fig.height=6.5}
+
+plotMutProfile(maf, class =  "SP", geneList = driverGene, use.tumorSampleLabel = TRUE, removeEmptyCols = FALSE)
+
+```
+ 
+
+#### 5.2 Allele-specific CNA profile
+
+To DO
+
+#### 5.3 Intratumor Heterogeneity
+
+To DO
+
+#### 5.4 Search the clinical targtable sites
+
+The `getClinSites` search the clinical targetable sites. Brifely, we match the drivers genes between maf files and clinical sites in oncokb. We only match the gene names, whereas ignoring the cancer types and gene alterations. The main targertable alterations include gene fusions (like BCR-ABL1 fusion), Oncogenic mutations, Exon deletions/insertion, Amplifications, Deletions and Singles-nucleotide mutation (BRAC V600E). Please mannual check the mutation status.
+Reference: [oncokb](oncokb.org)
+
+```{r message=FALSE, eval= TRUE}
+sites = getClinSites(maf, Patient_ID = "Breast")
+
+#DT::datatable(sites)
+
+head(sites)
+
+sites = getClinSites(maf)
+
+```
+
+#### 5.5 Estimated Natural Selection
+
+The natural selection may driver the primary tumors under different selective advantages. The Ka/Ks (ratio of non-synonymous rate raltaive to synonymous rate) could be used to measure the pressure of natural selection.
+
+`calKaKs` estimated the selective pressures in different sets of mutations, according to the mutation class in `classifyMut`
+
+
+```{r message=FALSE, eval=TRUE}
+
+kaks = calKaKs(maf, patient.id = "Breast", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
+
+kaks$Breast$plot
+
+```
+
+
+### 6. Build Phylogenetic Tress
+
+
+#### 6.1 Build mutation-based sample trees.
+
+With MPTevol, phylogenetic tree construction for each individual is based on the binary present/absence matrix of mutations across all tumor regions.  
+Based on the Maf object, `phyloTree` function reconstructs phylogenetic tree in different methods, including "NJ" (Neibor-Joining) , "MP" (maximum parsimony),  "ML" (maximum likelihood), "FASTME.ols" and "FASTME.bal", which can be set by controlling the `method` parameter. 
+   
+
+```{r message=FALSE}
+
+# Set the Group Information
+group <- list(
+  Coad = paste0("Coad_", 1:5),
+  OveryLM = paste0("OveryLM_", 1:5),
+  OveryRM = paste0("OveryRM_", 1:6),
+  UterusM = paste0("UterusM_", c(1,3))
+)
+
+#set group colors
+group.colors = setNames( c("#7570B3","#E6AB02","#003C30","#666666") , nm = names(group) )
+
+
+mutTrees <- plotMutTree(maf, patient.id = "Met1", group = group, 
+                        group.colors = group.colors,
+                        title = "mutation-based Tree")
+
+mutTrees$plot
+
+```
+
+
+#### 6.2 Build CNA-based sample trees.
+
+MPTevol used the MEDICC to infer the CNA-based samples trees. First, we obtain the shared genomic regions across samples by `splitSegment`. The `splitSegment` is used to generate the input formate required by MEDICC. Then we could run the MEDICC in the shell.
+
+```{r message=FALSE, eval=FALSE}
+
+#Running MEDICC
+
+folder = "/data1/qingjian/Rproject/Three/medicc/Seg.new1"
+segfiles = list.files( folder, pattern = ".txt", full.names = T)
+sampleid = list.files( folder, pattern = ".txt") %>% stringr::str_remove("_segments.txt")
+
+#Running for Breast
+
+library(IRanges)
+
+seg = splitSegment(
+  segfiles = segfiles[1:5],
+  sampleid = sampleid[1:5],
+  project.names = "Breast",
+  out.dir = "medicc/Breast",
+  N.baf = 30,
+  cnv_min_length = 1e+05,
+  max_CNt = 15,
+  minLength = 1e+05,
+  maxCNV = 4
+)
+
+```
+
+We could check the shared genomic regions through Heatmap.
+
+```{r eval=FALSE}
+
+plotMediccSeg = function(file){
+  major = read.table(file, header = T)
+  
+  major = major %>%
+    mutate(seq = str_c(seqnames, start, end, sep = "_")) %>%
+    column_to_rownames(var = "seq") %>%
+    mutate(seqnames = NULL, start = NULL, end = NULL, width = NULL)
+  
+  Heatmap(major,
+          row_names_gp = gpar(fontsize = 6)
+  )
+  
+}
+
+#See Major and Minor
+plotMediccSeg("medicc/Breast/Breast.major.txt")
+plotMediccSeg("medicc/Breast/Breast.minor.txt")
+
+```
+
+After Running the MEDICC, we get the distance files (tree_final.dist) to plot the CNA-based Trees. We estimated the bootsrtap values of CNA-based trees. `plotCNAtree` estimated the CNA-based Trees from tree_final.dist and visualize the phylogenetic trees.
+
+ 
+```{r, message= FALSE, warning=FALSE}
+
+#read samples distances.
+#This dist file is the output of MEDICC
+dist = system.file(package="MPTevol", "extdata", "tree_final.dist")
+
+#set group information
+#set group information
+group <- list(
+  Coad = paste0("Coad_", 1:5),
+  OveryLM = paste0("OveryLM_", 1:5),
+  OveryRM = paste0("OveryRM_", 1:6),
+  UterusM = paste0("UterusM_", c(1,3))
+)
+
+#set group colors
+group.colors = setNames( c("#7570B3","#E6AB02","#003C30","#666666") , nm = names(group) )
+
+#built trees
+cnaTree = plotCNAtree(dist = dist,
+                   group = group,
+                   group.colors = group.colors,
+                   title = "CNA-based Trees"
+)
+
+cnaTree$plot
+
+```
+
+
+#### 6.4 Compare the mutation-based trees and CNA-based trees.
+
+To DO.
+
+We could compare the mutation-based trees and CNA-based trees.
+
+
+
+```{r}
+library(patchwork)
+
+(mutTrees$plot + theme(legend.position = "none")) +  
+  (cnaTree$plot + theme(legend.position = "none"))
+
+```
+
+### 7. Clonal dynamics.
+
+The clonal trees could reflect the clonal dynamics in primary and metastasis tumors. 
+
+
+#### 7.1 Inferring clonal structures.
+
+This step is to infer the clonal structures. The sciClone and PyClone could infer the clonal structures. In MPTevol, the format of `variants` is used.
+
+```{r}
+
+# load data
+data("variants", package = "MPTevol")
+data("variants.ref", package = "MPTevol")
+
+head(variants)
+```
+
+
+#### 7.2 Check clonal prevalence across samples.
+
+
+```{r warning=FALSE}
+
+library(clonevol)
+
+vaf.col.names = c( paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
+                   paste0("OveryRM_", 1:6),paste0("UterusM_", c(1, 3)) )
+
+sample.groups = mapply(function(x) x[1], strsplit(vaf.col.names, "_")  )
+names(sample.groups) = vaf.col.names
+
+cluster.col.name = "cluster"
+
+clones.number = 10
+clone.colors = set.colors(10)
+
+#Check data.
+pp = plotVafCluster(
+  variants = variants,
+  cluster.col.name = "cluster",
+  vaf.col.names = vaf.col.names[ c(1,6, 10,11)],
+  #highlight = "is.driver",
+  #highlight.note.col.name = "gene_site",
+  box = TRUE,
+  violin = FALSE
+)
+
+pp
+
+#check cluster changes.
+plot.cluster.flow(variants,
+                  cluster.col.name = cluster.col.name,
+                  vaf.col.names = vaf.col.names,
+                  sample.names = vaf.col.names,
+                  colors = set.colors(clones.number),
+                  y.title = "Variant Allele Frequency %"
+) +
+  theme(axis.text.x = element_text(angle = 90) )
+
+```
+
+#### 7.3 Inferring clonal trees
+
+
+```{r warning=FALSE}
+
+sel = 1:18
+
+y = inferClonalTrees( project.names  = "Met" ,
+                      variants = variants.ref,
+                      ccf.col.names = vaf.col.names[sel],
+                      sample.groups = sample.groups[sel],
+                      cancer.initiation.model = "monoclonal",
+                      founding.cluster = 1 , ignore.clusters = 4 ,
+                      cluster.col.name = "cluster",
+                      subclonal.test.model = "non-parametric",
+                      sum.p = 0.01, alpha = 0.05, weighted = FALSE,
+                      plot.pairwise.CCF  = FALSE,
+                      highlight.note.col.name = NULL,
+                      highlight = "is.driver", highlight.CCF = TRUE
+)
+
+#pdf(file = sprintf("%s/%s.trees.pdf", output, output), width = 6, height = 6)
+
+plot.all.trees.clone.as.branch(y, branch.width = 0.5,
+                               node.size = 2, node.label.size = 0.5,
+                               tree.rotation	=180,
+                               angle = 20
+)
+
+#dev.off()
+
+```
+
+#### 7.4 We combined MRS samples into one samples (optional).
+
+Merge multiple samples into a single sample. This can be used to merge multi-region samples to one sample representing the tumor where the regions are taken from. This functions required the ref and var columns. So, we used the variants.ref
+
+Note: CCF should be in the range between 0-100
+
+```{r}
+
+#merge coad
+sel = 1:5
+y.merge = merge.samples(y, samples = vaf.col.names[sel],
+                        new.sample = "Coad", new.sample.group = "Coad",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+#merge overyLM
+sel = 6:10
+y.merge = merge.samples(y.merge, samples = vaf.col.names[sel],
+                        new.sample = "OveryLM", new.sample.group = "OveryLM",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+#merge overyRM
+sel = c(11:13, 14, 15, 16)
+y.merge = merge.samples(y.merge, samples = vaf.col.names[sel],
+                        new.sample = "OveryRM", new.sample.group = "OveryRM",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+
+#merge UterusM
+sel = c(17, 18)
+y.merge = merge.samples(y.merge, samples = vaf.col.names[sel],
+                        new.sample = "UterusM", new.sample.group = "UterusM",
+                        ref.cols = str_c(vaf.col.names[sel], ".ref"),
+                        var.cols = str_c(vaf.col.names[sel], ".var") )
+
+```
+
+
+#### 7.5 View clonal dynamic by timescape (optional).
+
+
+```{r}
+library(timescape)
+
+samples = names(y.merge$models)
+
+times = tree2timescape(results = y.merge, samples = names(y.merge$models)  )
+
+
+# run timescape
+i = 1
+timescape(clonal_prev = times$clonal_prev[[i]],
+          tree_edges = times$tree_edges[[i]],
+          clone_colours = times$clone_colours[[i]],
+          genotype_position = "centre",
+          xaxis_title = NULL
+)
+
+#save svg file plot
+#rsvg::rsvg_pdf( svg = sprintf("%s/%s.model%s.svg", project.names, project.names, i),
+#                file = sprintf("%s/%s.model%s.pdf", project.names, project.names, i)
+#)
+
+```
+
+
+### 8. Estimating Metastatic routines
+
+Metastatic routines could be estimated by comparing the CCFs of mutations from the primary and metastatic tumors. The H index could be used to determine the early or later metastases. The JSI index could be used to deterime the monclonal or polyclonal metastasis.
+
+
+```{r}
+## add driver information
+
+maf_driver = data.frame(
+  Mut_ID = c("5:112170777:CAGA:-","1:147092680:-:C"),
+  is.driver = c(TRUE,TRUE)
+)
+
+
+cal = calRoutines(maf = maf,
+                  patient.id = "Met1",
+                  PrimaryId = "Coad",
+                  pairByTumor = TRUE,
+                  use.tumorSampleLabel = TRUE,
+                  subtitle = "both",
+                  maf_drivers = maf_driver
+)
+
+cowplot_grid(plotlist = cal$Met1$plist, nrow = 1)
+
+```
+
+
+
+
+
+

@@ -13,7 +13,8 @@
 #' @param group a list that used to indicate the sample groups
 #' @param group.colors an array indicates the colors of sample groups.
 #' @param title title of the plot.
-#'
+#' @param normal.node the sample name of normal sample in the tree.
+#' @param hexpand_ratio: hexpand ratio. see \code{\link[ggtree]{hexpand}}
 #'
 #' @examples
 #'
@@ -57,7 +58,9 @@ plotCNAtree = function(dist,
                        bootstrap.rep.num = 500,
                        group = NULL,
                        group.colors = NULL,
-                       title = "Cancer"
+                       title = "Cancer",
+                       normal.node = "NORMAL",
+                       hexpand_ratio = 0.3
                        ){
 
   message("Calculate the bootstraps")
@@ -73,15 +76,26 @@ plotCNAtree = function(dist,
   mtree = phyloTree$tree
   bootstrap.value = phyloTree$bootstrap.value
 
+
+  #all.length = mtree$edge.length
+  root.length = rev(mtree$edge.length)[1]
+
+  #set outgroup and removing the Normal
+  mtree = root(mtree, outgroup = normal.node)
+  mtree= drop.tip(mtree, normal.node)
+
   #combined bootstrap
-  bp2 <- data.frame(node=1:(Nnode(mtree)-1) + Ntip(mtree),
+  bp2 <- data.frame(node=1:(Nnode(mtree)) + Ntip(mtree),
                     bootstrap = bootstrap.value  )
   mtree <- dplyr::full_join(mtree, bp2, by="node")
 
 
   p_trees <- ggtree(mtree, size=1) +
     geom_tiplab(size=4) +
-    geom_treescale(fontsize=6, linesize=1, offset=1)
+    geom_treescale(fontsize=6, linesize=1, offset=1) +
+    #set root length
+    geom_rootedge(rootedge = root.length, size=1, colour = "grey40") +
+    hexpand(hexpand_ratio, direction = 1)
 
  p_trees = p_trees +
    geom_nodepoint(aes(fill=cut(bootstrap, c(0, 70, 90, 100))),
@@ -105,15 +119,22 @@ plotCNAtree = function(dist,
    Sites = levels(p_trees$data$Sites)
 
    if(!is.null(group.colors)){
-     #get levels that were not in the group.colors
-     Site1 = setdiff(levels(p_trees$data$Sites), names(group.colors))
 
-     Site.colors = setNames(
-       c(set.colors(n = length(Site1), rev = T), group.colors),
-       nm = c(Site1, names(group.colors))
-     )
+     if(!identical( sort(names(group.colors)), sort(levels(p_trees$data$Sites)) )){
 
-     Site.colors = Site.colors[levels(p_trees$data$Sites)]
+       #get levels that were not in the group.colors
+       Site1 = setdiff(levels(p_trees$data$Sites), names(group.colors))
+
+       Site.colors = setNames(
+         c(set.colors(n = length(Site1), rev = T), group.colors),
+         nm = c(Site1, names(group.colors))
+       )
+
+       Site.colors = Site.colors[levels(p_trees$data$Sites)]
+     }else{
+       Site.colors = group.colors[levels(p_trees$data$Sites)]
+     }
+
 
    }else{
      Site.colors = set.colors(n = length(Sites))
@@ -147,9 +168,9 @@ plotCNAtree = function(dist,
 
 medicc.resample.distance.matrices = function(D, niter=100) {
   result = list()
-  pb=txtProgressBar(min=0,max=niter,style=3)
+  #pb=txtProgressBar(min=0,max=niter,style=3)
   for (s in 1:niter) {
-    setTxtProgressBar(pb,s)
+    #setTxtProgressBar(pb,s)
     Dnew = as.matrix(D)
     for (i in 1:nrow(Dnew)) {
       for (j in 1:i) {

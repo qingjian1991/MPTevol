@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of MPTevol is to infer the clonal structures and visual the trees for multi-regional sequencing samples(MRS), especially for Multi-primary tumors (MPT).
+The goal of MPTevol is to …
 
 ## Installation
 
@@ -17,6 +17,20 @@ You can install the development version of MPTevol from
 # install.packages("devtools")
 devtools::install_github("qingjian1991/MPTevol")
 ```
+
+## Authors
+
+This software is developed by:
+
+-   Qingjian Chen, <chenqingjian2010@163.com>, Sun Yat-Sen Univerity
+    Cancer Center.
+-   Shixiang Wang, <w_shixiang@163.com>, Sun Yat-Sen Univerity Cancer
+    Center.
+
+## Supervised by
+
+* [Qi Zhao](zhaoqi@sysucc.org.cn) from Bioinformatic Center of Sun
+Yat-sen University Cancer Center
 
 ## Example
 
@@ -30,5 +44,3 @@ files, so they display on GitHub and CRAN.
 The overview of the **MPTevol** is shown below:
 
 ![structures](/inst/MPTevol_Structure.jpg)
-
-

@@ -9,7 +9,9 @@ plotCNAtree(
   bootstrap.rep.num = 500,
   group = NULL,
   group.colors = NULL,
-  title = "Cancer"
+  title = "Cancer",
+  normal.node = "NORMAL",
+  hexpand_ratio = 0.3
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ plotCNAtree(
 \item{group.colors}{an array indicates the colors of sample groups.}
 
 \item{title}{title of the plot.}
+
+\item{normal.node}{the sample name of normal sample in the tree.}
+
+\item{hexpand_ratio:}{hexpand ratio. see \code{\link[ggtree]{hexpand}}}
 }
 \description{
 Plot phylogenetic trees of CNAs. The CNAs trees were constructed by MEDICC.

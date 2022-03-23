@@ -5,3 +5,7 @@ analysis
 tmp
 Met2
 Met
+medicc
+vignettes/Met/
+vignettes/MPTevol_cache
+vignettes/rsconnect
