@@ -33,14 +33,18 @@ Imports:
     phangorn,
     pio,
     stringr,
-    treeio
+    treeio,
+    gtools,
+    RColorBrewer,
+    purrr,
+    tidyr
 Suggests: 
     ggpubr,
     IRanges,
     knitr,
-    MEDICCquant,
     rmarkdown,
-    tibble
+    tibble,
+    DT
 VignetteBuilder: 
     knitr
 Remotes: 

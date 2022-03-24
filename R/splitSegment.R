@@ -21,7 +21,6 @@
 #' the format requirements of MEDICC.
 #'
 #' @import GenomicRanges
-#' @import IRanges
 #' @import ComplexHeatmap
 #' @export
 splitSegment <- function(segfiles,

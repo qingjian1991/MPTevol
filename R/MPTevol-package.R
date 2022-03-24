@@ -11,5 +11,9 @@
 #' @importFrom data.table .SD
 #' @importFrom data.table :=
 #' @importFrom data.table data.table
+#' @importFrom grDevices dev.off pdf
+#' @importFrom methods new
+#' @importFrom stats as.dist rnorm setNames
+#' @importFrom utils data read.delim read.table write.table
 ## usethis namespace: end
 NULL

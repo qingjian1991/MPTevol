@@ -13,5 +13,5 @@ tree2timescape(results, samples = NULL)
 }
 \description{
 This function generates the input of timescape to visual the fisher plot of
-clonal evolution by using the results of \code{\link[clonevol:inferClonalTree]{clonevol::inferClonalTree()}}.
+clonal evolution by using the results of \code{\link[=inferClonalTree]{inferClonalTree()}}.
 }

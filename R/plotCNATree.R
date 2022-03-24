@@ -46,7 +46,6 @@
 #' @import ggtree
 #' @import treeio
 #' @import phangorn
-#' @import MEDICCquant
 #' @import ape
 #' @export
 plotCNAtree <- function(dist,
