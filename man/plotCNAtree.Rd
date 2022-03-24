@@ -34,29 +34,30 @@ Plot phylogenetic trees of CNAs. The CNAs trees were constructed by MEDICC.
 }
 \examples{
 
-#read samples distances.
-#This dist file is the output of MEDICC
-dist = system.file(package="MPTevol", "extdata", "tree_final.dist")
+# read samples distances.
+# This dist file is the output of MEDICC
+dist <- system.file(package = "MPTevol", "extdata", "tree_final.dist")
 
-#set group information
-group <- list(NORMAL = "NORMAL",
-              Breast =  paste0("Breast_", 1:5),
-              Coad = paste0("Coad_", 1:5),
-              Lung  = paste0("Lung_", 1:5),
-              OveryLM = paste0("OveryLM_", 1:5),
-              OveryRM = paste0("OveryRM_", 1:6),
-              UterusM = paste0("UterusM_", c(1:7))
+# set group information
+group <- list(
+  NORMAL = "NORMAL",
+  Breast = paste0("Breast_", 1:5),
+  Coad = paste0("Coad_", 1:5),
+  Lung = paste0("Lung_", 1:5),
+  OveryLM = paste0("OveryLM_", 1:5),
+  OveryRM = paste0("OveryRM_", 1:6),
+  UterusM = paste0("UterusM_", c(1:7))
 )
 
-#set group colors
-group.colors = setNames( set.colors(n = length(group)), nm = names(group) )
+# set group colors
+group.colors <- setNames(set.colors(n = length(group)), nm = names(group))
 
-#built trees
-tree = plotCNAtree(dist = dist,
-                   group = group,
-                   group.colors = group.colors
+# built trees
+tree <- plotCNAtree(
+  dist = dist,
+  group = group,
+  group.colors = group.colors
 )
 
 tree$plot
-
 }

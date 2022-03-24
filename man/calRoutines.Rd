@@ -39,31 +39,32 @@ calRoutines(
 We calculate the H index and JSI index according to the pair-wise comparison of CCF.
 }
 \examples{
-cal = calRoutines(maf = maf,
-                  patient.id = "Met1",
-                  PrimaryId = "Coad",
-                  pairByTumor = TRUE,
-                  use.tumorSampleLabel = TRUE,
-                  subtitle = "both"
+cal <- calRoutines(
+  maf = maf,
+  patient.id = "Met1",
+  PrimaryId = "Coad",
+  pairByTumor = TRUE,
+  use.tumorSampleLabel = TRUE,
+  subtitle = "both"
 )
 
 plot_grid(plotlist = cal$Met1$plist, nrow = 1)
 ## add driver information
-maf_driver = data.frame(
-  Mut_ID = c("5:112170777:CAGA:-","1:147092680:-:C"),
-  is.driver = c(TRUE,TRUE)
+maf_driver <- data.frame(
+  Mut_ID = c("5:112170777:CAGA:-", "1:147092680:-:C"),
+  is.driver = c(TRUE, TRUE)
 )
-cal = calRoutines(maf = maf,
-                  patient.id = "Met1",
-                  PrimaryId = "Coad",
-                  pairByTumor = TRUE,
-                  use.tumorSampleLabel = TRUE,
-                  subtitle = "both",
-                  maf_drivers = maf_driver
+cal <- calRoutines(
+  maf = maf,
+  patient.id = "Met1",
+  PrimaryId = "Coad",
+  pairByTumor = TRUE,
+  use.tumorSampleLabel = TRUE,
+  subtitle = "both",
+  maf_drivers = maf_driver
 )
 
 plot_grid(plotlist = cal$Met1$plist, nrow = 1)
-
 }
 \references{
 \enumerate{

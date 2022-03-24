@@ -22,25 +22,24 @@ Reference: oncokb.org
 \examples{
 library(MesKit)
 
-#build a maf data: see MesKit
+# build a maf data: see MesKit
 
-data.type = "split1"
+data.type <- "split1"
 
-maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.mutation.txt", data.type)),
-               ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.CCF.txt", data.type)),
-               clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.clinical.txt", data.type)),
-               refBuild = "hg19",
-               ccf.conf.level = 0.95
+maf <- readMaf(
+  mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.mutation.txt", data.type)),
+  ccfFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.CCF.txt", data.type)),
+  clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.clinical.txt", data.type)),
+  refBuild = "hg19",
+  ccf.conf.level = 0.95
 )
 
-#see clinical targetable sites
-sites = getClinSites(maf)
+# see clinical targetable sites
+sites <- getClinSites(maf)
 
-#see one patinets
-sites = getClinSites(maf, Patient_ID = "Breast")
+# see one patinets
+sites <- getClinSites(maf, Patient_ID = "Breast")
 
-#View data
+# View data
 DT::datatable(sites)
-
-
 }

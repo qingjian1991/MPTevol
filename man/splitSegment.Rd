@@ -10,9 +10,9 @@ splitSegment(
   project.names = "tumor",
   out.dir = "data",
   N.baf = 30,
-  cnv_min_length = 1e+05,
+  cnv_min_length = 100000,
   max_CNt = 15,
-  minLength = 1e+05,
+  minLength = 100000,
   maxCNV = 4,
   medicc.py = "medicc.py",
   python = "python"

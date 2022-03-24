@@ -45,26 +45,25 @@ Plot phylogenetic tree of mutations.
 
 library(MesKit)
 
-#build a maf data: see MesKit
+# build a maf data: see MesKit
 
-data.type = "split1"
+data.type <- "split1"
 
-maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.mutation.txt", data.type)),
-               ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.CCF.txt", data.type)),
-               clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.clinical.txt", data.type)),
-               refBuild = "hg19",
-               ccf.conf.level = 0.95
+maf <- readMaf(
+  mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.mutation.txt", data.type)),
+  ccfFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.CCF.txt", data.type)),
+  clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.clinical.txt", data.type)),
+  refBuild = "hg19",
+  ccf.conf.level = 0.95
 )
 
-#construct a group
+# construct a group
 group <- list(
   Coad = paste0("Coad_", 1:5),
   OveryLM = paste0("OveryLM_", 1:5),
   OveryRM = paste0("OveryRM_", 1:6),
-  UterusM = paste0("UterusM_", c(1,3))
+  UterusM = paste0("UterusM_", c(1, 3))
 )
 
 plotMutTree(maf, patient.id = "Met1", group = group, title = "CRC Met")
-
-
 }

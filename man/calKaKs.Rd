@@ -27,22 +27,22 @@ calculate the Ka/Ks of each group. The mutation are classified as \strong{classi
 }
 \examples{
 
-#read data
-data.type = "split1"
+# read data
+data.type <- "split1"
 
-maf <- readMaf(mafFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.mutation.txt", data.type)),
-               ccfFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.CCF.txt", data.type)),
-               clinicalFile = system.file(package="MPTevol", "extdata", sprintf("meskit.\%s.clinical.txt", data.type)),
-               refBuild = "hg19",
-               ccf.conf.level = 0.95
+maf <- readMaf(
+  mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.mutation.txt", data.type)),
+  ccfFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.CCF.txt", data.type)),
+  clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.\%s.clinical.txt", data.type)),
+  refBuild = "hg19",
+  ccf.conf.level = 0.95
 )
 
-#calKaKas
+# calKaKas
 
-kaks = calKaKs(maf, patient.id = "Breast", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
+kaks <- calKaKs(maf, patient.id = "Breast", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
 
-kaks = calKaKs(maf, patient.id = "Breast", class = "CS", parallel = TRUE, vaf_cutoff = 0.05)
+kaks <- calKaKs(maf, patient.id = "Breast", class = "CS", parallel = TRUE, vaf_cutoff = 0.05)
 
-kaks = calKaKs(maf, class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
-
+kaks <- calKaKs(maf, class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
 }

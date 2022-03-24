@@ -4,7 +4,7 @@
 \alias{plotCNAProfile}
 \title{plotCNAProfile}
 \usage{
-plotCNAProfile(cnaqc.list, min_length_show = 1e+05)
+plotCNAProfile(cnaqc.list, min_length_show = 100000)
 }
 \arguments{
 \item{cnaqc.list:}{cnaqc.list}

@@ -4,9 +4,9 @@
 \name{MPTevol-package}
 \alias{MPTevol}
 \alias{MPTevol-package}
-\title{MPTevol: What the Package Does (One Line, Title Case)}
+\title{MPTevol: Clonal Evolutionary History and Metastatic Routines Analysis for Multiple Primary Tumors}
 \description{
-What the package does (one paragraph).
+Provides a practical computation framework for dissecting the evolution of multiple primary tumors (MPT), reducing analysis complexity with modular design.
 }
 \author{
 \strong{Maintainer}: Qinjian Chen \email{chenqingjian2010@163.com} (\href{https://orcid.org/xxx}{ORCID})
