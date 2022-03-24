@@ -165,7 +165,7 @@ calRoutines <- function(maf,
 
       p1 <- Met1_C_OL %>%
         ggplot2::ggplot(ggplot2::aes_string(x = pairs[1], y = pairs[2])) +
-        ggplot2::theme_classic2() +
+        ggpubr::theme_classic2() +
         ggplot2::stat_density2d(ggplot2::aes(fill = ..density..^2),
           geom = "tile", contour = FALSE, n = 100
         ) +

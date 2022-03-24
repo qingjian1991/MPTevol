@@ -22,29 +22,30 @@ Imports:
     data.table,
     dndscv,
     dplyr,
-    easypar,
     GenomicRanges,
     ggplot2,
     ggrepel,
     ggtree,
-    latex2exp,
+    gtools,
     magrittr,
     MesKit,
+    methods,
     phangorn,
     pio,
-    stringr,
-    treeio,
-    gtools,
-    RColorBrewer,
     purrr,
-    tidyr
+    stringr,
+    tidyr,
+    treeio
 Suggests: 
+    DT,
+    easypar,
     ggpubr,
     IRanges,
     knitr,
+    latex2exp,
+    RColorBrewer,
     rmarkdown,
-    tibble,
-    DT
+    tibble
 VignetteBuilder: 
     knitr
 Remotes: 

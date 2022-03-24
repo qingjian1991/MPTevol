@@ -10,6 +10,7 @@
 #' @param parallel If `TRUE` (default), run in parallel.
 #'
 #' @examples
+#' library(MesKit)
 #' data.type <- "split1"
 #'
 #' maf <- readMaf(

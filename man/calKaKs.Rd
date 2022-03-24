@@ -28,6 +28,7 @@ and "SPCS". see \code{\link[MesKit:classifyMut]{MesKit::classifyMut()}}.}
 The mutations are classified by \code{classifyMut()} internally.
 }
 \examples{
+library(MesKit)
 data.type <- "split1"
 
 maf <- readMaf(
