@@ -2,18 +2,17 @@
 % Please edit documentation in R/calKaKs.R
 \name{getKaKs}
 \alias{getKaKs}
-\title{getKaKs}
+\title{getKaKs compares Ka/Ks between different groups}
 \usage{
 getKaKs(df, vaf_cutoff = 0.05)
 }
 \arguments{
-\item{df:}{data. six columns are required to calculate the Ka/Ks, including "Tumor_Sample_Barcode","Chromosome","Start_Position","Reference_Allele","Tumor_Seq_Allele2" and "VAF"}
+\item{df}{data. Six columns are required to calculate the Ka/Ks,
+including "Tumor_Sample_Barcode","Chromosome","Start_Position",
+"Reference_Allele","Tumor_Seq_Allele2" and "VAF".}
 
-\item{vaf_cutoff:}{VAF cutoff. Removing mutations with low variant allele frequency (VAF).}
+\item{vaf_cutoff}{VAF cutoff. Removing mutations with low variant allele frequency (VAF).}
 }
 \description{
-See Ka/Ks between different groups.
-}
-\details{
-We use the dndscv to calculate the Ka/Ks.
+getKaKs compares Ka/Ks between different groups
 }

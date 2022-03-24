@@ -1,16 +1,11 @@
-#' set.colors
-#'
-#' Some colors could be used.
+#' Color setting
 #'
 #' @param n number of colors to select. A total of 36 colors are saved.
 #' @param rev reverse output the colors.
 #' @param random random select number of colors.
 #'
 #' @export
-
-
 set.colors <- function(n = 36, rev = FALSE, random = FALSE) {
-
   # set certain colors
   colorScale <- c(
     "#3C5488FF", "#00A087FF", "#F39B7fFF",

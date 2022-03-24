@@ -1,53 +1,64 @@
 # save the functions related to clonal trees.
 
-
-
 #' inferClonalTrees
 #'
-#' This function have two main modulars, including inferring the clonal trees and plot the clonal models.
-#'
+#' This function have two main modules,
+#' including inferring the clonal trees and plot the clonal models.
+#' @details
+#' Inferring the clonal trees is the central process in clonal construction.
+#' However, users always find that it is difficult to build clonal trees.
+#' Therefore, we should check the cluster structures before building clonal trees.
+#' Here are some suggestions about building clonal trees.
+#' 1. chose the optimal clustering methods. Before do mutation clustering.
+#' We should removing the low-quality mutations.
+#' The indels are suggested to be removed.
+#' The mutations in the LOH regions are suggested to be removed.
+#' The mutations in the cnv-regions are should be carefully checked.
+#' 2. chose the right founding cluster.
+#' 3. ignore some false-negative clusters. For some clusters,
+#' especially clusters that have low vafs in all samples,
+#' were probably false-positive clusters. Removing clusters that having too few mutations.
+#' 4. try different cutoffs. The two parameters **sum.p**
+#' and **alpha** are used to determine whether a cluster is in a sample.
+#' A relaxed cutoffs (small values of the two parameters) enables more
+#' clusters are though to be present in the sample.
 #' @param project.names the project names used in the output.
-#' @param variants data frame of the variants. At least cluster column and VAF or CCF columns are required. Cluster column should contain cluster identities as continuous integer values starting from 1.
+#' @param variants data frame of the variants.
+#' At least cluster column and VAF or CCF columns are required.
+#' Cluster column should contain cluster identities as continuous integer values
+#' starting from 1.
 #' @param vaf.col.names the column names of samples containing VAF.
-#' @param ccf.col.names the column names of samples containing CCF. Note: either setting **vaf.col.names** or **ccf.col.names**.
-#' @param sample.groups indicate the samples groups. An example is setNames(c("Primary","Primary","Met","Met"), nm = c("P1","P2","M1","M1") )
+#' @param ccf.col.names the column names of samples containing CCF.
+#' Note: either setting **vaf.col.names** or **ccf.col.names**.
+#' @param sample.groups indicate the samples groups.
+#' An example is setNames(c("Primary","Primary","Met","Met"), nm = c("P1","P2","M1","M1") )
 #' @param founding.cluster the name of founding clones, one of the most important parameters. For most of circumstances, the founding cluster is the cluster with the highest average CCF cluster.
-#' @param ignore.clusters the clusters that ignores to analysis. For some clusters, especially clusters that have low vafs in all samples, were probably false-positive clusters.
-#'
+#' @param ignore.clusters the clusters that ignores to analysis.
+#' For some clusters, especially clusters that have low vafs in all samples,
+#' were probably false-positive clusters.
 #' @param cluster.col.name the column names that containing cluster information.
 #' @param clone.colors setting clone colors.
-#' @param subclonal.test.model What model to use when generating the bootstrap Values are: c('non-parametric', 'normal', 'normal-truncated', 'beta', 'beta-binomial'). (Default = "non-parametric")
-#'
-#' @param cancer.initiation.model cancer evolution model to use, c('monoclonal', 'polyclonal'). monoclonal model assumes the orginal tumor (eg. primary tumor) arises from a single normal cell; polyclonal model assumes the original tumor can arise from multiple cells (ie. multiple founding clones). In the polyclonal model, the total VAF of the separate founding clones must not exceed 0.5.
-#'
+#' @param subclonal.test.model What model to use when generating the bootstrap values
+#' are: c('non-parametric', 'normal', 'normal-truncated', 'beta', 'beta-binomial').
+#' (Default = "non-parametric")
+#' @param cancer.initiation.model cancer evolution model to use, c('monoclonal', 'polyclonal').
+#' Monoclonal model assumes the orginal tumor (eg. primary tumor) arises from a
+#' single normal cell; polyclonal model assumes the original tumor can
+#' arise from multiple cells (ie. multiple founding clones).
+#' In the polyclonal model, the total VAF of the separate founding clones
+#' must not exceed 0.5.
 #' @param sum.p min probability that the cluster is non-negative in a sample(Default = 0.05).
 #' @param alpha alpha level in confidence interval estimate for the cluster (Default = 0.05).
-#'
 #' @param weighted weighted model (default = FALSE)
-#'
 #' @param consensus.tree whether build the consensus tree (Default = TRUE).
 #' @param plot.models whether plot the models (Default = TRUE).
 #' @param plot.pairwise.CCF whether plot pairwise CCF comparison (Default = FALSE).
-#'
 #' @param highlight column name to indicate whether highlight the sites (TRUE or FALSE).
 #' @param highlight.note.col.name highlight context.
 #' @param highlight.CCF highlight is CCF or VAF (Default = FALSE).
-#'
-#'
-#' @details
-#'
-#' Infeering the clonal trees is the central process in clonal construction. However, users always find that it is difficult to build clonal trees. Therefore, we should check the cluster structures before building clonal trees. Here are some suggestions about building clonal trees.
-#' 1. chose the optimal clustering methods. Before do mutation clustering. we should removing the low-quality mutations. The indels are suggested to be removed. The mutations in the LOH regions are suggested to be removed. The mutations in the cnv-regions are should be carefully checked.
-#' 2. chose the right founding cluster.
-#' 3. ignore some false-negative clusters. For some clusters, especially clusters that have low vafs in all samples, were probably false-positive clusters. Removing clusters that having too few mutations.
-#' 4. try different cutoffs. The two parameters **sum.p** and **alpha** are used to determine whether a cluster is in a sample. A relaxed cutoffs (small values of the two parameters) enables more clusters are though to be present in the sample.
-#'
-#'
 #' @import clonevol
 #'
 #' @export
-
-
 inferClonalTrees <- function(project.names,
                              variants,
                              vaf.col.names = NULL,
@@ -69,15 +80,21 @@ inferClonalTrees <- function(project.names,
   variants <- as.data.frame(variants)
 
   if (is.null(clone.colors)) {
-
     # Visualizing the variant clusters
-    set.colors <- c("#C6C6C6", "#6FDCBF", "#5AA36E", "#E99692", "#B4D985", "#EA7D23", "#E53CFB", "#4B85B7", "#8439FA", "#BD8736", "#B3B371", "#A7C7DE", "#EE97FC", "#57C222", "#BFABD0", "#44589B", "#794C18", RColorBrewer::brewer.pal(n = 10, name = "Paired"))
+    set.colors <- c(
+      "#C6C6C6", "#6FDCBF", "#5AA36E", "#E99692",
+      "#B4D985", "#EA7D23", "#E53CFB", "#4B85B7",
+      "#8439FA", "#BD8736", "#B3B371", "#A7C7DE",
+      "#EE97FC", "#57C222", "#BFABD0", "#44589B",
+      "#794C18",
+      RColorBrewer::brewer.pal(n = 10, name = "Paired")
+    )
 
     clone.colors <- set.colors[1:length(unique(variants[, cluster.col.name]))]
   }
 
   if (plot.pairwise.CCF) {
-    plot.pairwise(
+    clonevol::plot.pairwise(
       data = variants,
       col.names = vaf.col.names,
       group.col.name = cluster.col.name,
@@ -90,7 +107,7 @@ inferClonalTrees <- function(project.names,
   }
   message("Main Function: Inferring clonal models")
 
-  y.B <- infer.clonal.models(
+  y.B <- clonevol::infer.clonal.models(
     variants = variants,
     cluster.col.name = cluster.col.name,
     ccf.col.names = ccf.col.names,
@@ -116,12 +133,16 @@ inferClonalTrees <- function(project.names,
   if (consensus.tree) {
     message("convert.consensus.tree.clone.to.branch")
     # Converting node-based trees to branch-based trees
-    y.B <- convert.consensus.tree.clone.to.branch(y.B, cluster.col = cluster.col.name, branch.scale = "sqrt")
+    y.B <- clonevol::convert.consensus.tree.clone.to.branch(
+      y.B,
+      cluster.col = cluster.col.name,
+      branch.scale = "sqrt"
+    )
   }
 
   if (plot.models) {
     message("plot.clonal.models")
-    plot.clonal.models(y.B,
+    clonevol::plot.clonal.models(y.B,
       # box plot parameters
       box.plot = TRUE,
       fancy.boxplot = TRUE,
@@ -188,8 +209,11 @@ inferClonalTrees <- function(project.names,
     )
 
 
-    pdf(file = sprintf("%s/%s.trees.pdf", project.names, project.names), width = 6, height = 6)
-    plot.all.trees.clone.as.branch(y.B,
+    pdf(
+      file = sprintf("%s/%s.trees.pdf", project.names, project.names),
+      width = 6, height = 6
+    )
+    clonevol::plot.all.trees.clone.as.branch(y.B,
       branch.width = 0.5,
       node.size = 2, node.label.size = 0.5,
       tree.rotation = 180
@@ -200,32 +224,29 @@ inferClonalTrees <- function(project.names,
   return(y.B)
 }
 
-
-
 #' plotVafCluster
 #'
-#' Plot variant clustering in each sample by using combination of box, violin and jitter plots.
+#' Plot variant clustering in each sample by using combination of box,
+#' violin and jitter plots.
 #'
-#' @param variants data frame of the variants. At least cluster column and VAF or CCF columns are required. Cluster column should contain cluster identities as continuous integer values starting from 1.
-#' @param cluster.col.name the column names that containing cluster information (Default = "cluster").
+#' @param variants data frame of the variants.
+#' At least cluster column and VAF or CCF columns are required.
+#' Cluster column should contain cluster identities as continuous integer values
+#' starting from 1.
+#' @param cluster.col.name the column names that containing cluster
+#' information (Default = "cluster").
 #' @param vaf.col.names the column names of samples containing VAF.
-#'
 #' @param violin whether plotting violin (Default = FALSE).
 #' @param box whether plotting box (Default = TRUE).
 #' @param jitter whether plotting jitter plot (Default = TRUE).
-#'
 #' @param founding.cluster the name of founding clones, one of the most important parameters. For most of circumstances, the founding cluster is the cluster with the highest average CCF cluster.
 #' @param clone.colors setting clone colors.
 #' @param highlight column name to indicate whether highlight the sites (TRUE or FALSE).
 #' @param highlight.note.col.name highlight context.
 #' @param output.file the output file name (Default = NULL)
-#'
 #' @import clonevol
-#'
 #' @return a ggplot object
-#'
 #' @export
-
 plotVafCluster <- function(variants,
                            cluster.col.name = "cluster",
                            vaf.col.names,
@@ -240,7 +261,14 @@ plotVafCluster <- function(variants,
   if (is.null(clone.colors)) {
 
     # Visualizing the variant clusters
-    set.colors <- c("#C6C6C6", "#6FDCBF", "#5AA36E", "#E99692", "#B4D985", "#EA7D23", "#E53CFB", "#4B85B7", "#8439FA", "#BD8736", "#B3B371", "#A7C7DE", "#EE97FC", "#57C222", "#BFABD0", "#44589B", "#794C18", RColorBrewer::brewer.pal(n = 10, name = "Paired"))
+    set.colors <- c(
+      "#C6C6C6", "#6FDCBF", "#5AA36E", "#E99692",
+      "#B4D985", "#EA7D23", "#E53CFB", "#4B85B7",
+      "#8439FA", "#BD8736", "#B3B371", "#A7C7DE",
+      "#EE97FC", "#57C222", "#BFABD0", "#44589B",
+      "#794C18",
+      RColorBrewer::brewer.pal(n = 10, name = "Paired")
+    )
 
     clone.colors <- set.colors[1:length(unique(variants[, cluster.col.name]))]
   }
@@ -288,28 +316,28 @@ plotVafCluster <- function(variants,
       clone.colors.sel <- unique(clone.colors[labels[, cluster.col.name][labels[, highlight]]])
 
       pp1 <- labels %>%
-        filter(is.driver) %>%
-        mutate(cluster_1 = factor(cluster)) %>%
-        ggplot(aes(y = cluster, x = 1, label = gene_site)) +
-        theme_classic() +
-        geom_point(aes(color = cluster_1), size = 3) +
-        geom_text_repel(
+        dplyr::filter(is.driver) %>%
+        dplyr::mutate(cluster_1 = factor(cluster)) %>%
+        ggplot2::ggplot(ggplot2::aes(y = cluster, x = 1, label = gene_site)) +
+        ggplot2::theme_classic() +
+        ggplot2::geom_point(ggplot2::aes(color = cluster_1), size = 3) +
+        ggrepel::geom_text_repel(
           nudge_x = 0.15,
           direction = "y",
           hjust = 0,
           segment.size = 0.2,
           size = 3,
         ) +
-        ylim(0, length(clone.colors) + 1) +
-        xlim(1, 0.8) +
-        scale_color_manual(values = clone.colors.sel, guide = "none") +
-        theme(
-          axis.line = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text = element_blank(),
-          axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          plot.title = element_text(hjust = 0.5)
+        ggplot2::ylim(0, length(clone.colors) + 1) +
+        ggplot2::xlim(1, 0.8) +
+        ggplot2::scale_color_manual(values = clone.colors.sel, guide = "none") +
+        ggplot2::theme(
+          axis.line = ggplot2::element_blank(),
+          axis.ticks = ggplot2::element_blank(),
+          axis.text = ggplot2::element_blank(),
+          axis.title.x = ggplot2::element_blank(),
+          axis.title.y = ggplot2::element_blank(),
+          plot.title = ggplot2::element_text(hjust = 0.5)
         )
 
       pp[[length(pp) + 1]] <- pp1
@@ -325,20 +353,16 @@ plotVafCluster <- function(variants,
   ggpubr::ggarrange(plotlist = pp, ncol = length(pp), align = "h")
 }
 
-
-
-
 #' tree2timescape
 #'
-#' This function generates the input of timescape to visual the fisher plot of clonal evolution by using the results of \code{\link{inferClonalTree}}.
+#' This function generates the input of timescape to visual the fisher plot of
+#' clonal evolution by using the results of [clonevol::inferClonalTree()].
 #'
-#' @param results: the clonal trees that generated by \code{\link{inferClonalTree}}.
-#' @param samples: the samples to show in the fisher plot.
+#' @param results the clonal trees that generated by [inferClonalTree()].
+#' @param samples the samples to show in the fisher plot.
 #'
 #' @import clonevol
-#'
 #' @export
-
 tree2timescape <- function(results, samples = NULL) {
   if (is.null(samples)) {
     samples <- names(results$models)
@@ -348,14 +372,12 @@ tree2timescape <- function(results, samples = NULL) {
     }
   }
 
-
   # store the clonevol results in a list
   res <- list(
     samples = samples, clonevol.clone.names = NULL, clonevol.clone.colors = NULL,
     timepoints = seq(1, length(samples)), num.models = nrow(results$matched$index),
     parents = list(), cell.fractions = list(), all = list()
   )
-
 
   clonevol.clone.names <- NULL
   clone.nums <- NULL
@@ -415,7 +437,6 @@ tree2timescape <- function(results, samples = NULL) {
     res$all[[i]] <- vv
   }
 
-
   ##############################
   # for timescape input
 
@@ -425,46 +446,44 @@ tree2timescape <- function(results, samples = NULL) {
     clone_colours = list()
   )
 
-
   for (i in 1:res$num.models) {
-
     # re-set ancestor clonal prev
 
     # get sum of prev of certain clone.
     clonal_prev_ancestor <- res$all[[i]] %>%
-      mutate(clone = rownames(.)) %>%
-      reshape::melt.data.frame(
+      dplyr::mutate(clone = rownames(.)) %>%
+      data.table::melt(
         id.vars = c("clone", "parent"),
         measure.vars = samples
       ) %>%
-      group_by(variable, parent) %>%
-      summarise(sumvalue = sum(value)) %>%
+      dplyr::group_by(variable, parent) %>%
+      dplyr::summarise(sumvalue = sum(value)) %>%
       dplyr::rename(clone = parent) %>%
-      mutate(clone = as.character(clone))
+      dplyr::mutate(clone = as.character(clone))
 
     # prev = curent - ancestor
     times$clonal_prev[[i]] <- res$all[[i]] %>%
-      mutate(clone = rownames(.)) %>%
-      reshape::melt.data.frame(
+      dplyr::mutate(clone = rownames(.)) %>%
+      data.table::melt(
         id.vars = c("clone", "parent"),
         measure.vars = samples
       ) %>%
-      left_join(clonal_prev_ancestor) %>%
-      mutate(
+      dplyr::left_join(clonal_prev_ancestor) %>%
+      dplyr::mutate(
         sumvalue = ifelse(is.na(sumvalue), 0, sumvalue),
         value1 = value - sumvalue,
         # set value1 = 0 if value1 <=0
         value1 = ifelse(value1 < 0, 0, value1)
       ) %>%
-      select(clone, variable, value1) %>%
+      dplyr::select(clone, variable, value1) %>%
       dplyr::rename(
         clone_id = clone,
         timepoint = variable,
         clonal_prev = value1
       ) %>% # set arrange of samples.
-      mutate(timepoint = factor(timepoint, levels = samples)) %>%
-      arrange(timepoint) %>%
-      mutate(timepoint = as.character(timepoint))
+      dplyr::mutate(timepoint = factor(timepoint, levels = samples)) %>%
+      dplyr::arrange(timepoint) %>%
+      dplyr::mutate(timepoint = as.character(timepoint))
 
     # re-mapping clone ids.
     cloneNames <- setNames(

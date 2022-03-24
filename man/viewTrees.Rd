@@ -2,7 +2,7 @@
 % Please edit documentation in R/viewTrees.R
 \name{viewTrees}
 \alias{viewTrees}
-\title{viewTrees}
+\title{Visualize the trees}
 \usage{
 viewTrees(
   phyloTree,
@@ -16,7 +16,7 @@ viewTrees(
 )
 }
 \arguments{
-\item{phyloTree}{phyloTree: The tree is in Parenthetic Format. see \code{\link[read.tree]{subMaf}}.}
+\item{phyloTree}{phyloTree: The tree is in Parenthetic format.}
 
 \item{tree.format}{the format of tree, S4 or list. Default is S4.}
 
@@ -26,20 +26,19 @@ viewTrees(
 
 \item{group.colors}{an array indicates the colors of sample groups.}
 
+\item{title}{title of the plot.}
+
 \item{showBootstrap}{whether showing the bootstrap values. Default is TRUE.}
 
-\item{title:}{title of the plot.}
-
-\item{hexpand_ratio:}{hexpand ratio. see \code{\link[ggtree]{hexpand}}}
+\item{hexpand_ratio}{hexpand ratio. see \code{\link[ggtree]{hexpand}}}
 }
 \value{
 a ggtree object
 }
 \description{
-we used the ggtree to visualize the trees.
+Visualize the trees
 }
 \examples{
-
 # This dist file is the output of MEDICC
 dist <- system.file(package = "MPTevol", "extdata", "tree_final.dist")
 

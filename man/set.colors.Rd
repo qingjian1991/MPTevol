@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary.R
 \name{set.colors}
 \alias{set.colors}
-\title{set.colors}
+\title{Color setting}
 \usage{
 set.colors(n = 36, rev = FALSE, random = FALSE)
 }
@@ -14,5 +14,5 @@ set.colors(n = 36, rev = FALSE, random = FALSE)
 \item{random}{random select number of colors.}
 }
 \description{
-Some colors could be used.
+Color setting
 }

@@ -19,9 +19,13 @@ plotVafCluster(
 )
 }
 \arguments{
-\item{variants}{data frame of the variants. At least cluster column and VAF or CCF columns are required. Cluster column should contain cluster identities as continuous integer values starting from 1.}
+\item{variants}{data frame of the variants.
+At least cluster column and VAF or CCF columns are required.
+Cluster column should contain cluster identities as continuous integer values
+starting from 1.}
 
-\item{cluster.col.name}{the column names that containing cluster information (Default = "cluster").}
+\item{cluster.col.name}{the column names that containing cluster
+information (Default = "cluster").}
 
 \item{vaf.col.names}{the column names of samples containing VAF.}
 
@@ -45,5 +49,6 @@ plotVafCluster(
 a ggplot object
 }
 \description{
-Plot variant clustering in each sample by using combination of box, violin and jitter plots.
+Plot variant clustering in each sample by using combination of box,
+violin and jitter plots.
 }

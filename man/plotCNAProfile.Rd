@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCNAProfile.R
 \name{plotCNAProfile}
 \alias{plotCNAProfile}
-\title{Visualiza CNA profile}
+\title{Visualize CNA profile}
 \usage{
 plotCNAProfile(cnaqc.list, min_length_show = 1e+05)
 }

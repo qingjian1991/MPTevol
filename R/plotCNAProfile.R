@@ -1,4 +1,4 @@
-#' Visualiza CNA profile
+#' Visualize CNA profile
 #'
 #' This function plots the allele-specific CNAs of multiple-samples.
 #' See [readCNAProfile()] for examples.

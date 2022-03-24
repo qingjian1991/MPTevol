@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCNATree.R
 \name{plotCNAtree}
 \alias{plotCNAtree}
-\title{plotCNAtree}
+\title{plotCNAtree plots phylogenetic trees of CNAs}
 \usage{
 plotCNAtree(
   dist,
@@ -27,13 +27,12 @@ plotCNAtree(
 
 \item{normal.node}{the sample name of normal sample in the tree.}
 
-\item{hexpand_ratio:}{hexpand ratio. see \code{\link[ggtree]{hexpand}}}
+\item{hexpand_ratio}{hexpand ratio. see \code{\link[ggtree]{hexpand}}}
 }
 \description{
-Plot phylogenetic trees of CNAs. The CNAs trees were constructed by MEDICC.
+The CNAs trees were constructed by MEDICC.
 }
 \examples{
-
 # read samples distances.
 # This dist file is the output of MEDICC
 dist <- system.file(package = "MPTevol", "extdata", "tree_final.dist")

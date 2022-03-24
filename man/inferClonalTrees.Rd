@@ -30,25 +30,39 @@ inferClonalTrees(
 \arguments{
 \item{project.names}{the project names used in the output.}
 
-\item{variants}{data frame of the variants. At least cluster column and VAF or CCF columns are required. Cluster column should contain cluster identities as continuous integer values starting from 1.}
+\item{variants}{data frame of the variants.
+At least cluster column and VAF or CCF columns are required.
+Cluster column should contain cluster identities as continuous integer values
+starting from 1.}
 
 \item{vaf.col.names}{the column names of samples containing VAF.}
 
-\item{ccf.col.names}{the column names of samples containing CCF. Note: either setting \strong{vaf.col.names} or \strong{ccf.col.names}.}
+\item{ccf.col.names}{the column names of samples containing CCF.
+Note: either setting \strong{vaf.col.names} or \strong{ccf.col.names}.}
 
-\item{sample.groups}{indicate the samples groups. An example is setNames(c("Primary","Primary","Met","Met"), nm = c("P1","P2","M1","M1") )}
+\item{sample.groups}{indicate the samples groups.
+An example is setNames(c("Primary","Primary","Met","Met"), nm = c("P1","P2","M1","M1") )}
 
 \item{founding.cluster}{the name of founding clones, one of the most important parameters. For most of circumstances, the founding cluster is the cluster with the highest average CCF cluster.}
 
-\item{ignore.clusters}{the clusters that ignores to analysis. For some clusters, especially clusters that have low vafs in all samples, were probably false-positive clusters.}
+\item{ignore.clusters}{the clusters that ignores to analysis.
+For some clusters, especially clusters that have low vafs in all samples,
+were probably false-positive clusters.}
 
 \item{cluster.col.name}{the column names that containing cluster information.}
 
 \item{clone.colors}{setting clone colors.}
 
-\item{subclonal.test.model}{What model to use when generating the bootstrap Values are: c('non-parametric', 'normal', 'normal-truncated', 'beta', 'beta-binomial'). (Default = "non-parametric")}
+\item{subclonal.test.model}{What model to use when generating the bootstrap values
+are: c('non-parametric', 'normal', 'normal-truncated', 'beta', 'beta-binomial').
+(Default = "non-parametric")}
 
-\item{cancer.initiation.model}{cancer evolution model to use, c('monoclonal', 'polyclonal'). monoclonal model assumes the orginal tumor (eg. primary tumor) arises from a single normal cell; polyclonal model assumes the original tumor can arise from multiple cells (ie. multiple founding clones). In the polyclonal model, the total VAF of the separate founding clones must not exceed 0.5.}
+\item{cancer.initiation.model}{cancer evolution model to use, c('monoclonal', 'polyclonal').
+Monoclonal model assumes the orginal tumor (eg. primary tumor) arises from a
+single normal cell; polyclonal model assumes the original tumor can
+arise from multiple cells (ie. multiple founding clones).
+In the polyclonal model, the total VAF of the separate founding clones
+must not exceed 0.5.}
 
 \item{sum.p}{min probability that the cluster is non-negative in a sample(Default = 0.05).}
 
@@ -69,14 +83,27 @@ inferClonalTrees(
 \item{highlight.CCF}{highlight is CCF or VAF (Default = FALSE).}
 }
 \description{
-This function have two main modulars, including inferring the clonal trees and plot the clonal models.
+This function have two main modules,
+including inferring the clonal trees and plot the clonal models.
 }
 \details{
-Infeering the clonal trees is the central process in clonal construction. However, users always find that it is difficult to build clonal trees. Therefore, we should check the cluster structures before building clonal trees. Here are some suggestions about building clonal trees.
+Inferring the clonal trees is the central process in clonal construction.
+However, users always find that it is difficult to build clonal trees.
+Therefore, we should check the cluster structures before building clonal trees.
+Here are some suggestions about building clonal trees.
 \enumerate{
-\item chose the optimal clustering methods. Before do mutation clustering. we should removing the low-quality mutations. The indels are suggested to be removed. The mutations in the LOH regions are suggested to be removed. The mutations in the cnv-regions are should be carefully checked.
+\item chose the optimal clustering methods. Before do mutation clustering.
+We should removing the low-quality mutations.
+The indels are suggested to be removed.
+The mutations in the LOH regions are suggested to be removed.
+The mutations in the cnv-regions are should be carefully checked.
 \item chose the right founding cluster.
-\item ignore some false-negative clusters. For some clusters, especially clusters that have low vafs in all samples, were probably false-positive clusters. Removing clusters that having too few mutations.
-\item try different cutoffs. The two parameters \strong{sum.p} and \strong{alpha} are used to determine whether a cluster is in a sample. A relaxed cutoffs (small values of the two parameters) enables more clusters are though to be present in the sample.
+\item ignore some false-negative clusters. For some clusters,
+especially clusters that have low vafs in all samples,
+were probably false-positive clusters. Removing clusters that having too few mutations.
+\item try different cutoffs. The two parameters \strong{sum.p}
+and \strong{alpha} are used to determine whether a cluster is in a sample.
+A relaxed cutoffs (small values of the two parameters) enables more
+clusters are though to be present in the sample.
 }
 }

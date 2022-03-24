@@ -15,21 +15,32 @@ License: GPL (>= 3)
 Depends: 
     R (>= 4.0)
 Imports: 
+    ape,
     clonevol,
     CNAqc,
+    ComplexHeatmap,
     data.table,
     dndscv,
     dplyr,
     easypar,
+    GenomicRanges,
     ggplot2,
+    ggrepel,
+    ggtree,
     latex2exp,
     magrittr,
     MesKit,
+    phangorn,
     pio,
-    stringr
+    stringr,
+    treeio
 Suggests: 
+    ggpubr,
+    IRanges,
     knitr,
-    rmarkdown
+    MEDICCquant,
+    rmarkdown,
+    tibble
 VignetteBuilder: 
     knitr
 Remotes: 

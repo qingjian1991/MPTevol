@@ -90,8 +90,6 @@ calKaKs <- function(maf,
 
     # Remving groups that fail to calculate the KaKs
     maf_KaKs <- maf_KaKs[lapply(maf_KaKs, function(x) is.numeric(nrow(x))) %>% unlist()]
-
-
     KaKs_data <- list()
 
     for (i in names(maf_KaKs)) {
@@ -133,10 +131,7 @@ calKaKs <- function(maf,
       plot = p1
     )
   }
-
-
   ##########################################################################
-
   # running
 
   # Get the mutation groups.
@@ -163,20 +158,13 @@ calKaKs <- function(maf,
 
 
 
-#' getKaKs
+#' getKaKs compares Ka/Ks between different groups
 #'
-#' See Ka/Ks between different groups.
-#'
-#' @param df: data. six columns are required to calculate the Ka/Ks, including "Tumor_Sample_Barcode","Chromosome","Start_Position","Reference_Allele","Tumor_Seq_Allele2" and "VAF"
-#' @param vaf_cutoff: VAF cutoff. Removing mutations with low variant allele frequency (VAF).
-#'
-#' @details
-#'
-#' We use the dndscv to calculate the Ka/Ks.
-#'
-#'
+#' @param df data. Six columns are required to calculate the Ka/Ks,
+#' including "Tumor_Sample_Barcode","Chromosome","Start_Position",
+#' "Reference_Allele","Tumor_Seq_Allele2" and "VAF".
+#' @param vaf_cutoff VAF cutoff. Removing mutations with low variant allele frequency (VAF).
 #' @export
-
 getKaKs <- function(df, vaf_cutoff = 0.05) {
   data(list = sprintf("submod_%s", "13r_3w"), package = "dndscv") # TODO not valid operation in package
 

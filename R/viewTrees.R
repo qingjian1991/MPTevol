@@ -1,20 +1,15 @@
-
-#' viewTrees
+#' Visualize the trees
 #'
-#' we used the ggtree to visualize the trees.
-#'
-#' @param phyloTree phyloTree: The tree is in Parenthetic Format. see \code{\link[read.tree]{subMaf}}.
-#'
+#' @param phyloTree phyloTree: The tree is in Parenthetic format.
 #' @param tree.format the format of tree, S4 or list. Default is S4.
 #' @param normal.node the sample name of normal sample in the tree.
 #' @param group  a list that used to indicate the sample groups.
 #' @param group.colors an array indicates the colors of sample groups.
 #' @param showBootstrap whether showing the bootstrap values. Default is TRUE.
-#' @param title: title of the plot.
-#' @param hexpand_ratio: hexpand ratio. see \code{\link[ggtree]{hexpand}}
+#' @param title title of the plot.
+#' @param hexpand_ratio hexpand ratio. see \code{\link[ggtree]{hexpand}}
 #'
 #' @examples
-#'
 #' # This dist file is the output of MEDICC
 #' dist <- system.file(package = "MPTevol", "extdata", "tree_final.dist")
 #'
@@ -35,7 +30,6 @@
 #' plotCNAtree(dist = dist, grp = grp)
 #' @return a ggtree object
 #' @export
-
 viewTrees <- function(phyloTree,
                       tree.format = "S4",
                       normal.node = "NORMAL",
@@ -54,9 +48,8 @@ viewTrees <- function(phyloTree,
   root.length <- rev(mtree$edge.length)[1]
 
   # set outgroup and removing the Normal
-
-  mtree <- root(mtree, outgroup = normal.node)
-  mtree <- drop.tip(mtree, normal.node)
+  mtree <- treeio::root(mtree, outgroup = normal.node)
+  mtree <- treeio::drop.tip(mtree, normal.node)
 
   # grp <- list(
   #  ACA =  mtree$tip.label[grepl("Aca", mtree$tip.label)] ,
@@ -66,32 +59,34 @@ viewTrees <- function(phyloTree,
   # combined bootstrap values.
 
   if (showBootstrap) {
-    bootstrap.value <- ifelse(tree.format == "S4", phyloTree@bootstrap.value, phyloTree$bootstrap.value)
+    bootstrap.value <- ifelse(tree.format == "S4",
+      phyloTree@bootstrap.value,
+      phyloTree$bootstrap.value
+    )
 
     bp2 <- data.frame(
-      node = 1:Nnode(mtree) + Ntip(mtree),
+      node = 1:treeio::Nnode(mtree) + treeio::Ntip(mtree),
       bootstrap = bootstrap.value
     )
     mtree <- dplyr::full_join(mtree, bp2, by = "node")
   }
 
-
-  p_trees <- ggtree(mtree, size = 1) +
-    geom_tiplab(size = 4) +
+  p_trees <- ggtree::ggtree(mtree, size = 1) +
+    ggtree::geom_tiplab(size = 4) +
     # add scale bars.
-    geom_treescale(fontsize = 4, linesize = 1, x = 0.1) +
+    ggtree::geom_treescale(fontsize = 4, linesize = 1, x = 0.1) +
     # set root length
-    geom_rootedge(rootedge = root.length, size = 1, colour = "grey40") +
-    hexpand(hexpand_ratio, direction = 1)
+    ggtree::geom_rootedge(rootedge = root.length, size = 1, colour = "grey40") +
+    ggtree::hexpand(hexpand_ratio, direction = 1)
 
   if (showBootstrap) {
     p_trees <- p_trees +
-      geom_nodepoint(aes(fill = cut(bootstrap, c(0, 70, 90, 100))),
+      ggtree::geom_nodepoint(ggplot2::aes(fill = cut(bootstrap, c(0, 70, 90, 100))),
         shape = 21, size = 2
       ) +
-      geom_nodelab(aes(label = round(bootstrap)), hjust = -0.2, size = 3.5) +
-      labs(title = title) +
-      scale_fill_manual(
+      ggtree::geom_nodelab(ggplot2::aes(label = round(bootstrap)), hjust = -0.2, size = 3.5) +
+      ggplot2::labs(title = title) +
+      ggplot2::scale_fill_manual(
         values = c("black", "grey", "white"), guide = "legend",
         name = "Bootstrap Percentage(BP)",
         breaks = c("(90,100]", "(70,90]", "(0,70]"),
@@ -99,25 +94,23 @@ viewTrees <- function(phyloTree,
       )
   } else {
     p_trees <- p_trees +
-      labs(title = title)
+      ggplot2::labs(title = title)
   }
 
   # color the groups
   if (!is.null(group)) {
-
     # check samples ids between trees and grp
     if (!identical(sort(purrr::reduce(group, c)), sort(mtree@phylo$tip.label))) {
       stop("the samplenames in grp were not identical to sample names in the tree")
     }
 
-    p_trees <- groupOTU(p_trees, group, "Sites")
+    p_trees <- ggtree::groupOTU(p_trees, group, "Sites")
 
     # get levels
     Sites <- levels(p_trees$data$Sites)
 
     if (!is.null(group.colors)) {
       if (!identical(sort(names(group.colors)), sort(levels(p_trees$data$Sites)))) {
-
         # get levels that were not in the group.colors
         Site1 <- setdiff(levels(p_trees$data$Sites), names(group.colors))
 
@@ -134,15 +127,15 @@ viewTrees <- function(phyloTree,
       Site.colors <- set.colors(n = length(Sites))
     }
 
-    p_trees <- p_trees + aes(color = Sites) +
-      scale_colour_manual(
+    p_trees <- p_trees + ggplot2::aes(color = Sites) +
+      ggplot2::scale_colour_manual(
         values = Site.colors
       )
   }
 
   p_trees <- p_trees +
-    theme_tree(
-      plot.title = element_text(hjust = 0.5)
+    ggtree::theme_tree(
+      plot.title = ggplot2::element_text(hjust = 0.5)
     )
 
   p_trees
