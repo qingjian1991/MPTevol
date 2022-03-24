@@ -1,5 +1,6 @@
 Package: MPTevol
-Title: What the Package Does (One Line, Title Case)
+Title: Clonal Evolutionary History and Metastatic Routines Analysis for
+    Multiple Primary Tumors
 Version: 0.0.1
 Authors@R: c(
     person("Qinjian", "Chen", , "chenqingjian2010@163.com", role = c("aut", "cre"),
@@ -7,20 +8,29 @@ Authors@R: c(
     person("Shixiang", "Wang", , "w_shixiang@163.com", role = "aut",
            comment = c(ORCID = "0000-0001-9855-7357"))
   )
-Description: What the package does (one paragraph).
+Description: Provides a practical computation framework for dissecting the
+    evolution of multiple primary tumors (MPT), reducing analysis
+    complexity with modular design.
 License: GPL (>= 3)
+Depends: 
+    R (>= 4.0)
 Imports: 
     clonevol,
+    CNAqc,
     data.table,
-    magrittr
+    magrittr,
+    MesKit
 Suggests: 
-    rmarkdown,
     knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+Remotes: 
+    github::caravagnalab/CNAqc,
+    github::hdng/clonevol
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxytest::testthat_roclet"))
 RoxygenNote: 7.1.2
-Depends: R (>= 4.0.0)
-VignetteBuilder: knitr

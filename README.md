@@ -14,9 +14,15 @@ You can install the development version of MPTevol from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("qingjian1991/MPTevol")
+# install.packages("remotes")
+remotes::install_github("qingjian1991/MPTevol")
 ```
+
+Requirements:
+
+## Example
+
+Please see vignette for detail usage of MPTevol.
 
 ## Authors
 
@@ -29,25 +35,5 @@ This software is developed by:
 
 ## Supervised by
 
-* Qi Zhao, (zhaoqi@sysucc.org.cn) from Bioinformatic Center of Sun
-Yat-sen University Cancer Center
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
-
-## Overviews
-
-The overview of the **MPTevol** is shown below:
-
-![structures](/inst/MPTevol_Structure.jpg)
-
-## Documents
-
-The overview of usage could be found at [MPTevol](https://rpubs.com/cqj_00/MPTevol)
-
-
-
+-   [Qi Zhao](zhaoqi@sysucc.org.cn) from Bioinformatic Center of Sun
+    Yat-sen University Cancer Center
