@@ -4,16 +4,16 @@
 \name{Seg-class}
 \alias{Seg-class}
 \alias{Segment}
-\title{Seg Class}
+\title{Segment Class}
 \description{
-Seg Class.
+Segment Class
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{data.table of Seg File containing CNA information.}
+\item{\code{data}}{\code{data.table} of segment file containing CNA information.}
 
-\item{\code{sample.inof}}{data.frame of sample information per patient.}
+\item{\code{sample.inof}}{\code{data.frame} of sample information per patient.}
 
 \item{\code{ref.build}}{human reference genome version. Default 'hg19'. Optional: 'hg18' or 'hg38'.}
 

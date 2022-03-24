@@ -54,7 +54,9 @@ calKaKs <- function(maf,
 
     maf_merge <- maf_input[[patient.id]] %>%
       dplyr::mutate(Mut_ID = stringr::str_c(Hugo_Symbol, Chromosome, Start_Position,
-                                          Reference_Allele, Tumor_Seq_Allele2, sep = ":")) %>%
+        Reference_Allele, Tumor_Seq_Allele2,
+        sep = ":"
+      )) %>%
       dplyr::left_join(
         maf_class[[patient.id]]
       ) %>%
@@ -115,7 +117,7 @@ calKaKs <- function(maf,
       dplyr::mutate(name = factor(name, levels = c("wall"))) %>%
       # mutate(Type = factor(Type, levels = c("Shared_Clonal","Private_Clonal","Private_Subclonal") ))  %>%
       ggplot2::ggplot(ggplot2::aes(x = Tumor_ID, y = mle, fill = Type)) +
-      #ggpubr::theme_pubr() +
+      # ggpubr::theme_pubr() +
       ggplot2::geom_bar(stat = "identity", position = ggplot2::position_dodge(width = 0.90)) +
       # geom_linerange(aes(ymin = cilow, ymax = cihigh), position =  position_dodge(width = 0.90) ) +
       ggplot2::geom_hline(yintercept = 1, linetype = 2, size = 1) +

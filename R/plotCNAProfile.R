@@ -53,10 +53,11 @@ plotCNAProfile <- function(cnaqc.list, min_length_show = 1e5) {
 
   bl_genome <- suppressMessages(
     blank_genome1( # Where is blank_genome1
-    ref = L[[1]]$reference_genome,
-    chromosomes = chromosomes,
-    label_chr = NA
-  ) + ggplot2::labs(x = "", y = ""))
+      ref = L[[1]]$reference_genome,
+      chromosomes = chromosomes,
+      label_chr = NA
+    ) + ggplot2::labs(x = "", y = "")
+  )
 
   seg_id <- pio:::nmfy(Ln, seq_along(Ln))
   calls_flat$sample_id <- seg_id[calls_flat$sample]
@@ -66,15 +67,21 @@ plotCNAProfile <- function(cnaqc.list, min_length_show = 1e5) {
     dplyr::filter(to - from >= min_length_show)
 
   bl_genome +
-    ggplot2::geom_segment(data = calls_flat,
-                          ggplot2::aes(x = from, xend = to, y = sample_id,
-                                       yend = sample_id, color = label), size = 5) +
+    ggplot2::geom_segment(
+      data = calls_flat,
+      ggplot2::aes(
+        x = from, xend = to, y = sample_id,
+        yend = sample_id, color = label
+      ), size = 5
+    ) +
     ggplot2::scale_color_manual(values = KARYO_colors[2:length(KARYO_colors)]) +
     ggplot2::coord_polar(theta = "x", clip = "off") +
     ggplot2::guides(color = ggplot2::guide_legend("Karyotype", row = 1)) +
     ggplot2::ylim(-4, max(seg_id) + 1) +
-    ggplot2::labs(title = "Comparative CNA",
-                  subtitle = paste0("Tracks: ", paste(Ln, collapse = ", "))) +
+    ggplot2::labs(
+      title = "Comparative CNA",
+      subtitle = paste0("Tracks: ", paste(Ln, collapse = ", "))
+    ) +
     ggplot2::theme(
       legend.key.height = ggplot2::unit(0.1, "cm"), axis.text.y = ggplot2::element_blank(),
       panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
