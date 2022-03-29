@@ -6,7 +6,20 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of MPTevol is to …
+The goal of MPTevol is to provide a practical computation framework for
+dissecting the evolution of multiple primary tumors (MPT), reducing
+analysis complexity with modular design.
+
+**Package Overview**:
+
+![](man/figures/MPTevol.jpg)
+
+If you are using the MPTevol in academic research, please cite our
+paper:
+
+***Deciphering clonal dynamics and metastatic routines in a rare patient
+of synchronous triple primary tumors and multiple metastases with
+MPTevol.***
 
 ## Installation
 
@@ -18,7 +31,9 @@ You can install the development version of MPTevol from
 remotes::install_github("qingjian1991/MPTevol")
 ```
 
-Requirements:
+## Package structure
+
+![](man/figures/MPTevol_Structure.jpg)
 
 ## Example
 
@@ -36,4 +51,4 @@ This software is developed by:
 ## Supervised by
 
 -   [Qi Zhao](zhaoqi@sysucc.org.cn) from Bioinformatic Center of Sun
-    Yat-sen University Cancer Center
+    Yat-sen University Cancer Center.
