@@ -1,7 +1,7 @@
 Package: MPTevol
 Title: Clonal Evolutionary History and Metastatic Routines Analysis for
     Multiple Primary Tumors
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: c(
     person("Qinjian", "Chen", , "chenqingjian2010@163.com", role = c("aut", "cre"),
            comment = c(ORCID = "xxx")),
@@ -56,3 +56,4 @@ biocViews:
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd"))
 RoxygenNote: 7.1.2
+URL: https://qingjian1991.github.io/MPTevol/

@@ -7,3 +7,5 @@
 ^pkgdown$
 ^Makefile$
 ^Test.R$
+^documents$
+^\.github$

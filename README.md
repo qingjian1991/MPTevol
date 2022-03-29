@@ -31,13 +31,14 @@ You can install the development version of MPTevol from
 remotes::install_github("qingjian1991/MPTevol")
 ```
 
+## Documentation
+
+The overview of usage could be found at [MPTevol online
+vignette](https://rpubs.com/cqj_00/MPTevol).
+
 ## Package structure
 
 ![](man/figures/MPTevol_Structure.jpg)
-
-## Example
-
-Please see vignette for detail usage of MPTevol.
 
 ## Authors
 
