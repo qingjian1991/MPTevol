@@ -706,5 +706,33 @@ clonevol:::plotBellsCells(y, out.pdf.file = "test.pdf")
 
 y$models$READ_1
 
+segs = read.table("inst/extdata/meskit.sequenza.CNAs.txt", header = T, sep = "\t")
+
+head(segs)
+
+
+segs = segs %>%
+  filter(
+  ! Tumor_Sample_Barcode %in% c( paste0("LNET_", 1:5), paste0("UterusM_", c(2,4:7) ) )
+)
+
+write.table(segs, file = "inst/extdata/meskit.sequenza.CNAs.txt", sep = "\t", quote = F, row.names = F)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

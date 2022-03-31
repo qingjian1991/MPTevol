@@ -9,6 +9,7 @@
 #' @import CNAqc
 #'
 #' @export
+
 plotCNAProfile <- function(cnaqc.list, min_length_show = 1e5) {
   L <- x
   Ln <- names(L)
@@ -52,7 +53,7 @@ plotCNAProfile <- function(cnaqc.list, min_length_show = 1e5) {
   upp <- max(reference_genome$to)
 
   bl_genome <- suppressMessages(
-    blank_genome1( # Where is blank_genome1
+    blank_genome( # Where is blank_genome1
       ref = L[[1]]$reference_genome,
       chromosomes = chromosomes,
       label_chr = NA

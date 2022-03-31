@@ -115,11 +115,16 @@ If you are using `MPTevol` in academic research, please cite the following paper
 The format is compatible with [`MesKit`](https://github.com/Niinleslie/MesKit).
 
 To analyze with `MPTevol`, you need to provide:  
-  
+
+For mutation data
+
 * A MAF file of multi-region samples from patients. (`*.maf / *.maf.gz`). **Required**
 * A clinical file contains the clinical data of tumor samples from each patient. **Required**
 * Cancer cell fraction (CCF) data of somatic mutations. **Optional but recommended**
-* A segmentation file. **Optional**
+
+For CNA data
+
+* A segmentation file. **Required**
 * GISTIC analysis outputs.  **Optional**
 
 **Note:** `Tumor_Sample_Barcode` should be consistent in all input files.
@@ -263,7 +268,58 @@ plotMutProfile(maf, class = "SP", geneList = driverGene, use.tumorSampleLabel = 
 
 #### 4.2.1 Plot CNAs Profile
 
-The `MesKit` `plotCNA` function can characterize the CNA landscape across samples based on copy number data from segmentation algorithms.
+The `plotCNA` function can characterize the CNA landscape across samples based on copy number data from segmentation algorithms.
+
+```{R CNAs, fig.align='left', fig.height=6.5, fig.width=11, message=FALSE }
+
+segCN = system.file( "extdata", "meskit.sequenza.CNAs.txt" ,package = "MPTevol")
+
+seg = readSegment(segFile = segCN)
+
+#Using the default plot.
+plotCNA(seg, chrSilent = "X")
+
+```
+
+```{r , fig.align='left', fig.height=6.5, fig.width=11, message=FALSE}
+
+
+# define the new columns
+# 0-6 copy numbers, add cnLOH, LOH >=2 copys
+Copy_cutoff = function(seg){
+  seg %>%
+    mutate(CopyNumber1 = ifelse(CopyNumber >5, 6, CopyNumber) ) %>%
+    mutate(CopyNumber1 = ifelse(CopyNumber == 2 & Minor_CN == 0, "cnLOH",  CopyNumber1)) 
+}
+
+seg1 = lapply(seg, Copy_cutoff)
+
+plotCNA(seg1,
+        Type.name = "CopyNumber1",
+        Type.colors = setNames(
+           c("#7D8BCD", "#B1B9E7", "#F6F7F7", "#E4A8B5", "#CB7185","#B03D5E","#99143C", "#91BAA7"), 
+           nm = c(seq(0,6), "cnLOH")
+        ),
+        showRownames = TRUE,
+        rect.patients.size = 0,
+        chrSilent = "X"
+         
+)
+
+#Plot Minor_CNVs
+plotCNA(seg1,
+        Type.name = "Minor_CN",
+        Type.colors = setNames(
+           c("#7D8BCD", "#F6F7F7", "#E4A8B5", "#CB7185","#B03D5E"), 
+           nm = 0:4
+        ),
+        showRownames = TRUE,
+        rect.patients.size = 0,
+        chrSilent = "X"
+)
+
+```
+
 
 
 ### 4.3 Intratumor Heterogeneity (ITH)
@@ -361,7 +417,7 @@ sites[c(1,2,4:6),c("Hugo_Symbol", "Variant_Classification", "Tumor_Sample_Barcod
 We found that the `BRCA` contains one targetable site in `PIK3CA`. The `PIK3CA` mutation in `BRCA` is clonal (shared by all sampling sites) and the corresponding drug is `Alpelisib` + `Fulvestrant` in Level 1
 
 
-### 4.5 Estimated natural selection
+### 4.5 Estimate natural selection
 
 The natural selection may driver multiple primary tumors in MPT under different selective advantages. The Ka/Ks (ratio of non-synonymous rate relative to synonymous rate), also known Dn/Ds, can be used to measure the pressure of natural selection. The Ka/Ks is informative about the selection, where Dn/Ds > 1 indicates positve selection and Dn/Ds < 1 indicates negative selection.
 
@@ -717,7 +773,7 @@ y.merge <- merge.samples(y.merge,
 The `tree2timescape` transforms the tree information into the required format of `TimeScape`. Then user can view the clonal dynamic along with tumor locations or time.
 
 
-```{r}
+```{r warning=FALSE}
 library(timescape)
 
 samples <- names(y.merge$models)

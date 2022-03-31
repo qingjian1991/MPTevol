@@ -16,6 +16,7 @@
 #' @return cnaqc.list for cnaqc initiation.
 #'
 #' @export
+
 readCNAProfile <- function(maf,
                            seg,
                            Patient_ID = NULL,
