@@ -48,19 +48,20 @@ getClinSites <- function(maf, Patient_ID = NULL) {
     ),
     header = T, sep = "\t"
   )
+  colnames(targets)[5] = "Drugs"
 
   if (!is.null(Patient_ID)) {
     maf <- maf[[Patient_ID]]
-    Sites <- findSites(maf)
+    Sites <- findSites(maf, targets = targets)
     DT::datatable(Sites)
   } else {
-    Sites <- lapply(maf, findSites)
+    Sites <- lapply(maf, findSites, targets = targets)
   }
 
   Sites
 }
 
-findSites <- function(tumor) {
+findSites <- function(tumor, targets) {
   select.columns <- c(
     "Hugo_Symbol", "Chromosome", "Start_Position", "End_Position", "Variant_Classification", "Variant_Type", "Reference_Allele", "VAF", "Tumor_Sample_Barcode", "Tumor_ID",
     "Patient_ID", "Tumor_Sample_Label", "Tumor_Average_VAF"

@@ -8,6 +8,13 @@
 \description{
 Provides a practical computation framework for dissecting the evolution of multiple primary tumors (MPT), reducing analysis complexity with modular design.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://qingjian1991.github.io/MPTevol/}
+}
+
+}
 \author{
 \strong{Maintainer}: Qinjian Chen \email{chenqingjian2010@163.com} (\href{https://orcid.org/xxx}{ORCID})
 

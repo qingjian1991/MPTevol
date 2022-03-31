@@ -8,3 +8,10 @@ medicc
 vignettes/Met/
 vignettes/MPTevol_cache
 vignettes/rsconnect
+documents/Met/
+documents/MPTevol_cache
+documents/rsconnect
+documents/MPTevol_files
+documents/MPTevol.html
+vignettes
+Test.R

@@ -191,10 +191,10 @@ bootstrap.trees <- function(dist, bootstrap.rep.num = 1000, title = "Cancer") {
     matTree
   }
 
-  D <- medicc.read.distance.matrix(dist) # TODO: unkown package
+  D <- as.matrix(read.table(dist, row.names = 1, skip = 1))
   colnames(D) <- rownames(D)
 
-  matTree <- getTrees(D) # TODO: unkown package
+  matTree <- getTrees(D) # getTrees is defined the beginning of this function.
   # plot(matTree)
   # bootstrap
   # resampled trees.

@@ -528,16 +528,183 @@ tree.info = tree$phyloTree$tree %>%
   as_tibble()
 
 
+KaKs_data = kaks$Breast$KaKs_data
+
+KaKs_data %>%
+  filter(name %in% c("wall")) %>%
+  mutate(name = factor(name, levels = c("wall") )) %>%
+  #mutate(Type = factor(Type, levels = c("Shared_Clonal","Private_Clonal","Private_Subclonal") ))  %>%
+  ggplot(aes(x = Tumor_ID , y = mle, fill = Type) ) + ggpubr::theme_pubr() +
+  geom_bar(stat = "identity", position =  position_dodge(width = 0.90)) +
+  #geom_linerange(aes(ymin = cilow, ymax = cihigh), position =  position_dodge(width = 0.90) ) +
+  geom_hline( yintercept = 1, linetype = 2, size = 1) +
+  labs(x = NULL, y =  latex2exp::TeX("Dn/Ds ($\\omega_{all}$)") )  +
+  scale_fill_manual(values = set.colors(length(unique(KaKs_data$Type))) ) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 14)
+  )
+
+
+
+#rename the IDs.
+
+samples.IDs = data.frame(
+  Tumor_Sample_Barcode = c(
+  paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
+  paste0("OveryRM_", 1:6), paste0("UterusM_", 1:7),
+  paste0("Breast_", 1:5), paste0("Lung_", 1:5)
+  ),
+
+  Tumor_Sample_Barcode1 = c(
+    paste0("READ_", 1:5), paste0("OvaryLM_", 1:5),
+    paste0("OvaryRM_", 1:6), paste0("UterusM_", 1:7),
+    paste0("BRCA_", 1:5), paste0("LNET_", 1:5)
+  ),
+
+  Patient_ID1 = c(
+    rep("READ", 5), rep("OvaryLM", 5),
+    rep("OvaryRM", 6), rep("UterusM", 7),
+    rep("BRCA", 5), rep("LNET", 5)
+  )
+
+)
+
+
+data.type = "split"
+
+
+#(1) CCF
+ccf = read.table( sprintf( "inst/extdata/meskit.%s.CCF.txt", data.type), header = T)
+
+head(ccf)
+
+ccf = ccf %>% left_join(samples.IDs) %>%
+  mutate(Tumor_Sample_Barcode = Tumor_Sample_Barcode1,
+         Patient_ID = Patient_ID1,
+         Tumor_Sample_Barcode1 = NULL,
+         Patient_ID1 = NULL
+         )
+
+write.table(ccf, file = sprintf( "inst/extdata/meskit.%s.CCF.txt", data.type), row.names = F, sep = "\t", quote = F)
+
+
+#(2) mutations.
+
+mutation = read.delim( sprintf( "inst/extdata/meskit.%s.mutation.txt", data.type), header = T, sep = "\t")
+
+mutation = mutation %>%
+  left_join(samples.IDs) %>%
+  mutate(
+    Tumor_Sample_Barcode = Tumor_Sample_Barcode1,
+    Tumor_Sample_Barcode1 = NULL,
+    Patient_ID1 = NULL
+  )
+
+write.table(mutation, file = sprintf( "inst/extdata/meskit.%s.mutation.txt", data.type), row.names = F, sep = "\t", quote = F)
+
+#(3) clinical
+data.type = "split"
+
+clinical = read.delim( sprintf( "inst/extdata/meskit.%s.clinical.txt", data.type), header = T, sep = "\t")
+
+clinical = clinical %>%
+  left_join(samples.IDs) %>%
+  mutate(
+    Tumor_Sample_Barcode = Tumor_Sample_Barcode1,
+    Tumor_Sample_Barcode1 = NULL,
+    Patient_ID1 = NULL
+  )
+
+write.table(clinical, file = sprintf( "inst/extdata/meskit.%s.clinical.txt", data.type), row.names = F, sep = "\t", quote = F)
 
 
 
 
+#rename the IDs.
+
+samples.IDs = data.frame(
+  Tumor_Sample_Barcode = c(
+    paste0("Coad_", 1:5), paste0("OveryLM_", 1:5),
+    paste0("OveryRM_", 1:6), paste0("UterusM_", 1:7),
+    paste0("Breast_", 1:5), paste0("Lung_", 1:5)
+  ),
+
+  Tumor_Sample_Barcode1 = c(
+    paste0("READ_", 1:5), paste0("OvaryLM_", 1:5),
+    paste0("OvaryRM_", 1:6), paste0("UterusM_", 1:7),
+    paste0("BRCA_", 1:5), paste0("LNET_", 1:5)
+  ),
+
+  Patient_ID1 = c(
+    rep("Met1", 5), rep("Met1", 5),
+    rep("Met1", 6), "Met1", "Uterus" ,"Met1", rep("Uterus", 4),
+    rep("BRCA", 5), rep("LNET", 5)
+  )
+
+)
+
+
+data.type = "split1"
+
+#(1) CCF
+ccf = read.table( sprintf( "inst/extdata/meskit.%s.CCF.txt", data.type), header = T)
+
+head(ccf)
+
+ccf = ccf %>% left_join(samples.IDs) %>%
+  mutate(Tumor_Sample_Barcode = Tumor_Sample_Barcode1,
+         Patient_ID = Patient_ID1,
+         Tumor_Sample_Barcode1 = NULL,
+         Patient_ID1 = NULL
+  )
+
+write.table(ccf, file = sprintf( "inst/extdata/meskit.%s.CCF.txt", data.type), row.names = F, sep = "\t", quote = F)
+
+
+data("variants", package = "MPTevol")
+data("variants.ref", package = "MPTevol")
+
+
+clumns = colnames(variants)
+
+clumns = str_replace_all(clumns, "Breast", "BRCA")
+clumns = str_replace_all(clumns, "Lung", "LNET")
+clumns = str_replace_all(clumns, "Coad", "READ")
+clumns = str_replace_all(clumns, "Overy", "Ovary")
+
+colnames(variants) = clumns
+
+
+clumns = colnames(variants.ref)
+
+clumns = str_replace_all(clumns, "Breast", "BRCA")
+clumns = str_replace_all(clumns, "Lung", "LNET")
+clumns = str_replace_all(clumns, "Coad", "READ")
+clumns = str_replace_all(clumns, "Overy", "Ovary")
+
+colnames(variants.ref) = clumns
+
+save(variants, file = "data/variants.rda")
+save(variants.ref, file = "data/variants.ref.rda")
+
+
+
+plot.all.trees.clone.as.branch()
+
+
+MPTevol::plot.all.trees.clone.as.branch()
 
 
 
 
+clonevol::plot.all.trees.clone.as.branch()
 
 
+
+clonevol:::plotBellsCells(y, out.pdf.file = "test.pdf")
+
+y$models$READ_1
 
 
 
