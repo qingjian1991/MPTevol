@@ -2,6 +2,7 @@
 
 export("%>%")
 export(calKaKs)
+export(calPropDriver)
 export(calRoutines)
 export(getClinSites)
 export(getKaKs)

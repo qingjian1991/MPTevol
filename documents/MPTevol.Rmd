@@ -419,18 +419,25 @@ We found that the `BRCA` contains one targetable site in `PIK3CA`. The `PIK3CA` 
 
 ### 4.5 Estimate natural selection
 
-The natural selection may driver multiple primary tumors in MPT under different selective advantages. The Ka/Ks (ratio of non-synonymous rate relative to synonymous rate), also known Dn/Ds, can be used to measure the pressure of natural selection. The Ka/Ks is informative about the selection, where Dn/Ds > 1 indicates positve selection and Dn/Ds < 1 indicates negative selection.
+The natural selection may driver multiple primary tumors in MPT under different selective advantages. The Ka/Ks (ratio of non-synonymous rate relative to synonymous rate), also known Dn/Ds, can be used to measure the pressure of natural selection. The Ka/Ks is informative about the selection, where Dn/Ds > 1 indicates positive selection and Dn/Ds < 1 indicates negative selection.
 
 The function `calKaKs` estimates the selective pressure in different sets of mutations, according to the mutation class defined by `classifyMut`. The Ka/Ks is calculated based on [dndscv](https://github.com/im3sanger/dndscv).
 
 
 ```{r message=FALSE, eval=TRUE}
-kaks <- calKaKs(maf, patient.id = "BRCA", class = "SP", parallel = TRUE, vaf_cutoff = 0.05)
+kaks <- calKaKs(maf, patient.id = "BRCA", class = "SP", parallel = TRUE, vaf.cutoff = 0.05)
 
+```
+
+
+On the other hand,selective pressure can be estimated simply by the ratio of driver mutations relative to total mutation. Like `calKaKs`, the function `calPropDriver` estimates the selective pressure in different sets of mutations, according to the ratio of driver mutations defined by `classifyMut`.
+
+```{r message=FALSE, eval=TRUE}
+prop <- calPropDriver(maf, patient.id = "BRCA", class = "SP", driverGene = driverGene)
 kaks$BRCA$plot + ggpubr::theme_pubr()
 ```
 
-The mutations in `BRCA` were divided into `Public`(shared by all sampling site), `Shared`(shared by two or more samples but not all sampling site), and `Private`(Private in one sampling site). The `Public` mutations were under positive selection (Dn/Ds >=1 ), coherent with the expectation that the ancestral mutations might contribute to cancer development. 
+The mutations in `BRCA` were divided into `Public`(shared by all sampling site), `Shared`(shared by two or more samples but not all sampling site), and `Private`(Private in one sampling site). The `Public` mutations were under positive selection (`Dn/Ds >=1` and `The prop of driver mutations is high` ), coherent with the expectation that the ancestral mutations might contribute to cancer development. 
 
 
 ## 5. Build phylogenetic tress
@@ -795,6 +802,8 @@ timescape(
 # rsvg::rsvg_pdf( svg = sprintf("%s/%s.model%s.svg", project.names, project.names, i),
 #                file = sprintf("%s/%s.model%s.pdf", project.names, project.names, i)
 # )
+
+
 ```
 
 Say something about the tree.
