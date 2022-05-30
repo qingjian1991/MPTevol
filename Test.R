@@ -5,9 +5,6 @@ use_gpl_license(version = 3, include_future = TRUE)
 
 library(usethis)
 
-
-add_
-
 #add packages.
 use_package("tidyverse", type = "depends")
 
