@@ -13,11 +13,10 @@ output:
     toc: yes
     toc_depth: '5'
 date: "`r Sys.Date()`"
-
 vignette: >
   %\VignetteIndexEntry{MPTevol}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 <style type="text/css">
@@ -168,7 +167,6 @@ ClinInfo[1:5, ]
   
 By default, there are six mandatory fields in input CCF file: `Patient_ID`,	`Tumor_Sample_Barcode`, `Chromosome`, `Start_Position`, `CCF` and  `CCF_Std`/`CCF_CI_High` (required when identifying clonal/subclonal mutations). The `Chromosome` field of your MAF file and CCF file should be in the same format (both in number or both start with "chr"). Notably, `Reference_Allele` and `Tumor_Seq_Allele2` are also required if you want to include INDELs in the CCF file.
 
-Optionally, the `cluster` field can be included in this file. `cluster` denotes the mutation cluster IDs. 
 
 **Example CCF file**
 
@@ -176,7 +174,19 @@ Optionally, the `cluster` field can be included in this file. `cluster` denotes 
 ccfInfo <- read.table(system.file("extdata", "CRC_HZ.ccf.tsv", package = "MesKit"), header = TRUE)
 ccfInfo[1:5, ]
 ```
-   
+
+**Note:**
+
+When analyze clonal dynamics (see **Paragraph 6: Clonal dynamics**), the `Cluster` field is required to be included in CCF file. `Cluster` denotes the mutation cluster IDs. The `Cluster` should be named contiguous integer numbers, starting from 1. If point mutations do not belong to any known mutation clusters, using **NA** in the `Cluster` columns. 
+
+
+**Example CCF file containing Cluster **
+
+```{r echo=FALSE, paged.print=FALSE, rownames.print=FALSE}
+ccfInfo <- read.table(system.file("extdata", "meskit.split1.CCF.txt", package = "MPTevol"), header = TRUE)
+ccfInfo[c(10, 20, 30, 40, 50), ]
+```
+
 
 ### 2.4 Segmentation file
 
@@ -634,7 +644,7 @@ In MPTevol, the format of `variants` is used for downstream analysis.
 
 The `variants` is a data frame, the rows indicate variants, and the columns include variant cellular prevalence of each sample and a column of cluster information. The cellular prevalence of variants is used to measure how many tumor cells containing such mutations. The VAF or CCF can be used for cellular prevalence. **The cluster should be named contiguous integer numbers**, starting from 1. The cellular prevalence columns should be short for better visualization.
 
-Users are suggested to generate this data frame by yourselves because the variant clustering results need manual evaluation. The `maf2variants` can transform the maf format into `variants` if the cluster inform is included in the CCF data (**TO DO**).
+Users are suggested to generate this data frame by yourselves because the variant clustering results need manual evaluation. The `maf2variants` can transform the maf format into `variants` if the cluster inform is included in the CCF data (see next chart).
 
 
 ```{r}
@@ -646,6 +656,24 @@ head(variants,3)
 ```
 
 For this data frame, columns from `Chromosome` to `mutid` indicates basic information for each variant, columns from `BRCA_1` to `UterusM_7` indicates the cellular prevalence for each sample, `sciClone` indicates the mutation clusters inferred from sciClone, `kmeans` indicates the mutation clusters inferred from k-means method and `cluster` is the final cluster information used for downstream analysis.  
+
+### 6.1.3 Using maf2variants.
+
+The `maf2variants` can transform the maf format into `variants`.
+
+For the output variants, the first five columns are `Mutid`, `Hugo_Symbol`, `Variant_Classification`, `Patient_ID`, `Cluster`. The remaining columns indicate variant cellular prevalence for each sample.
+
+```{r}
+# Extract CCF.
+ccfs = maf2variants(maf1, patient.id = "Met1")
+head(ccfs)
+
+#in some case, we might want to use the VAF rather than CCF.
+vafs = maf2variants(maf1, patient.id = "Met1", extract.VAF = T)
+
+head(vafs)
+```
+
 
 
 ### 6.2 Check clonal prevalence across samples.

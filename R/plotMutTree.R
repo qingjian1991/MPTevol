@@ -48,7 +48,7 @@ plotMutTree <- function(maf,
                         hexpand_ratio = 0.3,
                         ...) {
   message("Building trees")
-  phyloTree <- getPhyloTree(maf, # TODO unknown package
+  phyloTree <- MesKit::getPhyloTree(maf,
     patient.id = patient.id,
     method = method, min.vaf = min.vaf,
     bootstrap.rep.num = bootstrap.rep.num,

@@ -717,19 +717,52 @@ write.table(segs, file = "inst/extdata/meskit.sequenza.CNAs.txt", sep = "\t", qu
 
 
 
+################################################################################################
 
 
+ccf = read.table("inst/extdata/meskit.split.CCF.txt", header = T)
+
+ccf1 = ccf %>%
+  mutate(mutation_id = mapply( function(x) str_c(x[1], x[2], x[3],sep = ":") , str_split(mutation_id, ":") )) %>%
+  left_join(
+    variants %>% select(mutid, cluster),
+    by = c("mutation_id" = "mutid")
+  ) %>%
+  mutate(
+    cluster = ifelse(is.na(cluster), -1 , cluster)
+  )
 
 
+write.table(ccf1, "inst/extdata/meskit.split.CCF1.txt", row.names = F, quote = F, sep = "\t")
 
 
+#For split data, the tumors are divided according to their histological types.
+data.type <- "split"
+
+maf <- readMaf(
+  mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
+  ccfFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.CCF.txt", data.type)),
+  clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
+  refBuild = "hg19",
+  ccf.conf.level = 0.95
+)
 
 
+data.type <- "split1"
+
+maf1 <- readMaf(
+  mafFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.mutation.txt", data.type)),
+  ccfFile = "inst/extdata/meskit.split1.CCF1.txt",
+  clinicalFile = system.file(package = "MPTevol", "extdata", sprintf("meskit.%s.clinical.txt", data.type)),
+  refBuild = "hg19",
+  ccf.conf.level = 0.95
+)
+
+LM = maf$OvaryLM@data
+
+LM1 = maf1$OvaryLM@data
 
 
+vars = maf2variants(maf1, patient.id = "Met1")
 
-
-
-
-
-
+vars = maf2variants(maf1, patient.id = "Met1", extract.VAF = T)
