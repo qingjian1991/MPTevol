@@ -32,10 +32,10 @@ If you are using the MPTevol in academic research, please cite our
 paper:
 
 **Chen, Q., Wu, Q.-N., Rong, Y.-M., Wang, S., Zuo, Z., Bai, L., . . .
-Zhao, Q. (2022). Deciphering clonal dynamics and metastatic routines in
+Zhao, Q. (2022). [Deciphering clonal dynamics and metastatic routines in
 a rare patient of synchronous triple-primary tumors and multiple
-metastases with MPTevol. Briefings in Bioinformatics.
-<doi:10.1093/bib/bbac175>**
+metastases with MPTevol](https://doi.org/10.1093/bib/bbac175). Briefings
+in Bioinformatics. <doi:10.1093/bib/bbac175>**
 
 ## Installation
 
